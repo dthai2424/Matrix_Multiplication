@@ -122,7 +122,8 @@ bool cuda_backend_available() {
 }
 
 void cuda_backend_device_info(std::string& name, int& compute_major,
-                             int& compute_minor) {
+                              int& compute_minor, size_t& vram_mb,
+                              int& multi_processors, std::string& cuda_version) {
     int device = 0;
     cudaDeviceProp properties{};
     check_cuda(cudaGetDevice(&device), "cudaGetDevice");
@@ -131,6 +132,16 @@ void cuda_backend_device_info(std::string& name, int& compute_major,
     name = properties.name;
     compute_major = properties.major;
     compute_minor = properties.minor;
+    vram_mb = properties.totalGlobalMem / (1024ULL * 1024ULL);
+    multi_processors = properties.multiProcessorCount;
+
+    int driver_version = 0, runtime_version = 0;
+    cudaDriverGetVersion(&driver_version);
+    cudaRuntimeGetVersion(&runtime_version);
+    cuda_version = "Runtime " + std::to_string(runtime_version / 1000) + "." +
+                   std::to_string((runtime_version % 100) / 10) +
+                   " (Driver " + std::to_string(driver_version / 1000) + "." +
+                   std::to_string((driver_version % 100) / 10) + ")";
 }
 
 bool matmul_cuda_rows(const double* a, const double* b, double* c,

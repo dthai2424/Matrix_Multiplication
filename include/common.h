@@ -5,18 +5,24 @@
 #include <vector>
 #include <cstdint>
 
-// Thông tin phần cứng CPU và bộ nhớ đệm (Cache)
+// Thông tin phần cứng CPU, GPU, Hệ điều hành và Bộ nhớ đệm (Cache)
 struct HardwareInfo {
-    std::string cpu_name = "AMD Ryzen 7 6800H with Radeon Graphics";
-    std::string gpu_name = "Not detected";
-    int physical_cores = 8;
-    int logical_processors = 16;
+    std::string os_name = "Chua xac dinh";
+    std::string cpu_name = "Chua xac dinh";
+    std::string gpu_name = "Khong tim thay (Chua co CUDA)";
+    int physical_cores = 1;
+    int logical_processors = 1;
     int gpu_compute_major = 0;
     int gpu_compute_minor = 0;
+    size_t gpu_vram_mb = 0;
+    int gpu_multiprocessors = 0;
+    std::string cuda_version = "";
+    double total_ram_gb = 0.0;
+    double free_ram_gb = 0.0;
     int l1d_cache_kb = 32;       // 32 KB L1 Data per core
     int l2_cache_kb = 512;       // 512 KB L2 per core
     int l3_cache_kb = 16384;     // 16 MB L3 shared
-    std::string compiler_info = "GCC 13.2.0 (OpenMP 4.5/5.0, AVX2, FMA)";
+    std::string compiler_info = "";
 };
 
 // Phân loại thuật toán thực hiện

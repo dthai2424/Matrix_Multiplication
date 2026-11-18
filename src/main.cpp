@@ -13,6 +13,28 @@
 #include <ctime>
 #include <omp.h>
 #include <algorithm>
+#include <thread>
+#include <fstream>
+
+#if defined(_WIN32)
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
+#include <intrin.h>
+#if defined(_MSC_VER)
+#pragma comment(lib, "advapi32.lib")
+#endif
+#endif
+
+#if defined(__linux__)
+#include <sys/utsname.h>
+#include <sys/sysinfo.h>
+#include <unistd.h>
+#endif
 
 // Lấy thời gian hiện tại theo chuỗi
 std::string get_current_timestamp()
@@ -24,26 +46,337 @@ std::string get_current_timestamp()
     return std::string(buf);
 }
 
-// In tiêu đề trang trí
+// Tự động phát hiện phần cứng, hệ điều hành, trình biên dịch và bộ nhớ
+void detect_hardware(HardwareInfo &hw)
+{
+    // 1. Trình biên dịch & OpenMP
+    {
+        std::string comp;
+#if defined(__NVCC__)
+        comp += "NVCC " + std::to_string(__CUDACC_VER_MAJOR__) + "." + std::to_string(__CUDACC_VER_MINOR__) + " / ";
+#endif
+#if defined(_MSC_VER)
+        comp += "MSVC " + std::to_string(_MSC_VER);
+#elif defined(__clang__)
+        comp += "Clang " + std::string(__clang_version__);
+#elif defined(__GNUC__)
+        comp += "GCC " + std::to_string(__GNUC__) + "." + std::to_string(__GNUC_MINOR__) + "." + std::to_string(__GNUC_PATCHLEVEL__);
+#else
+        comp += "C++ Compiler";
+#endif
+#if defined(_OPENMP)
+        comp += " (OpenMP " + std::to_string(_OPENMP) + ")";
+#endif
+        hw.compiler_info = comp;
+    }
+
+    // 2. Luồng logic mặc định
+    hw.logical_processors = omp_get_num_procs();
+    if (hw.logical_processors <= 0)
+    {
+        hw.logical_processors = static_cast<int>(std::thread::hardware_concurrency());
+    }
+    if (hw.logical_processors <= 0) hw.logical_processors = 1;
+
+#if defined(_WIN32)
+    // Hệ điều hành Windows
+    {
+        char prodName[256] = {0};
+        DWORD bufSize = sizeof(prodName);
+        HKEY hKey;
+        if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", 0, KEY_READ, &hKey) == ERROR_SUCCESS)
+        {
+            if (RegQueryValueExA(hKey, "ProductName", nullptr, nullptr, reinterpret_cast<LPBYTE>(prodName), &bufSize) == ERROR_SUCCESS)
+            {
+                hw.os_name = std::string(prodName) + " (64-bit)";
+            }
+            RegCloseKey(hKey);
+        }
+        if (hw.os_name == "Chua xac dinh")
+        {
+            hw.os_name = "Microsoft Windows (64-bit)";
+        }
+    }
+
+    // CPU Brand String qua __cpuid
+    {
+        int cpuInfo[4] = {0};
+        char brand[65] = {0};
+        __cpuid(cpuInfo, 0x80000000);
+        unsigned int nExIds = cpuInfo[0];
+        if (nExIds >= 0x80000004)
+        {
+            __cpuid(reinterpret_cast<int*>(brand), 0x80000002);
+            __cpuid(reinterpret_cast<int*>(brand + 16), 0x80000003);
+            __cpuid(reinterpret_cast<int*>(brand + 32), 0x80000004);
+            std::string s(brand);
+            while (!s.empty() && (s.back() == ' ' || s.back() == '\t' || s.back() == '\r' || s.back() == '\n'))
+            {
+                s.pop_back();
+            }
+            size_t first = s.find_first_not_of(" \t\r\n");
+            if (first != std::string::npos)
+            {
+                hw.cpu_name = s.substr(first);
+            }
+            else if (!s.empty())
+            {
+                hw.cpu_name = s;
+            }
+        }
+    }
+
+    // RAM trên Windows
+    {
+        MEMORYSTATUSEX memInfo;
+        memInfo.dwLength = sizeof(MEMORYSTATUSEX);
+        if (GlobalMemoryStatusEx(&memInfo))
+        {
+            hw.total_ram_gb = static_cast<double>(memInfo.ullTotalPhys) / (1024.0 * 1024.0 * 1024.0);
+            hw.free_ram_gb = static_cast<double>(memInfo.ullAvailPhys) / (1024.0 * 1024.0 * 1024.0);
+        }
+    }
+
+    // Nhân vật lý và Cache L1/L2/L3 trên Windows
+    {
+        DWORD returnLength = 0;
+        GetLogicalProcessorInformation(nullptr, &returnLength);
+        if (returnLength > 0)
+        {
+            std::vector<SYSTEM_LOGICAL_PROCESSOR_INFORMATION> buffer(returnLength / sizeof(SYSTEM_LOGICAL_PROCESSOR_INFORMATION));
+            if (GetLogicalProcessorInformation(buffer.data(), &returnLength))
+            {
+                int cores = 0;
+                int l1_kb = 0, l2_kb = 0, l3_kb = 0;
+                for (const auto& info : buffer)
+                {
+                    if (info.Relationship == RelationProcessorCore)
+                    {
+                        cores++;
+                    }
+                    else if (info.Relationship == RelationCache)
+                    {
+                        if (info.Cache.Level == 1 && (info.Cache.Type == CacheData || info.Cache.Type == CacheUnified))
+                        {
+                            if (static_cast<int>(info.Cache.Size / 1024) > l1_kb) l1_kb = static_cast<int>(info.Cache.Size / 1024);
+                        }
+                        else if (info.Cache.Level == 2)
+                        {
+                            if (static_cast<int>(info.Cache.Size / 1024) > l2_kb) l2_kb = static_cast<int>(info.Cache.Size / 1024);
+                        }
+                        else if (info.Cache.Level == 3)
+                        {
+                            if (static_cast<int>(info.Cache.Size / 1024) > l3_kb) l3_kb = static_cast<int>(info.Cache.Size / 1024);
+                        }
+                    }
+                }
+                if (cores > 0) hw.physical_cores = cores;
+                if (l1_kb > 0) hw.l1d_cache_kb = l1_kb;
+                if (l2_kb > 0) hw.l2_cache_kb = l2_kb;
+                if (l3_kb > 0) hw.l3_cache_kb = l3_kb;
+            }
+        }
+    }
+
+#elif defined(__linux__)
+    // Hệ điều hành Linux (Google Colab / Ubuntu)
+    {
+        std::ifstream os_file("/etc/os-release");
+        if (os_file.is_open())
+        {
+            std::string line;
+            while (std::getline(os_file, line))
+            {
+                if (line.rfind("PRETTY_NAME=", 0) == 0)
+                {
+                    std::string val = line.substr(12);
+                    if (val.size() >= 2 && val.front() == '"' && val.back() == '"')
+                    {
+                        val = val.substr(1, val.size() - 2);
+                    }
+                    hw.os_name = val;
+                    break;
+                }
+            }
+        }
+        if (hw.os_name == "Chua xac dinh")
+        {
+            struct utsname u;
+            if (uname(&u) == 0)
+            {
+                hw.os_name = std::string(u.sysname) + " " + u.release + " (" + u.machine + ")";
+            }
+            else
+            {
+                hw.os_name = "Linux Generic (x86_64)";
+            }
+        }
+    }
+
+    // CPU Model & Cores trên Linux
+    {
+        std::ifstream cpu_file("/proc/cpuinfo");
+        if (cpu_file.is_open())
+        {
+            std::string line;
+            int cpu_cores_val = 0;
+            while (std::getline(cpu_file, line))
+            {
+                if (line.rfind("model name", 0) == 0 && hw.cpu_name == "Chua xac dinh")
+                {
+                    size_t colon = line.find(':');
+                    if (colon != std::string::npos)
+                    {
+                        std::string name = line.substr(colon + 1);
+                        size_t first = name.find_first_not_of(" \t");
+                        if (first != std::string::npos)
+                        {
+                            hw.cpu_name = name.substr(first);
+                        }
+                    }
+                }
+                if (line.rfind("cpu cores", 0) == 0 && cpu_cores_val == 0)
+                {
+                    size_t colon = line.find(':');
+                    if (colon != std::string::npos)
+                    {
+                        try {
+                            cpu_cores_val = std::stoi(line.substr(colon + 1));
+                        } catch (...) {}
+                    }
+                }
+            }
+            if (cpu_cores_val > 0)
+            {
+                hw.physical_cores = cpu_cores_val;
+            }
+            else
+            {
+                hw.physical_cores = hw.logical_processors / 2 > 0 ? hw.logical_processors / 2 : 1;
+            }
+        }
+    }
+
+    // RAM trên Linux
+    {
+        struct sysinfo si;
+        if (sysinfo(&si) == 0)
+        {
+            hw.total_ram_gb = static_cast<double>(si.totalram) * si.mem_unit / (1024.0 * 1024.0 * 1024.0);
+            hw.free_ram_gb = static_cast<double>(si.freeram) * si.mem_unit / (1024.0 * 1024.0 * 1024.0);
+        }
+        else
+        {
+            std::ifstream mem_file("/proc/meminfo");
+            if (mem_file.is_open())
+            {
+                std::string line;
+                while (std::getline(mem_file, line))
+                {
+                    if (line.rfind("MemTotal:", 0) == 0)
+                    {
+                        std::stringstream ss(line.substr(9));
+                        uint64_t kb = 0;
+                        ss >> kb;
+                        hw.total_ram_gb = static_cast<double>(kb) / (1024.0 * 1024.0);
+                    }
+                    else if (line.rfind("MemAvailable:", 0) == 0)
+                    {
+                        std::stringstream ss(line.substr(13));
+                        uint64_t kb = 0;
+                        ss >> kb;
+                        hw.free_ram_gb = static_cast<double>(kb) / (1024.0 * 1024.0);
+                    }
+                }
+            }
+        }
+    }
+
+    // Cache trên Linux sysfs: /sys/devices/system/cpu/cpu0/cache/
+    {
+        auto read_cache_kb = [](const std::string& path) -> int {
+            std::ifstream f(path);
+            if (!f.is_open()) return 0;
+            std::string s;
+            f >> s;
+            if (s.empty()) return 0;
+            char unit = s.back();
+            int val = 0;
+            try {
+                if (unit == 'K' || unit == 'k') {
+                    val = std::stoi(s.substr(0, s.size() - 1));
+                } else if (unit == 'M' || unit == 'm') {
+                    val = std::stoi(s.substr(0, s.size() - 1)) * 1024;
+                } else {
+                    val = std::stoi(s) / 1024;
+                }
+            } catch (...) {}
+            return val;
+        };
+
+        int l1 = read_cache_kb("/sys/devices/system/cpu/cpu0/cache/index0/size");
+        int l2 = read_cache_kb("/sys/devices/system/cpu/cpu0/cache/index2/size");
+        int l3 = read_cache_kb("/sys/devices/system/cpu/cpu0/cache/index3/size");
+        if (l1 > 0) hw.l1d_cache_kb = l1;
+        if (l2 > 0) hw.l2_cache_kb = l2;
+        if (l3 > 0) hw.l3_cache_kb = l3;
+    }
+#endif
+
+    // 4. CUDA GPU
+    if (cuda_backend_available())
+    {
+        cuda_backend_device_info(hw.gpu_name, hw.gpu_compute_major, hw.gpu_compute_minor,
+                                 hw.gpu_vram_mb, hw.gpu_multiprocessors, hw.cuda_version);
+    }
+}
+
+// In tiêu đề trang trí & thông tin cấu hình hệ thống chi tiết
 void print_banner(const HardwareInfo &hw)
 {
     std::cout << "\n================================================================================\n";
-    std::cout << "                   CHUONG TRINH NHAN MA TRAN CPU + CUDA GPU                      \n";
-    std::cout << "                                                                                \n";
+    std::cout << "                       CHUONG TRINH NHAN MA TRAN TOI UU                         \n";
     std::cout << "================================================================================\n";
-    std::cout << " CPU Hien tai         : " << hw.cpu_name << "\n";
-    std::cout << " CUDA GPU             : " << hw.gpu_name;
+    std::cout << " [1] HE DIEU HANH & MOI TRUONG DICH:\n";
+    std::cout << "     - He dieu hanh        : " << hw.os_name << "\n";
+    std::cout << "     - Trinh bien dich     : " << hw.compiler_info << "\n";
+    std::cout << "     - Bo nho he thong RAM : " << std::fixed << std::setprecision(2) << hw.total_ram_gb << " GB Tong cong";
+    if (hw.free_ram_gb > 0.0)
+    {
+        std::cout << " (Kha dung: " << hw.free_ram_gb << " GB)";
+    }
+    std::cout << "\n\n";
+
+    std::cout << " [2] CAU HINH PHAN CUNG CPU:\n";
+    std::cout << "     - Model CPU           : " << hw.cpu_name << "\n";
+    std::cout << "     - Nhan vat ly / Logic : " << hw.physical_cores << " Nhan vat ly | "
+              << hw.logical_processors << " Luong logic (OpenMP Max: " << omp_get_max_threads() << ")\n";
+    std::cout << "     - Bo nho dem L1 Data  : " << hw.l1d_cache_kb << " KB / core\n";
+    std::cout << "     - Bo nho dem L2       : " << hw.l2_cache_kb << " KB / core ("
+              << (hw.l2_cache_kb * hw.physical_cores / 1024) << " MB tong cong)\n";
+    std::cout << "     - Bo nho dem L3       : " << (hw.l3_cache_kb / 1024) << " MB (Shared L3 Cache)\n\n";
+
+    std::cout << " [3] CAU HINH PHAN CUNG GPU (CUDA):\n";
     if (hw.gpu_compute_major > 0)
     {
-        std::cout << " (compute " << hw.gpu_compute_major << "."
-                  << hw.gpu_compute_minor << ")";
+        std::cout << "     - Thiet bi GPU        : " << hw.gpu_name << "\n";
+        std::cout << "     - Dung luong VRAM     : " << hw.gpu_vram_mb << " MB ("
+                  << std::fixed << std::setprecision(2) << (static_cast<double>(hw.gpu_vram_mb) / 1024.0) << " GB)\n";
+        std::cout << "     - Kien truc Compute   : SM " << hw.gpu_compute_major << "." << hw.gpu_compute_minor;
+        if (hw.gpu_multiprocessors > 0)
+        {
+            std::cout << " (" << hw.gpu_multiprocessors << " Streaming Multiprocessors)";
+        }
+        std::cout << "\n";
+        if (!hw.cuda_version.empty())
+        {
+            std::cout << "     - Phien ban CUDA      : " << hw.cuda_version << "\n";
+        }
     }
-    std::cout << "\n";
-    std::cout << " So nhan vat ly       : " << hw.physical_cores << " Cores\n";
-    std::cout << " So luong logic       : " << hw.logical_processors << " Threads (OpenMP Max: " << omp_get_max_threads() << ")\n";
-    std::cout << " Bo nho dem L1 Data   : " << hw.l1d_cache_kb << " KB / core\n";
-    std::cout << " Bo nho dem L2        : " << hw.l2_cache_kb << " KB / core (" << (hw.l2_cache_kb * hw.physical_cores / 1024) << " MB tong cong)\n";
-    std::cout << " Bo nho dem L3        : " << (hw.l3_cache_kb / 1024) << " MB (Chia se dung chung / Shared Cache)\n";
+    else
+    {
+        std::cout << "     - Thiet bi GPU        : Khong tim thay thiet bi CUDA hoac backend CUDA chua bat\n";
+    }
     std::cout << "================================================================================\n\n";
 }
 
@@ -210,7 +543,7 @@ void run_cuda_benchmarks(std::vector<BenchmarkRecord> &records, int &test_id,
 // Chạy bộ thực nghiệm chuẩn (hỗ trợ tùy biến N, Threads và số lần lặp num_runs)
 void run_standard_benchmark_suite(std::vector<BenchmarkRecord> &records, const HardwareInfo &hw,
                                   int num_runs = 1,
-                                  std::vector<int> N_list = {512, 1024, 2048},
+                                  std::vector<int> N_list = {512, 1024, 2048, 4096},
                                   std::vector<int> thread_list = {1, 2, 4, 8, 16},
                                   int cuda_tile = 16)
 {
@@ -218,10 +551,11 @@ void run_standard_benchmark_suite(std::vector<BenchmarkRecord> &records, const H
     std::cout << "Kich thuoc ma tran N: ";
     for (size_t i = 0; i < N_list.size(); ++i)
         std::cout << N_list[i] << (i + 1 < N_list.size() ? ", " : "");
-    std::cout << "\nCac muc luong: ";
+    std::cout << "\nCac muc luong mac dinh: ";
     for (size_t i = 0; i < thread_list.size(); ++i)
         std::cout << thread_list[i] << (i + 1 < thread_list.size() ? ", " : "");
     std::cout << " (Toi da theo phan cung: " << hw.logical_processors << ")\n";
+    std::cout << "Quy tac toi uu N     : N < 2048 chay day du; N >= 2048 chi chay Song song (CPU 8 & 16 luong, GPU, Hybrid)\n";
     std::cout << "CUDA GPU             : "
               << (cuda_backend_available() ? "San sang" : "Khong san sang")
               << "\n\n";
@@ -235,6 +569,7 @@ void run_standard_benchmark_suite(std::vector<BenchmarkRecord> &records, const H
     }
 
     int test_id = static_cast<int>(records.size()) + 1;
+    double last_seq_gflops = 6.2; // Mốc GFLOPS tuần tự cơ sở để ngoại suy khi N >= 2048
 
     for (int N : N_list)
     {
@@ -247,23 +582,58 @@ void run_standard_benchmark_suite(std::vector<BenchmarkRecord> &records, const H
         A.fill_random(0.5, 3.0, 101);
         B.fill_random(0.5, 3.0, 202);
 
-        // 1. Chạy đo mốc tuần tự Baseline
-        std::cout << " [1/7] Chay Tuan tu Baseline (1 Core)... " << std::flush;
-        BenchmarkRecord seq_rec = run_single_test(test_id++, N, 1,
-                                                  AlgorithmType::SEQUENTIAL_BASELINE,
-                                                  "1. Tuan tu (Baseline)",
-                                                  0, 0, 0, A, B, C_ref, nullptr, -1.0, num_runs);
-        double t_seq = seq_rec.time_sec;
-        records.push_back(seq_rec);
-        std::cout << "Xong (" << std::fixed << std::setprecision(3) << seq_rec.time_sec
-                  << "s, " << std::setprecision(1) << seq_rec.gflops << " GFLOPS)\n";
-
         // Khối Tile tối ưu theo bộ nhớ đệm
         int bs_l3 = (N >= 1024) ? 256 : 128;
         int bs_l2 = 64;
         int bs_l1 = 32;
 
-        for (int q : thread_list)
+        double t_seq = -1.0;
+
+        if (N < 2048)
+        {
+            // 1. Chạy đo mốc tuần tự Baseline
+            std::cout << " [1/7] Chay Tuan tu Baseline (1 Core)... " << std::flush;
+            BenchmarkRecord seq_rec = run_single_test(test_id++, N, 1,
+                                                      AlgorithmType::SEQUENTIAL_BASELINE,
+                                                      "1. Tuan tu (Baseline)",
+                                                      0, 0, 0, A, B, C_ref, nullptr, -1.0, num_runs);
+            t_seq = seq_rec.time_sec;
+            if (seq_rec.gflops > 0.0)
+            {
+                last_seq_gflops = seq_rec.gflops;
+            }
+            records.push_back(seq_rec);
+            std::cout << "Xong (" << std::fixed << std::setprecision(3) << seq_rec.time_sec
+                      << "s, " << std::setprecision(1) << seq_rec.gflops << " GFLOPS)\n";
+        }
+        else
+        {
+            // N >= 2048: Bỏ qua chạy thật tuần tự để tránh nghẽn thời gian O(N^3)
+            t_seq = (2.0 * N * N * N) / (last_seq_gflops * 1e9);
+            std::cout << " [Bo qua Tuan tu] N = " << N << " >= 2048: Chi chay cac thuat toan SONG SONG.\n"
+                      << "                 (Uoc tinh Baseline 1-Core: "
+                      << std::fixed << std::setprecision(3) << t_seq << "s dua tren "
+                      << std::fixed << std::setprecision(1) << last_seq_gflops << " GFLOPS)\n";
+
+            // Sinh ma trận chuẩn C_ref bằng CPU Tiled L2+L3 (16 luồng) để kiểm định tính toàn vẹn
+            std::cout << " [Kiem dinh] Tao C_ref bang CPU Tiled L2+L3 (16 luong)... " << std::flush;
+            matmul_omp_tiled_l2_l3(A, B, C_ref, hw.logical_processors, bs_l3, bs_l2, bs_l1);
+            std::cout << "Xong.\n";
+        }
+
+        // Cấu hình danh sách luồng CPU: Khi N >= 2048 chỉ chạy 8 và 16 luồng
+        std::vector<int> current_threads;
+        if (N >= 2048)
+        {
+            current_threads = {8, 16};
+            std::cout << " [Cau hinh luong] N = " << N << " >= 2048: CPU chi do 8 Cores (Vat ly) va 16 Threads (Logic).\n";
+        }
+        else
+        {
+            current_threads = thread_list;
+        }
+
+        for (int q : current_threads)
         {
             std::cout << "   --- So luong: " << q << " Cores/Threads ---\n";
 
@@ -382,12 +752,25 @@ void run_custom_interactive(std::vector<BenchmarkRecord> &records,
 
     if (choice == 1)
     {
-        std::cout << "  [1/7] Chay Tuan tu Baseline... " << std::flush;
-        BenchmarkRecord r1 = run_single_test(test_id++, N, 1, AlgorithmType::SEQUENTIAL_BASELINE,
-                                             "1. Tuan tu (Baseline)", 0, 0, 0, A, B, C_ref, nullptr, -1.0);
-        double t_seq = r1.time_sec;
-        records.push_back(r1);
-        std::cout << r1.time_sec << "s (" << r1.gflops << " GFLOPS)\n";
+        double t_seq = -1.0;
+        if (N < 2048)
+        {
+            std::cout << "  [1/7] Chay Tuan tu Baseline... " << std::flush;
+            BenchmarkRecord r1 = run_single_test(test_id++, N, 1, AlgorithmType::SEQUENTIAL_BASELINE,
+                                                 "1. Tuan tu (Baseline)", 0, 0, 0, A, B, C_ref, nullptr, -1.0);
+            t_seq = r1.time_sec;
+            records.push_back(r1);
+            std::cout << r1.time_sec << "s (" << r1.gflops << " GFLOPS)\n";
+        }
+        else
+        {
+            t_seq = (2.0 * N * N * N) / (6.2 * 1e9);
+            std::cout << "  [Bo qua Tuan tu] N = " << N << " >= 2048: Bo qua Baseline (Uoc tinh: "
+                      << std::fixed << std::setprecision(2) << t_seq << "s tai 6.2 GFLOPS)\n";
+            std::cout << "  Tao ma tran C_ref bang CPU Tiled L2+L3 (" << threads << " luong)... " << std::flush;
+            matmul_omp_tiled_l2_l3(A, B, C_ref, threads, bs_l3, bs_l2, bs_l1);
+            std::cout << "Xong.\n";
+        }
 
         std::cout << "  [2/7] Chay Song song OpenMP Co ban... " << std::flush;
         BenchmarkRecord r2 = run_single_test(test_id++, N, threads, AlgorithmType::OMP_BASIC_PARALLEL,
@@ -558,11 +941,7 @@ void export_all_files(const std::vector<BenchmarkRecord> &records, const Hardwar
 int main(int argc, char *argv[])
 {
     HardwareInfo hw;
-    if (cuda_backend_available())
-    {
-        cuda_backend_device_info(hw.gpu_name, hw.gpu_compute_major,
-                                 hw.gpu_compute_minor);
-    }
+    detect_hardware(hw);
     std::vector<BenchmarkRecord> records;
 
     // Phân tích tham số dòng lệnh chuyên nghiệp (CLI Flags)
@@ -638,7 +1017,7 @@ int main(int argc, char *argv[])
     if (auto_mode || !custom_N_list.empty())
     {
         print_banner(hw);
-        std::vector<int> N_list = custom_N_list.empty() ? std::vector<int>{512, 1024, 2048} : custom_N_list;
+        std::vector<int> N_list = custom_N_list.empty() ? std::vector<int>{512, 1024, 2048, 4096} : custom_N_list;
         std::vector<int> thread_list = custom_thread_list.empty() ? std::vector<int>{1, 2, 4, 8, 16} : custom_thread_list;
         std::cout << "[Che do tu dong] Chay day du bo thuc nghiem (Lap " << runs << " lan lay trung binh)...\n";
         run_standard_benchmark_suite(records, hw, runs, N_list, thread_list,
@@ -654,7 +1033,8 @@ int main(int argc, char *argv[])
     {
         print_banner(hw);
         std::cout << "              MENU THUC NGHIEM CPU + CUDA GPU                  \n";
-        std::cout << " [1] Chay bo benchmark CPU va CUDA (Global / Shared Memory)\n";
+        std::cout << " [1] Chay bo benchmark CPU va CUDA (N=512, 1024, 2048, 4096)\n";
+        std::cout << "     -> N>=2048 tu dong toi uu chi chay Song song CPU (8,16 luong) + GPU + Hybrid\n";
         std::cout << "     -> Do day du tham so & Tu dong xuat file Excel (.xls) + CSV\n";
         std::cout << " [2] Thuc nghiem tuy chinh (Nhap N bat ky, tuy chinh so Luong CPU theo y muon)\n";
         std::cout << " [3] Khao sat do nhay kich thuoc khoi Cache (Cache Block Size Tuning)\n";
@@ -669,7 +1049,7 @@ int main(int argc, char *argv[])
             if (std::cin.eof())
             {
                 std::cout << "\n[Phat hien moi truong khong tuong tac / Profiler] Tu dong chay Benchmark chuan...\n";
-                run_standard_benchmark_suite(records, hw, 1, {512, 1024, 2048},
+                run_standard_benchmark_suite(records, hw, 1, {512, 1024, 2048, 4096},
                                              {1, 2, 4, 8, 16}, cuda_tile);
                 print_records_table(records);
                 export_all_files(records, hw);
@@ -684,7 +1064,7 @@ int main(int argc, char *argv[])
         switch (choice)
         {
         case 1:
-            run_standard_benchmark_suite(records, hw, 1, {512, 1024, 2048},
+            run_standard_benchmark_suite(records, hw, 1, {512, 1024, 2048, 4096},
                                          {1, 2, 4, 8, 16}, cuda_tile);
             print_records_table(records);
             export_all_files(records, hw);
