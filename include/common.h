@@ -16,6 +16,7 @@ struct HardwareInfo {
     int gpu_compute_minor = 0;
     size_t gpu_vram_mb = 0;
     int gpu_multiprocessors = 0;
+    int gpu_cuda_cores = 0;
     std::string cuda_version = "";
     double total_ram_gb = 0.0;
     double free_ram_gb = 0.0;

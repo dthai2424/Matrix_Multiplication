@@ -123,7 +123,8 @@ bool cuda_backend_available() {
 
 void cuda_backend_device_info(std::string& name, int& compute_major,
                               int& compute_minor, size_t& vram_mb,
-                              int& multi_processors, std::string& cuda_version) {
+                              int& multi_processors, int& cuda_cores,
+                              std::string& cuda_version) {
     int device = 0;
     cudaDeviceProp properties{};
     check_cuda(cudaGetDevice(&device), "cudaGetDevice");
@@ -134,6 +135,15 @@ void cuda_backend_device_info(std::string& name, int& compute_major,
     compute_minor = properties.minor;
     vram_mb = properties.totalGlobalMem / (1024ULL * 1024ULL);
     multi_processors = properties.multiProcessorCount;
+
+    // Tính tổng CUDA Cores = SMs × cores/SM (tra bảng theo Compute Capability)
+    int cores_per_sm = 128; // Giá trị dự phòng cho kiến trúc mới
+    switch (properties.major) {
+        case 7: cores_per_sm = 64; break;  // Volta & Turing
+        case 8: cores_per_sm = (properties.minor == 0) ? 64 : 128; break; // GA100 vs GA10x/Ada
+        case 9: cores_per_sm = 128; break; // Hopper
+    }
+    cuda_cores = multi_processors * cores_per_sm;
 
     int driver_version = 0, runtime_version = 0;
     cudaDriverGetVersion(&driver_version);

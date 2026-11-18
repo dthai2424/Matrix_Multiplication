@@ -327,7 +327,8 @@ void detect_hardware(HardwareInfo &hw)
     if (cuda_backend_available())
     {
         cuda_backend_device_info(hw.gpu_name, hw.gpu_compute_major, hw.gpu_compute_minor,
-                                 hw.gpu_vram_mb, hw.gpu_multiprocessors, hw.cuda_version);
+                                 hw.gpu_vram_mb, hw.gpu_multiprocessors, hw.gpu_cuda_cores,
+                                 hw.cuda_version);
     }
 }
 
@@ -368,6 +369,11 @@ void print_banner(const HardwareInfo &hw)
             std::cout << " (" << hw.gpu_multiprocessors << " Streaming Multiprocessors)";
         }
         std::cout << "\n";
+        if (hw.gpu_cuda_cores > 0)
+        {
+            std::cout << "     - Tong nhan CUDA      : " << hw.gpu_cuda_cores << " CUDA Cores ("
+                      << hw.gpu_multiprocessors << " SMs x " << (hw.gpu_cuda_cores / hw.gpu_multiprocessors) << " cores/SM)\n";
+        }
         if (!hw.cuda_version.empty())
         {
             std::cout << "     - Phien ban CUDA      : " << hw.cuda_version << "\n";
@@ -405,6 +411,17 @@ void print_records_table(const std::vector<BenchmarkRecord> &records)
 
     for (const auto &r : records)
     {
+        std::ostringstream ss_sp, ss_ef;
+        ss_sp << std::fixed << std::setprecision(2) << r.speedup << "x";
+        if (r.efficiency < 1.0)
+        {
+            ss_ef << std::fixed << std::setprecision(2) << r.efficiency << "%";
+        }
+        else
+        {
+            ss_ef << std::fixed << std::setprecision(1) << r.efficiency << "%";
+        }
+
         std::cout << std::left
                   << std::setw(5) << r.id
                   << std::setw(8) << r.N
@@ -412,8 +429,8 @@ void print_records_table(const std::vector<BenchmarkRecord> &records)
                   << std::setw(28) << (r.algo_name.length() > 27 ? r.algo_name.substr(0, 24) + "..." : r.algo_name)
                   << std::fixed << std::setprecision(5) << std::setw(14) << r.time_sec
                   << std::fixed << std::setprecision(2) << std::setw(12) << r.gflops
-                  << std::fixed << std::setprecision(2) << std::setw(12) << (std::to_string(r.speedup).substr(0, 4) + "x")
-                  << std::fixed << std::setprecision(1) << std::setw(12) << (std::to_string(r.efficiency).substr(0, 4) + "%")
+                  << std::setw(12) << ss_sp.str()
+                  << std::setw(12) << ss_ef.str()
                   << std::setw(12) << (r.verified ? "DAT (OK)" : "LOI")
                   << "\n";
     }
@@ -426,7 +443,8 @@ BenchmarkRecord run_single_test(int test_id, int N, int threads,
                                 int bs_l3, int bs_l2, int bs_l1,
                                 const Matrix &A, const Matrix &B, Matrix &C,
                                 const Matrix *ref_C = nullptr, double t_seq = -1.0,
-                                int num_runs = 1, int cuda_tile = 16)
+                                int num_runs = 1, int cuda_tile = 16,
+                                int gpu_cuda_cores = 0)
 {
     BenchmarkRecord rec;
     rec.id = test_id;
@@ -489,6 +507,12 @@ BenchmarkRecord run_single_test(int test_id, int N, int threads,
         rec.speedup = 1.0;
     }
     rec.efficiency = (rec.speedup / threads) * 100.0;
+    // CUDA thuần: hiệu suất tính theo tổng CUDA Cores thay vì CPU threads
+    if ((type == AlgorithmType::CUDA_GLOBAL_MEMORY ||
+         type == AlgorithmType::CUDA_SHARED_MEMORY_TILING) && gpu_cuda_cores > 0)
+    {
+        rec.efficiency = (rec.speedup / gpu_cuda_cores) * 100.0;
+    }
 
     // Amdahl lý thuyết với p = 0.98 (98% mã song song)
     double p = 0.98;
@@ -510,7 +534,7 @@ BenchmarkRecord run_single_test(int test_id, int N, int threads,
 void run_cuda_benchmarks(std::vector<BenchmarkRecord> &records, int &test_id,
                          int N, int cuda_tile, const Matrix &A, const Matrix &B,
                          Matrix &C_test, const Matrix &C_ref, double t_seq,
-                         int num_runs)
+                         int num_runs, int gpu_cuda_cores = 0)
 {
     if (!cuda_backend_available())
     {
@@ -524,19 +548,19 @@ void run_cuda_benchmarks(std::vector<BenchmarkRecord> &records, int &test_id,
         "CUDA Global Memory",
         "CUDA Shared Memory Tiling"};
 
+    int cuda_threads = (gpu_cuda_cores > 0) ? gpu_cuda_cores : 1;
+
     for (int i = 0; i < 2; ++i)
     {
         std::cout << "       + " << names[i] << ": " << std::flush;
         BenchmarkRecord record = run_single_test(
-            test_id++, N, 1, cuda_algorithms[i], names[i], 0, 0, 0, A, B,
-            C_test, &C_ref, t_seq, num_runs, cuda_tile);
+            test_id++, N, cuda_threads, cuda_algorithms[i], names[i], 0, 0, 0, A, B,
+            C_test, &C_ref, t_seq, num_runs, cuda_tile, gpu_cuda_cores);
         records.push_back(record);
         std::cout << std::fixed << std::setprecision(4) << record.time_sec
                   << "s | " << std::fixed << std::setprecision(1)
                   << record.gflops << " GFLOPS | Speedup: " << std::fixed
-                  << std::setprecision(2) << record.speedup << "x (Err: "
-                  << std::scientific << std::setprecision(1)
-                  << record.max_error << ")\n";
+                  << std::setprecision(2) << record.speedup << "x\n";
     }
 }
 
@@ -646,8 +670,7 @@ void run_standard_benchmark_suite(std::vector<BenchmarkRecord> &records, const H
             records.push_back(r_basic);
             std::cout << std::fixed << std::setprecision(4) << r_basic.time_sec << "s | "
                       << std::fixed << std::setprecision(1) << r_basic.gflops << " GFLOPS | Speedup: "
-                      << std::fixed << std::setprecision(2) << r_basic.speedup << "x (Err: "
-                      << std::scientific << std::setprecision(1) << r_basic.max_error << ")\n";
+                      << std::fixed << std::setprecision(2) << r_basic.speedup << "x\n";
 
             // 3. Song song OpenMP Tiled L2 + L3 (Mục 3.6.2)
             std::cout << "       + OpenMP Tiled L2+L3  : " << std::flush;
@@ -658,8 +681,7 @@ void run_standard_benchmark_suite(std::vector<BenchmarkRecord> &records, const H
             records.push_back(r_l2_l3);
             std::cout << std::fixed << std::setprecision(4) << r_l2_l3.time_sec << "s | "
                       << std::fixed << std::setprecision(1) << r_l2_l3.gflops << " GFLOPS | Speedup: "
-                      << std::fixed << std::setprecision(2) << r_l2_l3.speedup << "x (Err: "
-                      << std::scientific << std::setprecision(1) << r_l2_l3.max_error << ")\n";
+                      << std::fixed << std::setprecision(2) << r_l2_l3.speedup << "x\n";
 
             // 4. Song song OpenMP Tiled L3 + L1 Bypass L2 (Mục 3.6.3)
             std::cout << "       + OpenMP Bypass L2    : " << std::flush;
@@ -670,8 +692,7 @@ void run_standard_benchmark_suite(std::vector<BenchmarkRecord> &records, const H
             records.push_back(r_bypass);
             std::cout << std::fixed << std::setprecision(4) << r_bypass.time_sec << "s | "
                       << std::fixed << std::setprecision(1) << r_bypass.gflops << " GFLOPS | Speedup: "
-                      << std::fixed << std::setprecision(2) << r_bypass.speedup << "x (Err: "
-                      << std::scientific << std::setprecision(1) << r_bypass.max_error << ")\n";
+                      << std::fixed << std::setprecision(2) << r_bypass.speedup << "x\n";
 
             if (cuda_backend_available())
             {
@@ -686,13 +707,11 @@ void run_standard_benchmark_suite(std::vector<BenchmarkRecord> &records, const H
                           << std::fixed << std::setprecision(1)
                           << r_heterogeneous.gflops << " GFLOPS | Speedup: "
                           << std::fixed << std::setprecision(2)
-                          << r_heterogeneous.speedup << "x (Err: "
-                          << std::scientific << std::setprecision(1)
-                          << r_heterogeneous.max_error << ")\n";
+                          << r_heterogeneous.speedup << "x\n";
             }
         }
         run_cuda_benchmarks(records, test_id, N, cuda_tile, A, B, C_test,
-                            C_ref, t_seq, num_runs);
+                            C_ref, t_seq, num_runs, hw.gpu_cuda_cores);
         std::cout << "\n";
     }
 
@@ -807,7 +826,7 @@ void run_custom_interactive(std::vector<BenchmarkRecord> &records,
                          "duoc build voi CUDA_ENABLED=1.\n";
         }
         run_cuda_benchmarks(records, test_id, N, cuda_tile, A, B, C_test,
-                            C_ref, t_seq, 1);
+                            C_ref, t_seq, 1, hw.gpu_cuda_cores);
     }
     else if (choice == 2)
     {
@@ -856,7 +875,7 @@ void run_custom_interactive(std::vector<BenchmarkRecord> &records,
             matmul_sequential(A, B, C_ref);
             const double t_seq = omp_get_wtime() - reference_start;
             run_cuda_benchmarks(records, test_id, N, cuda_tile, A, B, C_test,
-                                C_ref, t_seq, 1);
+                                C_ref, t_seq, 1, hw.gpu_cuda_cores);
         }
     }
     else

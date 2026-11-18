@@ -304,6 +304,10 @@ bool ExcelExporter::exportToExcel(const std::string& filename,
     out << "   <Row><Cell ss:StyleID=\"DataText\"><Data ss:Type=\"String\">Dung lượng VRAM GPU</Data></Cell><Cell ss:StyleID=\"DataText\"><Data ss:Type=\"String\">" << hw.gpu_vram_mb << " MB (" << std::fixed << std::setprecision(2) << (static_cast<double>(hw.gpu_vram_mb) / 1024.0) << " GB)</Data></Cell></Row>\n";
     out << "   <Row><Cell ss:StyleID=\"DataText\"><Data ss:Type=\"String\">Compute capability</Data></Cell><Cell ss:StyleID=\"DataText\"><Data ss:Type=\"String\">" << (hw.gpu_compute_major > 0 ? std::to_string(hw.gpu_compute_major) + "." + std::to_string(hw.gpu_compute_minor) : "N/A") << "</Data></Cell></Row>\n";
     out << "   <Row><Cell ss:StyleID=\"DataText\"><Data ss:Type=\"String\">Số Multiprocessors (SMs)</Data></Cell><Cell ss:StyleID=\"DataInteger\"><Data ss:Type=\"Number\">" << hw.gpu_multiprocessors << "</Data></Cell></Row>\n";
+    if (hw.gpu_cuda_cores > 0)
+    {
+        out << "   <Row><Cell ss:StyleID=\"DataText\"><Data ss:Type=\"String\">Tổng số nhân CUDA (CUDA Cores)</Data></Cell><Cell ss:StyleID=\"DataInteger\"><Data ss:Type=\"Number\">" << hw.gpu_cuda_cores << "</Data></Cell></Row>\n";
+    }
     out << "   <Row><Cell ss:StyleID=\"DataText\"><Data ss:Type=\"String\">Phiên bản CUDA</Data></Cell><Cell ss:StyleID=\"DataText\"><Data ss:Type=\"String\">" << escape_xml(hw.cuda_version.empty() ? "N/A" : hw.cuda_version) << "</Data></Cell></Row>\n";
     out << "   <Row><Cell ss:StyleID=\"DataText\"><Data ss:Type=\"String\">Mô hình bộ nhớ</Data></Cell><Cell ss:StyleID=\"DataText\"><Data ss:Type=\"String\">SMP Shared Memory (Fork-Join OpenMP)</Data></Cell></Row>\n";
     out << "   <Row><Cell ss:StyleID=\"DataText\"><Data ss:Type=\"String\">Tập lệnh vector hóa</Data></Cell><Cell ss:StyleID=\"DataText\"><Data ss:Type=\"String\">AVX2 + FMA3 (256-bit SIMD registers)</Data></Cell></Row>\n";

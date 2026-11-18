@@ -145,234 +145,1389 @@
    </Row>
    <Row ss:Height="20">
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">1</Data></Cell>
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="DataText"><Data ss:Type="String">1. Tuan tu (Baseline)</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
-    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.004830</Data></Cell>
-    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">4.83</Data></Cell>
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">33554432</Data></Cell>
-    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">6.95</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.043037</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">43.04</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">268435456</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">6.24</Data></Cell>
     <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.00</Data></Cell>
     <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">1.0000</Data></Cell>
     <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.00</Data></Cell>
     <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
     <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
     <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
-    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 10:13:37</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:26</Data></Cell>
    </Row>
    <Row ss:Height="20">
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2</Data></Cell>
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
-    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.013987</Data></Cell>
-    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">13.99</Data></Cell>
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">33554432</Data></Cell>
-    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">2.40</Data></Cell>
-    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.35</Data></Cell>
-    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.3453</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.103701</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">103.70</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">268435456</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">2.59</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.42</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.4150</Data></Cell>
     <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.00</Data></Cell>
     <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
     <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
     <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
-    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 10:13:37</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:26</Data></Cell>
    </Row>
    <Row ss:Height="20">
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">3</Data></Cell>
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">128</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">32</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
-    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.018759</Data></Cell>
-    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">18.76</Data></Cell>
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">33554432</Data></Cell>
-    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">1.79</Data></Cell>
-    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.26</Data></Cell>
-    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2575</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.148887</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">148.89</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">268435456</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">1.80</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.29</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2891</Data></Cell>
     <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.00</Data></Cell>
-    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">2.0</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">4.0</Data></Cell>
     <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
     <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
-    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 10:13:37</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:27</Data></Cell>
    </Row>
    <Row ss:Height="20">
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">4</Data></Cell>
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">128</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
-    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.018301</Data></Cell>
-    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">18.30</Data></Cell>
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">33554432</Data></Cell>
-    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">1.83</Data></Cell>
-    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.26</Data></Cell>
-    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2639</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.153707</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">153.71</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">268435456</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">1.75</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.28</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2800</Data></Cell>
     <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.00</Data></Cell>
-    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">2.0</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">4.0</Data></Cell>
     <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
     <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
-    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 10:13:37</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:27</Data></Cell>
    </Row>
    <Row ss:Height="20">
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">5</Data></Cell>
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
-    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.002549</Data></Cell>
-    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">2.55</Data></Cell>
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">33554432</Data></Cell>
-    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">13.16</Data></Cell>
-    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.89</Data></Cell>
-    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">1.8949</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.024225</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">24.22</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">268435456</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">11.08</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.78</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">1.7766</Data></Cell>
     <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.00</Data></Cell>
     <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
-    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">8.44e-17</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">8.52e-17</Data></Cell>
     <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
-    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 10:13:37</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:27</Data></Cell>
    </Row>
    <Row ss:Height="20">
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">6</Data></Cell>
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.068572</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">68.57</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">268435456</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">3.91</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.63</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.3138</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.96</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:28</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">7</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">128</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">32</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.125079</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">125.08</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">268435456</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">2.15</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.34</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1720</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.96</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">4.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:28</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">128</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.123031</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">123.03</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">268435456</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">2.18</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.35</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1749</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.96</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">4.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:28</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">9</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.019799</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">19.80</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">268435456</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">13.56</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">2.17</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">1.0869</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.96</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">8.52e-17</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:29</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">10</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.042987</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">42.99</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">268435456</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">6.24</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.00</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2503</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">3.77</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:29</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">11</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">128</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">32</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.054014</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">54.01</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">268435456</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">4.97</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.80</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1992</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">3.77</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">4.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:29</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">12</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">128</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.052250</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">52.25</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">268435456</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">5.14</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.82</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2059</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">3.77</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">4.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:29</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">13</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.007817</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">7.82</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">268435456</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">34.34</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">5.51</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">1.3763</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">3.77</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">8.52e-17</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:29</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">14</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.032513</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">32.51</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">268435456</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">8.26</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.32</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1655</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">7.02</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:29</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">15</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">128</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">32</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.066385</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">66.39</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">268435456</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">4.04</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.65</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0810</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">7.02</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">4.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:29</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">128</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.065263</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">65.26</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">268435456</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">4.11</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.66</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0824</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">7.02</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">4.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:29</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">17</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.006867</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">6.87</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">268435456</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">39.09</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">6.27</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.7834</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">7.02</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">8.52e-17</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:30</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">18</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
     <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
-    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.002770</Data></Cell>
-    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">2.77</Data></Cell>
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">33554432</Data></Cell>
-    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">12.11</Data></Cell>
-    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.74</Data></Cell>
-    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1090</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.028423</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">28.42</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">268435456</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">9.44</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.51</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0946</Data></Cell>
     <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">12.31</Data></Cell>
     <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
     <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
     <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
-    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 10:13:37</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:30</Data></Cell>
    </Row>
    <Row ss:Height="20">
-    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">7</Data></Cell>
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">19</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
     <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">128</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">32</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
-    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.014166</Data></Cell>
-    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">14.17</Data></Cell>
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">33554432</Data></Cell>
-    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">2.37</Data></Cell>
-    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.34</Data></Cell>
-    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0213</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.075591</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">75.59</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">268435456</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">3.55</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.57</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0356</Data></Cell>
     <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">12.31</Data></Cell>
-    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">2.0</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">4.0</Data></Cell>
     <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
     <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
-    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 10:13:37</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:30</Data></Cell>
    </Row>
    <Row ss:Height="20">
-    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">20</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
     <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">128</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
-    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.015821</Data></Cell>
-    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">15.82</Data></Cell>
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">33554432</Data></Cell>
-    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">2.12</Data></Cell>
-    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.31</Data></Cell>
-    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0191</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.072965</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">72.97</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">268435456</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">3.68</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.59</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0369</Data></Cell>
     <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">12.31</Data></Cell>
-    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">2.0</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">4.0</Data></Cell>
     <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
     <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
-    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 10:13:37</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:30</Data></Cell>
    </Row>
    <Row ss:Height="20">
-    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">9</Data></Cell>
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">21</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
     <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
-    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.002186</Data></Cell>
-    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">2.19</Data></Cell>
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">33554432</Data></Cell>
-    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">15.35</Data></Cell>
-    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">2.21</Data></Cell>
-    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1381</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.006663</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">6.66</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">268435456</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">40.29</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">6.46</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.4037</Data></Cell>
     <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">12.31</Data></Cell>
     <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
-    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">8.44e-17</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">8.52e-17</Data></Cell>
     <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
-    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 10:13:37</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:30</Data></Cell>
    </Row>
    <Row ss:Height="20">
-    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">10</Data></Cell>
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">256</Data></Cell>
-    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">22</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2560</Data></Cell>
     <Cell ss:StyleID="DataText"><Data ss:Type="String">CUDA Global Memory</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
-    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.001139</Data></Cell>
-    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">1.14</Data></Cell>
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">33554432</Data></Cell>
-    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">29.45</Data></Cell>
-    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">4.24</Data></Cell>
-    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">4.2393</Data></Cell>
-    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.00</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.004652</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">4.65</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">268435456</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">57.70</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">9.25</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0036</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">49.06</Data></Cell>
     <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
-    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">9.42e-17</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">9.53e-17</Data></Cell>
     <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
-    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 10:13:37</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:30</Data></Cell>
    </Row>
    <Row ss:Height="20">
-    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">11</Data></Cell>
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">256</Data></Cell>
-    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">23</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2560</Data></Cell>
     <Cell ss:StyleID="DataText"><Data ss:Type="String">CUDA Shared Memory Tiling</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
-    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.001090</Data></Cell>
-    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">1.09</Data></Cell>
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">33554432</Data></Cell>
-    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">30.78</Data></Cell>
-    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">4.43</Data></Cell>
-    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">4.4306</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.004423</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">4.42</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">268435456</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">60.68</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">9.73</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0038</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">49.06</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">9.53e-17</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:30</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">24</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">1. Tuan tu (Baseline)</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.404824</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">404.82</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2147483648</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">5.30</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.00</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">1.0000</Data></Cell>
     <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.00</Data></Cell>
     <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
-    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">9.42e-17</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
     <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
-    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 10:13:37</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:30</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">25</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.870621</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">870.62</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2147483648</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">2.47</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.46</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.4650</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.00</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:31</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">26</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">32</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">1.178333</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">1178.33</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2147483648</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">1.82</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.34</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.3436</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.00</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">4.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:34</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">27</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">1.166457</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">1166.46</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2147483648</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">1.84</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.35</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.3471</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.00</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">4.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:38</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">28</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.182268</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">182.27</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2147483648</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">11.78</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">2.22</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">2.2210</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.00</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">8.51e-17</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:41</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">29</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.445326</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">445.33</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2147483648</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">4.82</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.91</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.4545</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.96</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:42</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">30</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">32</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.630655</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">630.66</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2147483648</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">3.41</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.64</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.3210</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.96</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">4.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:43</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">31</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.635481</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">635.48</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2147483648</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">3.38</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.64</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.3185</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.96</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">4.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:45</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">32</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.103084</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">103.08</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2147483648</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">20.83</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">3.93</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">1.9636</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.96</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">8.51e-17</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:47</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">33</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.300551</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">300.55</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2147483648</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">7.15</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.35</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.3367</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">3.77</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:47</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">34</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">32</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.408840</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">408.84</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2147483648</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">5.25</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.99</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2475</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">3.77</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">4.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:48</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">35</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.378899</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">378.90</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2147483648</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">5.67</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.07</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2671</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">3.77</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">4.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:50</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">36</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.072604</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">72.60</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2147483648</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">29.58</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">5.58</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">1.3940</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">3.77</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">8.51e-17</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:51</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">37</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.226992</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">226.99</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2147483648</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">9.46</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.78</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2229</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">7.02</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:51</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">38</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">32</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.408417</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">408.42</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2147483648</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">5.26</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.99</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1239</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">7.02</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">4.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:52</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">39</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.383927</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">383.93</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2147483648</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">5.59</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.05</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1318</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">7.02</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">4.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:53</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">40</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.068812</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">68.81</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2147483648</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">31.21</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">5.88</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.7354</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">7.02</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">8.51e-17</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:54</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">41</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.141951</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">141.95</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2147483648</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">15.13</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">2.85</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1782</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">12.31</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:55</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">42</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">32</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.409457</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">409.46</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2147483648</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">5.24</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.99</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0618</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">12.31</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">4.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:55</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">43</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.421731</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">421.73</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2147483648</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">5.09</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.96</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0600</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">12.31</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">4.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:56</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">44</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.054814</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">54.81</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2147483648</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">39.18</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">7.39</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.4616</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">12.31</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">8.51e-17</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:57</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">45</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2560</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">CUDA Global Memory</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.021556</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">21.56</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2147483648</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">99.62</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">18.78</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0073</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">49.06</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">9.52e-17</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:58</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">46</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2560</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">CUDA Shared Memory Tiling</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.020835</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">20.83</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2147483648</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">103.07</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">19.43</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0076</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">49.06</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">9.52e-17</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:42:58</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">47</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2048</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">1.480612</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">1480.61</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">17179869184</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">11.60</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">2.19</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2734</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">7.02</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:43:00</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">48</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2048</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">32</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">1.818611</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">1818.61</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">17179869184</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">9.45</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.78</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2226</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">7.02</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">8.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:43:05</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">49</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2048</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">1.976217</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">1976.22</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">17179869184</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">8.69</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.64</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2048</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">7.02</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">8.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:43:10</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">50</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2048</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.408985</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">408.98</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">17179869184</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">42.01</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">7.92</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.9898</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">7.02</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">8.52e-17</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:43:16</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">51</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2048</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">1.331741</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">1331.74</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">17179869184</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">12.90</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">2.43</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1520</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">12.31</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:43:18</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">52</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2048</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">32</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">1.804818</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">1804.82</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">17179869184</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">9.52</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.79</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1122</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">12.31</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">8.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:43:22</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">53</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2048</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">2.050059</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">2050.06</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">17179869184</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">8.38</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.58</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0987</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">12.31</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">8.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:43:27</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">54</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2048</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.312442</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">312.44</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">17179869184</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">54.99</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">10.37</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.6478</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">12.31</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">8.52e-17</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:43:33</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">55</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2048</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2560</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">CUDA Global Memory</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.131862</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">131.86</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">17179869184</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">130.29</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">24.56</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0096</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">49.06</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">9.52e-17</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:43:35</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">56</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2048</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2560</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">CUDA Shared Memory Tiling</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.128934</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">128.93</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">17179869184</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">133.25</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">25.12</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0098</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">49.06</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">9.52e-17</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:43:35</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">57</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">4096</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">12.298708</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">12298.71</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">137438953472</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">11.18</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">2.11</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2633</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">7.02</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:43:49</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">58</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">4096</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">32</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">16.491554</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">16491.55</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">137438953472</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">8.33</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.57</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1964</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">7.02</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">16.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:44:26</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">59</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">4096</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">15.902470</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">15902.47</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">137438953472</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">8.64</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.63</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2037</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">7.02</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">16.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:45:15</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">60</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">4096</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">3.175659</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">3175.66</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">137438953472</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">43.28</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">8.16</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">1.0198</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">7.02</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">8.52e-17</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:46:03</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">61</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">4096</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">10.673928</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">10673.93</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">137438953472</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">12.88</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">2.43</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1517</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">12.31</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:46:16</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">62</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">4096</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">32</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">13.145053</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">13145.05</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">137438953472</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">10.46</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.97</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1232</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">12.31</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">16.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:46:48</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">63</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">4096</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">12.733192</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">12733.19</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">137438953472</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">10.79</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">2.03</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1272</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">12.31</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">16.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.00e+00</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:47:27</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">64</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">4096</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">2.553720</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">2553.72</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">137438953472</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">53.82</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">10.15</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.6341</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">12.31</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">8.52e-17</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:48:05</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">65</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">4096</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2560</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">CUDA Global Memory</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">1.015614</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">1015.61</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">137438953472</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">135.33</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">25.51</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0100</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">49.06</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">9.52e-17</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:48:16</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">66</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">4096</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2560</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">CUDA Shared Memory Tiling</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">-</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.979826</Data></Cell>
+    <Cell ss:StyleID="DataTimeMs"><Data ss:Type="Number">979.83</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">137438953472</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">140.27</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">26.44</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0103</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">49.06</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.0</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">9.52e-17</Data></Cell>
+    <Cell ss:StyleID="DataPassed"><Data ss:Type="String">ĐẠT</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="String">2026-11-18 11:48:20</Data></Cell>
    </Row>
   </Table>
  </Worksheet>
@@ -395,103 +1550,598 @@
     <Cell ss:StyleID="HeaderStyle"><Data ss:Type="String">Hiệu suất (%)</Data></Cell>
    </Row>
    <Row ss:Height="20">
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
     <Cell ss:StyleID="DataText"><Data ss:Type="String">1. Tuan tu (Baseline)</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">1</Data></Cell>
-    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.004830</Data></Cell>
-    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">6.95</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.043037</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">6.24</Data></Cell>
     <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.00</Data></Cell>
     <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">1.0000</Data></Cell>
    </Row>
    <Row ss:Height="20">
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
     <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">1</Data></Cell>
-    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.013987</Data></Cell>
-    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">2.40</Data></Cell>
-    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.35</Data></Cell>
-    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.3453</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.103701</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">2.59</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.42</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.4150</Data></Cell>
    </Row>
    <Row ss:Height="20">
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
     <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">1</Data></Cell>
-    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.018759</Data></Cell>
-    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">1.79</Data></Cell>
-    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.26</Data></Cell>
-    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2575</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.148887</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">1.80</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.29</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2891</Data></Cell>
    </Row>
    <Row ss:Height="20">
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
     <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">1</Data></Cell>
-    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.018301</Data></Cell>
-    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">1.83</Data></Cell>
-    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.26</Data></Cell>
-    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2639</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.153707</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">1.75</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.28</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2800</Data></Cell>
    </Row>
    <Row ss:Height="20">
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
     <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">1</Data></Cell>
-    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.002549</Data></Cell>
-    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">13.16</Data></Cell>
-    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.89</Data></Cell>
-    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">1.8949</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.024225</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">11.08</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.78</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">1.7766</Data></Cell>
    </Row>
    <Row ss:Height="20">
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
     <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
-    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
-    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.002770</Data></Cell>
-    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">12.11</Data></Cell>
-    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.74</Data></Cell>
-    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1090</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.068572</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">3.91</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.63</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.3138</Data></Cell>
    </Row>
    <Row ss:Height="20">
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
     <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
-    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
-    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.014166</Data></Cell>
-    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">2.37</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.125079</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">2.15</Data></Cell>
     <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.34</Data></Cell>
-    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0213</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1720</Data></Cell>
    </Row>
    <Row ss:Height="20">
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.123031</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">2.18</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.35</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1749</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.019799</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">13.56</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">2.17</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">1.0869</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.042987</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">6.24</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.00</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2503</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.054014</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">4.97</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.80</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1992</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.052250</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">5.14</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.82</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2059</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.007817</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">34.34</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">5.51</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">1.3763</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.032513</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">8.26</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.32</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1655</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.066385</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">4.04</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.65</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0810</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.065263</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">4.11</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.66</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0824</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.006867</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">39.09</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">6.27</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.7834</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.028423</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">9.44</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.51</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0946</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.075591</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">3.55</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.57</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0356</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
     <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
-    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.015821</Data></Cell>
-    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">2.12</Data></Cell>
-    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.31</Data></Cell>
-    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0191</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.072965</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">3.68</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.59</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0369</Data></Cell>
    </Row>
    <Row ss:Height="20">
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
     <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
-    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.002186</Data></Cell>
-    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">15.35</Data></Cell>
-    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">2.21</Data></Cell>
-    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1381</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.006663</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">40.29</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">6.46</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.4037</Data></Cell>
    </Row>
    <Row ss:Height="20">
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
     <Cell ss:StyleID="DataText"><Data ss:Type="String">CUDA Global Memory</Data></Cell>
-    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">1</Data></Cell>
-    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.001139</Data></Cell>
-    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">29.45</Data></Cell>
-    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">4.24</Data></Cell>
-    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">4.2393</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2560</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.004652</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">57.70</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">9.25</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0036</Data></Cell>
    </Row>
    <Row ss:Height="20">
-    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">256</Data></Cell>
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">512</Data></Cell>
     <Cell ss:StyleID="DataText"><Data ss:Type="String">CUDA Shared Memory Tiling</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2560</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.004423</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">60.68</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">9.73</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0038</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">1. Tuan tu (Baseline)</Data></Cell>
     <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">1</Data></Cell>
-    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.001090</Data></Cell>
-    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">30.78</Data></Cell>
-    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">4.43</Data></Cell>
-    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">4.4306</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.404824</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">5.30</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.00</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">1.0000</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.870621</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">2.47</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.46</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.4650</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">1.178333</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">1.82</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.34</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.3436</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">1.166457</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">1.84</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.35</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.3471</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.182268</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">11.78</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">2.22</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">2.2210</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.445326</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">4.82</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.91</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.4545</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.630655</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">3.41</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.64</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.3210</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.635481</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">3.38</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.64</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.3185</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.103084</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">20.83</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">3.93</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">1.9636</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.300551</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">7.15</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.35</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.3367</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.408840</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">5.25</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.99</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2475</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.378899</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">5.67</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.07</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2671</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.072604</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">29.58</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">5.58</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">1.3940</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.226992</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">9.46</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.78</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2229</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.408417</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">5.26</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.99</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1239</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.383927</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">5.59</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.05</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1318</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.068812</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">31.21</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">5.88</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.7354</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.141951</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">15.13</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">2.85</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1782</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.409457</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">5.24</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.99</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0618</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.421731</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">5.09</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">0.96</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0600</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.054814</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">39.18</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">7.39</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.4616</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">CUDA Global Memory</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2560</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.021556</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">99.62</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">18.78</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0073</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">1024</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">CUDA Shared Memory Tiling</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2560</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.020835</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">103.07</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">19.43</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0076</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2048</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">1.480612</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">11.60</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">2.19</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2734</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2048</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">1.818611</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">9.45</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.78</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2226</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2048</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">1.976217</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">8.69</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.64</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2048</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2048</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.408985</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">42.01</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">7.92</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.9898</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2048</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">1.331741</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">12.90</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">2.43</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1520</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2048</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">1.804818</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">9.52</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.79</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1122</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2048</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">2.050059</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">8.38</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.58</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0987</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2048</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.312442</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">54.99</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">10.37</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.6478</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2048</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">CUDA Global Memory</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2560</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.131862</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">130.29</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">24.56</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0096</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2048</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">CUDA Shared Memory Tiling</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2560</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.128934</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">133.25</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">25.12</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0098</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">4096</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">12.298708</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">11.18</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">2.11</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2633</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">4096</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">16.491554</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">8.33</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.57</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1964</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">4096</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">15.902470</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">8.64</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.63</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.2037</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">4096</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">8</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">3.175659</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">43.28</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">8.16</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">1.0198</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">4096</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">2. Song song OpenMP Co ban</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">10.673928</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">12.88</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">2.43</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1517</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">4096</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">3. Song song Tiled L2+L3</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">13.145053</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">10.46</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">1.97</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1232</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">4096</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">4. Song song Bypass L2</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">12.733192</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">10.79</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">2.03</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.1272</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">4096</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">5. Ket hop CPU + CUDA GPU</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">16</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">2.553720</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">53.82</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">10.15</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.6341</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">4096</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">CUDA Global Memory</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2560</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">1.015614</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">135.33</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">25.51</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0100</Data></Cell>
+   </Row>
+   <Row ss:Height="20">
+    <Cell ss:StyleID="DataInteger"><Data ss:Type="Number">4096</Data></Cell>
+    <Cell ss:StyleID="DataText"><Data ss:Type="String">CUDA Shared Memory Tiling</Data></Cell>
+    <Cell ss:StyleID="DataCenter"><Data ss:Type="Number">2560</Data></Cell>
+    <Cell ss:StyleID="DataTimeSec"><Data ss:Type="Number">0.979826</Data></Cell>
+    <Cell ss:StyleID="DataGflops"><Data ss:Type="Number">140.27</Data></Cell>
+    <Cell ss:StyleID="DataSpeedup"><Data ss:Type="Number">26.44</Data></Cell>
+    <Cell ss:StyleID="DataEfficiency"><Data ss:Type="Number">0.0103</Data></Cell>
    </Row>
   </Table>
  </Worksheet>
@@ -505,7 +2155,7 @@
    </Row>
    <Row><Cell ss:StyleID="DataText"><Data ss:Type="String">Hệ điều hành (OS)</Data></Cell><Cell ss:StyleID="DataText"><Data ss:Type="String">Windows 10 Home Single Language (64-bit)</Data></Cell></Row>
    <Row><Cell ss:StyleID="DataText"><Data ss:Type="String">Trình biên dịch</Data></Cell><Cell ss:StyleID="DataText"><Data ss:Type="String">NVCC 13.5 / MSVC 1944 (OpenMP 2019)</Data></Cell></Row>
-   <Row><Cell ss:StyleID="DataText"><Data ss:Type="String">Bộ nhớ hệ thống (RAM)</Data></Cell><Cell ss:StyleID="DataText"><Data ss:Type="String">15.25 GB (Khả dụng: 2.43 GB)</Data></Cell></Row>
+   <Row><Cell ss:StyleID="DataText"><Data ss:Type="String">Bộ nhớ hệ thống (RAM)</Data></Cell><Cell ss:StyleID="DataText"><Data ss:Type="String">15.25 GB (Khả dụng: 6.31 GB)</Data></Cell></Row>
    <Row><Cell ss:StyleID="DataText"><Data ss:Type="String">Bộ vi xử lý (CPU)</Data></Cell><Cell ss:StyleID="DataText"><Data ss:Type="String">AMD Ryzen 7 6800H with Radeon Graphics</Data></Cell></Row>
    <Row><Cell ss:StyleID="DataText"><Data ss:Type="String">Số nhân vật lý (Physical Cores)</Data></Cell><Cell ss:StyleID="DataInteger"><Data ss:Type="Number">8</Data></Cell></Row>
    <Row><Cell ss:StyleID="DataText"><Data ss:Type="String">Số luồng logic (Logical Processors)</Data></Cell><Cell ss:StyleID="DataInteger"><Data ss:Type="Number">16</Data></Cell></Row>
@@ -516,6 +2166,7 @@
    <Row><Cell ss:StyleID="DataText"><Data ss:Type="String">Dung lượng VRAM GPU</Data></Cell><Cell ss:StyleID="DataText"><Data ss:Type="String">4095 MB (4.00 GB)</Data></Cell></Row>
    <Row><Cell ss:StyleID="DataText"><Data ss:Type="String">Compute capability</Data></Cell><Cell ss:StyleID="DataText"><Data ss:Type="String">8.6</Data></Cell></Row>
    <Row><Cell ss:StyleID="DataText"><Data ss:Type="String">Số Multiprocessors (SMs)</Data></Cell><Cell ss:StyleID="DataInteger"><Data ss:Type="Number">20</Data></Cell></Row>
+   <Row><Cell ss:StyleID="DataText"><Data ss:Type="String">Tổng số nhân CUDA (CUDA Cores)</Data></Cell><Cell ss:StyleID="DataInteger"><Data ss:Type="Number">2560</Data></Cell></Row>
    <Row><Cell ss:StyleID="DataText"><Data ss:Type="String">Phiên bản CUDA</Data></Cell><Cell ss:StyleID="DataText"><Data ss:Type="String">Runtime 13.3 (Driver 13.3)</Data></Cell></Row>
    <Row><Cell ss:StyleID="DataText"><Data ss:Type="String">Mô hình bộ nhớ</Data></Cell><Cell ss:StyleID="DataText"><Data ss:Type="String">SMP Shared Memory (Fork-Join OpenMP)</Data></Cell></Row>
    <Row><Cell ss:StyleID="DataText"><Data ss:Type="String">Tập lệnh vector hóa</Data></Cell><Cell ss:StyleID="DataText"><Data ss:Type="String">AVX2 + FMA3 (256-bit SIMD registers)</Data></Cell></Row>

@@ -21,11 +21,23 @@ Dự án được phân tách thành 2 tài liệu hướng dẫn sử dụng ch
 
 ---
 
-## 1. KHỞI CHẠY NHANH TRÊN GOOGLE COLAB (1-CLICK QUICKSTART)
+## 1. KHỞI CHẠY NHANH (QUICKSTART)
 
+### Cách A: Chạy trên Máy tính cá nhân (Windows Local)
+1. **Cách 1-Click**: Nhấp đúp chuột vào file `run.bat` trong thư mục dự án. Script sẽ tự động nhận diện compiler (NVCC hoặc GCC), biên dịch và khởi động chương trình.
+2. **Cách dòng lệnh (PowerShell / CMD)**:
+   ```powershell
+   # Chạy bộ đo chuẩn tự động (N = 512, 1024, 2048, 4096):
+   .\matmul_benchmark.exe --auto -r 3
+   ```
+3. Mở file `benchmark_results.xls` sinh ra ngay trong thư mục để xem bảng kết quả và biểu đồ.
+
+---
+
+### Cách B: Chạy trên Google Colab (Cloud Cluster với GPU T4)
 Mở một Notebook mới trên **Google Colab**, chọn **Runtime $\rightarrow$ Change runtime type $\rightarrow$ T4 GPU**, sau đó chạy lần lượt các ô lệnh sau:
 
-### Bước 1: Tải mã nguồn và biên dịch với CUDA
+#### Bước 1: Tải mã nguồn và biên dịch với CUDA
 ```bash
 !git clone https://github.com/thuy0an/Matrix_Multiplication.git
 %cd Matrix_Multiplication
@@ -33,13 +45,13 @@ Mở một Notebook mới trên **Google Colab**, chọn **Runtime $\rightarrow$
 !make CUDA_ENABLED=1 CUDA_ARCH=sm_75
 ```
 
-### Bước 2: Chạy bộ thực nghiệm chuẩn tự động
+#### Bước 2: Chạy bộ thực nghiệm chuẩn tự động
 ```bash
 # Tự động quét các kích thước N = 512, 1024, 2048, 4096 (lấy trung bình 3 lần chạy):
 !./matmul_benchmark --auto -r 3 -o colab_results.csv
 ```
 
-### Bước 3: Xem dữ liệu và tải báo cáo Excel về máy tính
+#### Bước 3: Xem dữ liệu và tải báo cáo Excel về máy tính
 ```python
 import pandas as pd
 from google.colab import files
