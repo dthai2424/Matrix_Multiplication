@@ -7,6 +7,7 @@ import {
   Database,
   Download,
   Filter,
+  ListChecks,
   Maximize2,
   Minimize2,
   Moon,
@@ -110,11 +111,12 @@ export function App() {
   const [threads, setThreads] = useState<number[]>(PRESETS.quick.threads);
   const [runs, setRuns] = useState<number>(PRESETS.quick.runs);
   const [cudaTile, setCudaTile] = useState<16 | 32>(16);
-  const [gpuOnly, setGpuOnly] = useState<boolean>(false);
+  const [selectedAlgos, setSelectedAlgos] = useState<AlgoKey[]>(PRESETS.quick.algos);
   const [resetHybridCfg, setResetHybridCfg] = useState<boolean>(true);
 
   // Popovers & Modals
   const [configOpen, setConfigOpen] = useState(false);
+  const [algoPickerOpen, setAlgoPickerOpen] = useState(false);
   const [dataMenuOpen, setDataMenuOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const [logOpen, setLogOpen] = useState(false);
@@ -213,6 +215,7 @@ export function App() {
       if (e.key === 'Escape') {
         setFullscreenKind(null);
         setConfigOpen(false);
+        setAlgoPickerOpen(false);
         setDataMenuOpen(false);
         setFilterOpen(false);
         setLogOpen(false);
@@ -248,9 +251,11 @@ export function App() {
     if (effectiveSizes.length) parts.push(`-N ${effectiveSizes.join(',')}`);
     if (threads.length) parts.push(`-t ${threads.join(',')}`);
     parts.push(`-r ${runs}`, `--cuda-tile ${cudaTile}`);
-    if (gpuOnly) parts.push('--gpu-only');
+    if (selectedAlgos.length < ALGO_ORDER.length) {
+      parts.push(`--algos ${selectedAlgos.join(',')}`);
+    }
     return parts.join(' ');
-  }, [effectiveSizes, threads, runs, cudaTile, gpuOnly]);
+  }, [effectiveSizes, threads, runs, cudaTile, selectedAlgos]);
 
   const uniqueMeasuredN = useMemo(
     () => [...new Set(records.map((r) => r.n))].sort((a, b) => a - b),
@@ -313,7 +318,17 @@ export function App() {
     setThreads(p.threads);
     setRuns(p.runs);
     setCudaTile(p.cudaTile);
-    setGpuOnly(p.gpuOnly);
+    setSelectedAlgos(p.algos);
+  };
+
+  const toggleRunAlgo = (k: AlgoKey) => {
+    setPreset('custom');
+    setSelectedAlgos((prev) => {
+      if (prev.includes(k)) {
+        return prev.length > 1 ? prev.filter((x) => x !== k) : prev;
+      }
+      return ALGO_ORDER.filter((x) => x === k || prev.includes(x));
+    });
   };
 
   const toggleSizeChip = (n: number) => {
@@ -372,9 +387,10 @@ export function App() {
   };
 
   const startRun = async () => {
-    if (isRunning || !effectiveSizes.length || !threads.length) return;
+    if (isRunning || !effectiveSizes.length || !threads.length || !selectedAlgos.length) return;
     pollStopRef.current = false;
     setConfigOpen(false);
+    setAlgoPickerOpen(false);
     setMainTab('charts');
     if (metric === 'threads') setMetric('live_split');
     setShowTracker(true);
@@ -398,7 +414,7 @@ export function App() {
             threads,
             runs,
             cuda_tile: cudaTile,
-            gpu_only: gpuOnly,
+            algos: selectedAlgos,
             reset_hybrid_cfg: resetHybridCfg,
           }),
         });
@@ -525,8 +541,8 @@ export function App() {
       return;
     }
 
-    // Offline Interactive Demo Mode (demonstrates live-growing bars + incremental records!)
-    const simAlgos: AlgoKey[] = gpuOnly ? ['hybrid', 'cuda_global', 'cuda_shared'] : ALGO_ORDER;
+    // Offline Interactive Demo Mode (demonstrates incremental bar rise per completed algorithm)
+    const simAlgos: AlgoKey[] = selectedAlgos;
     const tasks: { n: number; threads: number; key: AlgoKey }[] = [];
     const perSize: Record<string, number> = {};
     effectiveSizes.forEach((n) => {
@@ -554,7 +570,8 @@ export function App() {
     setPlan({
       sizes: effectiveSizes,
       threads,
-      gpu_only: gpuOnly,
+      algos: selectedAlgos,
+      gpu_only: !selectedAlgos.some((k) => ALGO_META[k].group === 'cpu'),
       has_gpu: true,
       per_size: perSize,
       total_steps: tasks.length,
@@ -671,6 +688,7 @@ export function App() {
                 onClick={() => {
                   setDataMenuOpen((o) => !o);
                   setConfigOpen(false);
+                  setAlgoPickerOpen(false);
                   setFilterOpen(false);
                 }}
                 className="btn-interactive h-9 px-3 rounded-md border border-[var(--border)] bg-transparent text-xs font-semibold inline-flex items-center gap-1.5 cursor-pointer hover:bg-[var(--subtle)]"
@@ -781,34 +799,122 @@ export function App() {
               ))}
             </div>
 
-            {/* Honest 2-Way Scope Toggle (1:1 matches --gpu-only) */}
-            <div className="inline-flex rounded-md border border-[var(--border)] bg-[var(--subtle)] p-0.5" role="group" aria-label="Phạm vi thuật toán">
+            {/* Per-Algorithm Checkbox Picker (1:1 matches --algos CLI flag) */}
+            <div className="relative">
               <button
                 type="button"
                 disabled={isRunning}
                 onClick={() => {
-                  setPreset('custom');
-                  setGpuOnly(false);
+                  setAlgoPickerOpen((o) => !o);
+                  setConfigOpen(false);
+                  setDataMenuOpen(false);
+                  setFilterOpen(false);
                 }}
-                className={`px-2.5 py-1.5 text-xs font-semibold rounded cursor-pointer transition-colors ${
-                  !gpuOnly ? 'bg-[var(--surface)] text-[var(--ink)] shadow-xs' : 'text-[var(--muted)] hover:text-[var(--ink)]'
+                aria-expanded={algoPickerOpen}
+                className={`btn-interactive h-[34px] px-3 rounded-md border text-xs font-semibold inline-flex items-center gap-1.5 cursor-pointer disabled:opacity-50 ${
+                  algoPickerOpen || selectedAlgos.length < ALGO_ORDER.length
+                    ? 'border-[var(--accent)] text-[var(--accent)] bg-[var(--subtle)]'
+                    : 'border-[var(--border)] text-[var(--ink)] bg-[var(--surface)] hover:bg-[var(--subtle)]'
                 }`}
               >
-                Full CPU+GPU
+                <ListChecks className="w-3.5 h-3.5" />
+                <span>
+                  Thuật toán ({selectedAlgos.length}/{ALGO_ORDER.length})
+                </span>
+                <ChevronDown className="w-3.5 h-3.5" />
               </button>
-              <button
-                type="button"
-                disabled={isRunning}
-                onClick={() => {
-                  setPreset('custom');
-                  setGpuOnly(true);
-                }}
-                className={`px-2.5 py-1.5 text-xs font-semibold rounded cursor-pointer transition-colors ${
-                  gpuOnly ? 'bg-[var(--surface)] text-[var(--ink)] shadow-xs' : 'text-[var(--muted)] hover:text-[var(--ink)]'
-                }`}
-              >
-                Chỉ GPU &amp; Hybrid
-              </button>
+
+              {algoPickerOpen && (
+                <div className="anim-drawer absolute left-0 mt-1.5 w-72 rounded-md border border-[var(--border)] bg-[var(--surface)] shadow-xl p-3 space-y-2.5 z-40">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-[var(--ink)]">Chọn thuật toán sẽ chạy</span>
+                    <span className="text-[11px] font-mono text-[var(--muted)]">
+                      {selectedAlgos.length}/{ALGO_ORDER.length}
+                    </span>
+                  </div>
+
+                  {/* Quick-select helpers */}
+                  <div className="flex flex-wrap gap-1 pb-2 border-b border-[var(--border-soft)]">
+                    {(
+                      [
+                        ['Tất cả', ALGO_ORDER],
+                        ['Chỉ CPU', ['seq', 'omp_basic', 'omp_l2_l3', 'omp_bypass'] as AlgoKey[]],
+                        ['Chỉ GPU', ['cuda_global', 'cuda_shared'] as AlgoKey[]],
+                        ['Tiêu biểu', ['omp_l2_l3', 'hybrid', 'cuda_shared'] as AlgoKey[]],
+                      ] as const
+                    ).map(([label, keys]) => (
+                      <button
+                        key={label}
+                        type="button"
+                        onClick={() => {
+                          setPreset('custom');
+                          setSelectedAlgos([...keys]);
+                        }}
+                        className="px-2 py-1 rounded border border-[var(--border)] bg-[var(--subtle)] hover:border-[var(--ink)] text-[11px] font-semibold text-[var(--ink)] cursor-pointer"
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Grouped Checkboxes */}
+                  <div className="space-y-2">
+                    {(
+                      [
+                        ['CPU (Tuần tự & OpenMP)', 'cpu'],
+                        ['Dị thể (Hybrid)', 'hybrid'],
+                        ['GPU (CUDA thuần)', 'gpu'],
+                      ] as const
+                    ).map(([grpTitle, grpKey]) => (
+                      <div key={grpKey} className="space-y-0.5">
+                        <div className="text-[11px] font-semibold text-[var(--muted)] px-1">{grpTitle}</div>
+                        {ALGO_ORDER.filter((k) => ALGO_META[k].group === grpKey).map((k) => {
+                          const m = ALGO_META[k];
+                          const checked = selectedAlgos.includes(k);
+                          const isLastSelected = checked && selectedAlgos.length === 1;
+                          return (
+                            <label
+                              key={k}
+                              className="flex items-center justify-between gap-2 px-1.5 py-1 rounded hover:bg-[var(--subtle)] cursor-pointer text-xs select-none"
+                            >
+                              <span className="flex items-center gap-2 min-w-0">
+                                <input
+                                  type="checkbox"
+                                  checked={checked}
+                                  disabled={isLastSelected}
+                                  onChange={() => toggleRunAlgo(k)}
+                                  className="accent-[var(--accent)]"
+                                />
+                                <span
+                                  className="w-2.5 h-2.5 rounded-xs shrink-0"
+                                  style={{ background: m.color }}
+                                />
+                                <span className="truncate font-medium text-[var(--ink)]">{m.name}</span>
+                              </span>
+                              {k === 'seq' && (
+                                <span className="text-[10px] font-mono text-[var(--muted)] shrink-0">
+                                  N&lt;2048
+                                </span>
+                              )}
+                            </label>
+                          );
+                        })}
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="pt-1.5 border-t border-[var(--border-soft)] flex items-center justify-between text-[11px] text-[var(--muted)]">
+                    <span>Ánh xạ trực tiếp cờ --algos</span>
+                    <button
+                      type="button"
+                      onClick={() => setAlgoPickerOpen(false)}
+                      className="text-xs font-semibold text-[var(--accent)] hover:underline cursor-pointer bg-transparent border-0 p-0"
+                    >
+                      Xong
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Active config summary pill */}
@@ -823,6 +929,7 @@ export function App() {
               type="button"
               onClick={() => {
                 setConfigOpen((o) => !o);
+                setAlgoPickerOpen(false);
                 setDataMenuOpen(false);
                 setFilterOpen(false);
               }}
@@ -1054,13 +1161,15 @@ export function App() {
                   }`}
                 />
                 {isRunning && activeStep ? (
-                  <span className="font-semibold text-[var(--ink)] truncate">
-                    Đang chạy: N={activeStep.n}
-                    {activeStep.threads > 0 &&
-                      ` · ${activeStep.key === 'cuda_global' || activeStep.key === 'cuda_shared' ? 'GPU' : `${activeStep.threads}T`}`}
-                    {' · '}
-                    <span className="text-[var(--accent)]">{activeStep.label}</span>
-                    <span className="font-mono text-xs text-[var(--muted)] ml-2">
+                  <span className="inline-flex items-center gap-2 font-semibold text-[var(--ink)] min-w-0">
+                    <span className="truncate">
+                      Đang chạy: N={activeStep.n}
+                      {activeStep.threads > 0 &&
+                        ` · ${activeStep.key === 'cuda_global' || activeStep.key === 'cuda_shared' ? 'GPU' : `${activeStep.threads}T`}`}
+                      {' · '}
+                      <span className="text-[var(--accent)]">{activeStep.label}</span>
+                    </span>
+                    <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded bg-[var(--accent)]/12 border border-[var(--accent)]/30 font-mono text-xs font-bold text-[var(--accent)] tabular">
                       {(stepElapsedMs / 1000).toFixed(1)}s
                     </span>
                   </span>
@@ -1254,6 +1363,7 @@ export function App() {
                     onClick={() => {
                       setFilterOpen((o) => !o);
                       setConfigOpen(false);
+                      setAlgoPickerOpen(false);
                       setDataMenuOpen(false);
                     }}
                     className={`h-8 px-2.5 rounded-md border text-xs font-semibold inline-flex items-center gap-1.5 cursor-pointer ${
@@ -1354,15 +1464,18 @@ export function App() {
           <div className="p-4 sm:p-6">
             {mainTab === 'charts' && (
               <>
-                {/* LIVE SPLIT: Side-by-side GFLOPS + Live-Growing Time Bars */}
+                {/* LIVE SPLIT: Side-by-side GFLOPS + Time Bars (crisp rise on completion) */}
                 {metric === 'live_split' && (
                   <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <div>
-                          <h2 className="text-sm font-bold">Hiệu năng tính toán (GFLOPS)</h2>
+                          <h2 className="text-sm font-bold">
+                            Hiệu năng tính toán (GFLOPS)
+                            {isRunning && activeStep?.n ? ` · N = ${activeStep.n}` : ''}
+                          </h2>
                           <p className="text-xs text-[var(--muted)]">
-                            Tự mọc ngay khi từng thuật toán hoàn tất · Cao hơn tốt hơn
+                            Cột hiện lên nhanh ngay khi từng thuật toán xong · Cao hơn tốt hơn
                           </p>
                         </div>
                         <div className="flex items-center gap-1.5">
@@ -1402,11 +1515,11 @@ export function App() {
                       <div className="flex items-center justify-between">
                         <div>
                           <h2 className="text-sm font-bold">
-                            Thời gian thực thi trực tiếp (ms)
+                            Thời gian thực thi (ms)
                             {isRunning && activeStep?.n ? ` · N = ${activeStep.n}` : ''}
                           </h2>
                           <p className="text-xs text-[var(--muted)]">
-                            Thanh của thuật toán đang chạy sẽ tăng dài theo thời gian thực · Thấp hơn tốt hơn
+                            Cột hiện lên nhanh ngay khi từng thuật toán xong · Thấp hơn tốt hơn
                           </p>
                         </div>
                         <div className="flex items-center gap-1.5">

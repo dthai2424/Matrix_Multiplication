@@ -531,12 +531,73 @@ BenchmarkRecord run_single_test(int test_id, int N, int threads,
     return rec;
 }
 
+struct AlgoSelection
+{
+    bool seq = true;
+    bool omp_basic = true;
+    bool omp_l2_l3 = true;
+    bool omp_bypass = true;
+    bool hybrid = true;
+    bool cuda_global = true;
+    bool cuda_shared = true;
+
+    bool any_cpu_parallel() const { return omp_basic || omp_l2_l3 || omp_bypass; }
+    bool any_cuda() const { return cuda_global || cuda_shared; }
+    bool any() const { return seq || omp_basic || omp_l2_l3 || omp_bypass || hybrid || cuda_global || cuda_shared; }
+
+    static AlgoSelection gpu_only_preset()
+    {
+        AlgoSelection s;
+        s.seq = false;
+        s.omp_basic = false;
+        s.omp_l2_l3 = false;
+        s.omp_bypass = false;
+        s.hybrid = true;
+        s.cuda_global = true;
+        s.cuda_shared = true;
+        return s;
+    }
+
+    static AlgoSelection none()
+    {
+        AlgoSelection s;
+        s.seq = false;
+        s.omp_basic = false;
+        s.omp_l2_l3 = false;
+        s.omp_bypass = false;
+        s.hybrid = false;
+        s.cuda_global = false;
+        s.cuda_shared = false;
+        return s;
+    }
+
+    std::string summary() const
+    {
+        std::vector<std::string> items;
+        if (seq) items.push_back("seq");
+        if (omp_basic) items.push_back("omp_basic");
+        if (omp_l2_l3) items.push_back("omp_l2_l3");
+        if (omp_bypass) items.push_back("omp_bypass");
+        if (hybrid) items.push_back("hybrid");
+        if (cuda_global) items.push_back("cuda_global");
+        if (cuda_shared) items.push_back("cuda_shared");
+        std::string out;
+        for (size_t i = 0; i < items.size(); ++i)
+        {
+            if (i > 0) out += ", ";
+            out += items[i];
+        }
+        return out.empty() ? "(khong co)" : out;
+    }
+};
+
 void run_cuda_benchmarks(std::vector<BenchmarkRecord> &records, int &test_id,
                          int N, int cuda_tile, const Matrix &A, const Matrix &B,
                          Matrix &C_test, const Matrix &C_ref, double t_seq,
-                         int num_runs, int gpu_cuda_cores = 0)
+                         int num_runs, int gpu_cuda_cores = 0,
+                         bool run_global = true, bool run_shared = true)
 {
-    if (!cuda_backend_available())
+    if (!cuda_backend_available() || (!run_global && !run_shared))
     {
         return;
     }
@@ -547,11 +608,16 @@ void run_cuda_benchmarks(std::vector<BenchmarkRecord> &records, int &test_id,
     const char *names[] = {
         "CUDA Global Memory",
         "CUDA Shared Memory Tiling"};
+    const bool enabled[] = {run_global, run_shared};
 
     int cuda_threads = (gpu_cuda_cores > 0) ? gpu_cuda_cores : 1;
 
     for (int i = 0; i < 2; ++i)
     {
+        if (!enabled[i])
+        {
+            continue;
+        }
         std::cout << "       + " << names[i] << ": " << std::flush;
         BenchmarkRecord record = run_single_test(
             test_id++, N, cuda_threads, cuda_algorithms[i], names[i], 0, 0, 0, A, B,
@@ -564,14 +630,21 @@ void run_cuda_benchmarks(std::vector<BenchmarkRecord> &records, int &test_id,
     }
 }
 
-// Chạy bộ thực nghiệm chuẩn (hỗ trợ tùy biến N, Threads và số lần lặp num_runs)
+// Chạy bộ thực nghiệm chuẩn (hỗ trợ tùy biến N, Threads, số lần lặp và danh sách thuật toán)
 void run_standard_benchmark_suite(std::vector<BenchmarkRecord> &records, const HardwareInfo &hw,
                                   int num_runs = 1,
                                   std::vector<int> N_list = {512, 1024, 2048, 4096},
                                   std::vector<int> thread_list = {1, 2, 4, 8, 16},
                                   int cuda_tile = 16,
-                                  bool gpu_only = false)
+                                  bool gpu_only = false,
+                                  AlgoSelection sel = AlgoSelection{},
+                                  bool has_custom_algos = false)
 {
+    if (gpu_only && !has_custom_algos)
+    {
+        sel = AlgoSelection::gpu_only_preset();
+    }
+
     std::cout << "\n>>> BAT DAU CHAY BO THUC NGHIEM (So lan lap: " << num_runs << " lan lay trung binh)...\n";
     std::cout << "Kich thuoc ma tran N: ";
     for (size_t i = 0; i < N_list.size(); ++i)
@@ -580,7 +653,8 @@ void run_standard_benchmark_suite(std::vector<BenchmarkRecord> &records, const H
     for (size_t i = 0; i < thread_list.size(); ++i)
         std::cout << thread_list[i] << (i + 1 < thread_list.size() ? ", " : "");
     std::cout << " (Toi da theo phan cung: " << hw.logical_processors << ")\n";
-    if (gpu_only)
+    std::cout << "Thuat toan da chon   : " << sel.summary() << "\n";
+    if (gpu_only && !has_custom_algos)
     {
         std::cout << "Che do chay          : Chi chay cac thuat toan GPU (Ket hop CPU + CUDA GPU va CUDA thuan)\n";
     }
@@ -594,7 +668,7 @@ void run_standard_benchmark_suite(std::vector<BenchmarkRecord> &records, const H
 
     // Giữ số luồng không vượt quá khả năng phần cứng hoặc tối đa 16
     int max_t = hw.logical_processors;
-    if (std::find(thread_list.begin(), thread_list.end(), max_t) == thread_list.end() && thread_list.back() < max_t)
+    if (!thread_list.empty() && std::find(thread_list.begin(), thread_list.end(), max_t) == thread_list.end() && thread_list.back() < max_t)
     {
         thread_list.push_back(max_t);
         std::sort(thread_list.begin(), thread_list.end());
@@ -602,6 +676,10 @@ void run_standard_benchmark_suite(std::vector<BenchmarkRecord> &records, const H
 
     int test_id = static_cast<int>(records.size()) + 1;
     double last_seq_gflops = 6.2; // Mốc GFLOPS tuần tự cơ sở để ngoại suy khi N >= 2048
+
+    const bool run_threaded = sel.any_cpu_parallel() || (sel.hybrid && cuda_backend_available());
+    const bool run_any_cuda = sel.any_cuda() && cuda_backend_available();
+    const bool need_ref_verify = run_threaded || run_any_cuda;
 
     for (int N : N_list)
     {
@@ -621,22 +699,7 @@ void run_standard_benchmark_suite(std::vector<BenchmarkRecord> &records, const H
 
         double t_seq = -1.0;
 
-        if (gpu_only)
-        {
-            // Chế độ GPU-only: Ngoại suy t_seq từ baseline và sinh C_ref nhanh bằng GPU Shared Memory
-            t_seq = (2.0 * N * N * N) / (last_seq_gflops * 1e9);
-            std::cout << " [Che do GPU] Uoc tinh Baseline 1-Core: "
-                      << std::fixed << std::setprecision(3) << t_seq << "s dua tren "
-                      << std::fixed << std::setprecision(1) << last_seq_gflops << " GFLOPS\n";
-
-            if (cuda_backend_available())
-            {
-                std::cout << " [Kiem dinh] Tao C_ref bang CUDA Shared Memory Tiling... " << std::flush;
-                matmul_cuda_shared(A.data(), B.data(), C_ref.data(), N, cuda_tile);
-                std::cout << "Xong.\n";
-            }
-        }
-        else if (N < 2048)
+        if (sel.seq && N < 2048)
         {
             // 1. Chạy đo mốc tuần tự Baseline
             std::cout << " [1/7] Chay Tuan tu Baseline (1 Core)... " << std::flush;
@@ -655,71 +718,101 @@ void run_standard_benchmark_suite(std::vector<BenchmarkRecord> &records, const H
         }
         else
         {
-            // N >= 2048: Bỏ qua chạy thật tuần tự để tránh nghẽn thời gian O(N^3)
+            // Ngoại suy t_seq khi không chọn Tuan tu hoặc N >= 2048
             t_seq = (2.0 * N * N * N) / (last_seq_gflops * 1e9);
-            std::cout << " [Bo qua Tuan tu] N = " << N << " >= 2048: Chi chay cac thuat toan SONG SONG.\n"
-                      << "                 (Uoc tinh Baseline 1-Core: "
-                      << std::fixed << std::setprecision(3) << t_seq << "s dua tren "
-                      << std::fixed << std::setprecision(1) << last_seq_gflops << " GFLOPS)\n";
+            if (sel.seq && N >= 2048)
+            {
+                std::cout << " [Bo qua Tuan tu] N = " << N << " >= 2048: Chi chay cac thuat toan SONG SONG.\n"
+                          << "                 (Uoc tinh Baseline 1-Core: "
+                          << std::fixed << std::setprecision(3) << t_seq << "s dua tren "
+                          << std::fixed << std::setprecision(1) << last_seq_gflops << " GFLOPS)\n";
+            }
+            else
+            {
+                std::cout << " [Baseline ngoai suy] Uoc tinh 1-Core: "
+                          << std::fixed << std::setprecision(3) << t_seq << "s dua tren "
+                          << std::fixed << std::setprecision(1) << last_seq_gflops << " GFLOPS\n";
+            }
 
-            // Sinh ma trận chuẩn C_ref bằng CPU Tiled L2+L3 (16 luồng) để kiểm định tính toàn vẹn
-            std::cout << " [Kiem dinh] Tao C_ref bang CPU Tiled L2+L3 (16 luong)... " << std::flush;
-            matmul_omp_tiled_l2_l3(A, B, C_ref, hw.logical_processors, bs_l3, bs_l2, bs_l1);
-            std::cout << "Xong.\n";
+            if (need_ref_verify)
+            {
+                if (cuda_backend_available() && (!sel.any_cpu_parallel() || N >= 1024))
+                {
+                    std::cout << " [Kiem dinh] Tao C_ref bang CUDA Shared Memory Tiling... " << std::flush;
+                    matmul_cuda_shared(A.data(), B.data(), C_ref.data(), N, cuda_tile);
+                    std::cout << "Xong.\n";
+                }
+                else
+                {
+                    std::cout << " [Kiem dinh] Tao C_ref bang CPU Tiled L2+L3 (" << hw.logical_processors << " luong)... " << std::flush;
+                    matmul_omp_tiled_l2_l3(A, B, C_ref, hw.logical_processors, bs_l3, bs_l2, bs_l1);
+                    std::cout << "Xong.\n";
+                }
+            }
         }
 
-        // Cấu hình danh sách luồng CPU: Khi N >= 2048 chỉ chạy 8 và 16 luồng
-        std::vector<int> current_threads;
-        if (N >= 2048)
+        if (run_threaded)
         {
-            current_threads = {8, 16};
-            std::cout << " [Cau hinh luong] N = " << N << " >= 2048: CPU chi do 8 Cores (Vat ly) va 16 Threads (Logic).\n";
-        }
-        else
-        {
-            current_threads = thread_list;
-        }
+            // Cấu hình danh sách luồng CPU: Khi N >= 2048 chỉ chạy 8 và 16 luồng
+            std::vector<int> current_threads;
+            if (N >= 2048)
+            {
+                current_threads = {8, 16};
+                std::cout << " [Cau hinh luong] N = " << N << " >= 2048: CPU chi do 8 Cores (Vat ly) va 16 Threads (Logic).\n";
+            }
+            else
+            {
+                current_threads = thread_list;
+            }
 
-        if (!gpu_only)
-        {
             for (int q : current_threads)
             {
                 std::cout << "   --- So luong: " << q << " Cores/Threads ---\n";
 
                 // 2. Song song OpenMP cơ bản
-                std::cout << "       + OpenMP Co ban       : " << std::flush;
-                BenchmarkRecord r_basic = run_single_test(test_id++, N, q,
-                                                          AlgorithmType::OMP_BASIC_PARALLEL,
-                                                          "2. Song song OpenMP Co ban",
-                                                          0, 0, 0, A, B, C_test, &C_ref, t_seq, num_runs);
-                records.push_back(r_basic);
-                std::cout << std::fixed << std::setprecision(4) << r_basic.time_sec << "s | "
-                          << std::fixed << std::setprecision(1) << r_basic.gflops << " GFLOPS | Speedup: "
-                          << std::fixed << std::setprecision(2) << r_basic.speedup << "x\n";
+                if (sel.omp_basic)
+                {
+                    std::cout << "       + OpenMP Co ban       : " << std::flush;
+                    BenchmarkRecord r_basic = run_single_test(test_id++, N, q,
+                                                              AlgorithmType::OMP_BASIC_PARALLEL,
+                                                              "2. Song song OpenMP Co ban",
+                                                              0, 0, 0, A, B, C_test, &C_ref, t_seq, num_runs);
+                    records.push_back(r_basic);
+                    std::cout << std::fixed << std::setprecision(4) << r_basic.time_sec << "s | "
+                              << std::fixed << std::setprecision(1) << r_basic.gflops << " GFLOPS | Speedup: "
+                              << std::fixed << std::setprecision(2) << r_basic.speedup << "x\n";
+                }
 
                 // 3. Song song OpenMP Tiled L2 + L3 (Mục 3.6.2)
-                std::cout << "       + OpenMP Tiled L2+L3  : " << std::flush;
-                BenchmarkRecord r_l2_l3 = run_single_test(test_id++, N, q,
-                                                          AlgorithmType::OMP_TILED_L2_L3,
-                                                          "3. Song song Tiled L2+L3",
-                                                          bs_l3, bs_l2, bs_l1, A, B, C_test, &C_ref, t_seq, num_runs);
-                records.push_back(r_l2_l3);
-                std::cout << std::fixed << std::setprecision(4) << r_l2_l3.time_sec << "s | "
-                          << std::fixed << std::setprecision(1) << r_l2_l3.gflops << " GFLOPS | Speedup: "
-                          << std::fixed << std::setprecision(2) << r_l2_l3.speedup << "x\n";
+                if (sel.omp_l2_l3)
+                {
+                    std::cout << "       + OpenMP Tiled L2+L3  : " << std::flush;
+                    BenchmarkRecord r_l2_l3 = run_single_test(test_id++, N, q,
+                                                              AlgorithmType::OMP_TILED_L2_L3,
+                                                              "3. Song song Tiled L2+L3",
+                                                              bs_l3, bs_l2, bs_l1, A, B, C_test, &C_ref, t_seq, num_runs);
+                    records.push_back(r_l2_l3);
+                    std::cout << std::fixed << std::setprecision(4) << r_l2_l3.time_sec << "s | "
+                              << std::fixed << std::setprecision(1) << r_l2_l3.gflops << " GFLOPS | Speedup: "
+                              << std::fixed << std::setprecision(2) << r_l2_l3.speedup << "x\n";
+                }
 
                 // 4. Song song OpenMP Tiled L3 + L1 Bypass L2 (Mục 3.6.3)
-                std::cout << "       + OpenMP Bypass L2    : " << std::flush;
-                BenchmarkRecord r_bypass = run_single_test(test_id++, N, q,
-                                                           AlgorithmType::OMP_TILED_L3_L1_BYPASS,
-                                                           "4. Song song Bypass L2",
-                                                           bs_l3, 0, 64, A, B, C_test, &C_ref, t_seq, num_runs);
-                records.push_back(r_bypass);
-                std::cout << std::fixed << std::setprecision(4) << r_bypass.time_sec << "s | "
-                          << std::fixed << std::setprecision(1) << r_bypass.gflops << " GFLOPS | Speedup: "
-                          << std::fixed << std::setprecision(2) << r_bypass.speedup << "x\n";
+                if (sel.omp_bypass)
+                {
+                    std::cout << "       + OpenMP Bypass L2    : " << std::flush;
+                    BenchmarkRecord r_bypass = run_single_test(test_id++, N, q,
+                                                               AlgorithmType::OMP_TILED_L3_L1_BYPASS,
+                                                               "4. Song song Bypass L2",
+                                                               bs_l3, 0, 64, A, B, C_test, &C_ref, t_seq, num_runs);
+                    records.push_back(r_bypass);
+                    std::cout << std::fixed << std::setprecision(4) << r_bypass.time_sec << "s | "
+                              << std::fixed << std::setprecision(1) << r_bypass.gflops << " GFLOPS | Speedup: "
+                              << std::fixed << std::setprecision(2) << r_bypass.speedup << "x\n";
+                }
 
-                if (cuda_backend_available())
+                // 5. Kết hợp CPU + CUDA GPU (Hybrid)
+                if (sel.hybrid && cuda_backend_available())
                 {
                     tune_heterogeneous_gpu_fraction(q, cuda_tile, true);
                     std::cout << "       + CPU + CUDA GPU      : " << std::flush;
@@ -737,32 +830,13 @@ void run_standard_benchmark_suite(std::vector<BenchmarkRecord> &records, const H
                 }
             }
         }
-        else
+
+        if (run_any_cuda)
         {
-            // Chế độ GPU-only: Chỉ chạy thuật toán dị thể CPU + CUDA GPU
-            if (cuda_backend_available())
-            {
-                for (int q : current_threads)
-                {
-                    std::cout << "   --- So luong: " << q << " Cores/Threads ---\n";
-                    tune_heterogeneous_gpu_fraction(q, cuda_tile, true);
-                    std::cout << "       + CPU + CUDA GPU      : " << std::flush;
-                    BenchmarkRecord r_heterogeneous = run_single_test(
-                        test_id++, N, q, AlgorithmType::HETEROGENEOUS_OMP_CUDA,
-                        "5. Ket hop CPU + CUDA GPU", 0, 0, 16, A, B, C_test,
-                        &C_ref, t_seq, num_runs, cuda_tile);
-                    records.push_back(r_heterogeneous);
-                    std::cout << std::fixed << std::setprecision(4)
-                              << r_heterogeneous.time_sec << "s | "
-                              << std::fixed << std::setprecision(1)
-                              << r_heterogeneous.gflops << " GFLOPS | Speedup: "
-                              << std::fixed << std::setprecision(2)
-                              << r_heterogeneous.speedup << "x\n";
-                }
-            }
+            run_cuda_benchmarks(records, test_id, N, cuda_tile, A, B, C_test,
+                                C_ref, t_seq, num_runs, hw.gpu_cuda_cores,
+                                sel.cuda_global, sel.cuda_shared);
         }
-        run_cuda_benchmarks(records, test_id, N, cuda_tile, A, B, C_test,
-                            C_ref, t_seq, num_runs, hw.gpu_cuda_cores);
         std::cout << "\n";
     }
 
@@ -1017,6 +1091,8 @@ int main(int argc, char *argv[])
     // Phân tích tham số dòng lệnh chuyên nghiệp (CLI Flags)
     bool auto_mode = false;
     bool gpu_only = false;
+    bool has_custom_algos = false;
+    AlgoSelection algo_sel;
     int runs = 1;
     int cuda_tile = 16;
     std::vector<int> custom_N_list;
@@ -1034,6 +1110,42 @@ int main(int argc, char *argv[])
         else if (arg == "--gpu" || arg == "--gpu-only" || arg == "-g")
         {
             gpu_only = true;
+        }
+        else if ((arg == "--algos" || arg == "-a") && i + 1 < argc)
+        {
+            has_custom_algos = true;
+            auto_mode = true;
+            algo_sel = AlgoSelection::none();
+            std::string s = argv[++i];
+            std::stringstream ss(s);
+            std::string item;
+            while (std::getline(ss, item, ','))
+            {
+                // Trim whitespace and lowercase
+                size_t start = item.find_first_not_of(" \t\r\n");
+                size_t end = item.find_last_not_of(" \t\r\n");
+                if (start == std::string::npos) continue;
+                item = item.substr(start, end - start + 1);
+                std::transform(item.begin(), item.end(), item.begin(),
+                               [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+                if (item == "all")
+                {
+                    algo_sel = AlgoSelection{};
+                }
+                else if (item == "seq") algo_sel.seq = true;
+                else if (item == "omp_basic") algo_sel.omp_basic = true;
+                else if (item == "omp_l2_l3") algo_sel.omp_l2_l3 = true;
+                else if (item == "omp_bypass") algo_sel.omp_bypass = true;
+                else if (item == "hybrid") algo_sel.hybrid = true;
+                else if (item == "cuda_global") algo_sel.cuda_global = true;
+                else if (item == "cuda_shared") algo_sel.cuda_shared = true;
+                else
+                {
+                    std::cerr << "[Loi] Thuat toan khong hop le trong --algos: '" << item
+                              << "'. Cac gia tri hop le: seq,omp_basic,omp_l2_l3,omp_bypass,hybrid,cuda_global,cuda_shared\n";
+                    return 2;
+                }
+            }
         }
         else if ((arg == "--runs" || arg == "-r") && i + 1 < argc)
         {
@@ -1074,6 +1186,7 @@ int main(int argc, char *argv[])
             std::cout << "Usage: matmul_benchmark [OPTIONS]\n"
                       << "  --auto, -b               Chay bo benchmark tu dong\n"
                       << "  --gpu, --gpu-only, -g    Chi chay cac thuat toan GPU (Ket hop CPU+CUDA GPU va CUDA thuan)\n"
+                      << "  --algos <list>, -a <list>Chon thuat toan chay (seq,omp_basic,omp_l2_l3,omp_bypass,hybrid,cuda_global,cuda_shared)\n"
                       << "  --runs <K>, -r <K>       So lan chay lap lai de tinh trung binh (VD: -r 5)\n"
                       << "  --size <N>, -N <N>       Kich thuoc ma tran (VD: -N 512,1024,2048 hoac -N 4096)\n"
                       << "  --threads <T>, -t <T>    Danh sach so luong (VD: -t 1,2,4,8,16 hoac -t 8)\n"
@@ -1090,14 +1203,20 @@ int main(int argc, char *argv[])
         return 2;
     }
 
-    if (auto_mode || !custom_N_list.empty() || gpu_only)
+    if (has_custom_algos && !algo_sel.any())
+    {
+        std::cerr << "[Loi] --algos phai chon it nhat 1 thuat toan hop le.\n";
+        return 2;
+    }
+
+    if (auto_mode || !custom_N_list.empty() || gpu_only || has_custom_algos)
     {
         print_banner(hw);
         std::vector<int> N_list = custom_N_list.empty() ? std::vector<int>{512, 1024, 2048, 4096} : custom_N_list;
         std::vector<int> thread_list = custom_thread_list.empty() ? std::vector<int>{1, 2, 4, 8, 16} : custom_thread_list;
-        std::cout << "[Che do tu dong] Chay day du bo thuc nghiem (Lap " << runs << " lan lay trung binh)...\n";
+        std::cout << "[Che do tu dong] Chay bo thuc nghiem (Lap " << runs << " lan lay trung binh)...\n";
         run_standard_benchmark_suite(records, hw, runs, N_list, thread_list,
-                                     cuda_tile, gpu_only);
+                                     cuda_tile, gpu_only, algo_sel, has_custom_algos);
         print_records_table(records);
         export_all_files(records, hw, custom_xls, custom_csv);
         return 0;

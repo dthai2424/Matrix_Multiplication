@@ -104,7 +104,7 @@ export const PRESETS = {
     threads: [1, 4, 8],
     runs: 1,
     cudaTile: 16 as const,
-    gpuOnly: false,
+    algos: [...ALGO_ORDER] as AlgoKey[],
   },
   gpu: {
     id: 'gpu' as const,
@@ -113,7 +113,7 @@ export const PRESETS = {
     threads: [8],
     runs: 1,
     cudaTile: 16 as const,
-    gpuOnly: true,
+    algos: ['hybrid', 'cuda_global', 'cuda_shared'] as AlgoKey[],
   },
   full: {
     id: 'full' as const,
@@ -122,7 +122,7 @@ export const PRESETS = {
     threads: [1, 2, 4, 8],
     runs: 3,
     cudaTile: 16 as const,
-    gpuOnly: false,
+    algos: [...ALGO_ORDER] as AlgoKey[],
   },
 };
 

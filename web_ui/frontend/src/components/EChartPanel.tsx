@@ -1,6 +1,6 @@
 import { useEffect, useImperativeHandle, useRef, forwardRef } from 'react';
 import * as echarts from 'echarts/core';
-import { BarChart, LineChart, EffectScatterChart } from 'echarts/charts';
+import { BarChart, LineChart } from 'echarts/charts';
 import {
   GridComponent,
   TooltipComponent,
@@ -17,7 +17,6 @@ import type { ActiveStep, AlgoKey, BenchmarkRecord, ExecutionPlan } from '../typ
 echarts.use([
   BarChart,
   LineChart,
-  EffectScatterChart,
   GridComponent,
   TooltipComponent,
   AxisPointerComponent,
@@ -98,7 +97,7 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
 ) {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<ECharts | null>(null);
-  const liveElapsedRef = useRef<number>(0);
+  const prevStructKeyRef = useRef<string>('');
 
   useImperativeHandle(ref, () => ({
     downloadPng(filename: string) {
@@ -141,8 +140,8 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
     };
   }, []);
 
-  // Helper to build option with optional live elapsed seconds for growing active bar
-  const buildOption = (liveElapsedSec: number | null): EChartsCoreOption => {
+  // Build ECharts option + structural key (so incremental records animate smoothly without recreating existing bars)
+  const buildOption = (): { option: EChartsCoreOption; structKey: string } => {
     const isDark = theme === 'dark';
     const ink = isDark ? '#f8fafc' : '#0f172a';
     const muted = isDark ? '#94a3b8' : '#475569';
@@ -188,15 +187,18 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
 
       if (!threads.length) {
         return {
-          title: {
-            text: `Chưa có dữ liệu đa luồng CPU tại N = ${targetN}`,
-            left: 'center',
-            top: 'middle',
-            textStyle: { color: muted, fontSize: 14, fontWeight: 500 },
+          structKey: `threads|empty|${targetN}|${theme}`,
+          option: {
+            title: {
+              text: `Chưa có dữ liệu đa luồng CPU tại N = ${targetN}`,
+              left: 'center',
+              top: 'middle',
+              textStyle: { color: muted, fontSize: 14, fontWeight: 500 },
+            },
+            xAxis: { show: false },
+            yAxis: { show: false },
+            series: [],
           },
-          xAxis: { show: false },
-          yAxis: { show: false },
-          series: [],
         };
       }
 
@@ -236,69 +238,73 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
       }
 
       return {
-        animation: !reducedMotion,
-        animationDuration: 360,
-        animationDurationUpdate: 220,
-        animationEasing: 'cubicOut',
-        grid: {
-          top: compact ? 22 : 28,
-          right: compact ? 24 : 36,
-          bottom: enableZoom ? 54 : 36,
-          left: 16,
-          containLabel: true,
-        },
-        tooltip: {
-          trigger: 'axis',
-          backgroundColor: tooltipBg,
-          borderColor: tooltipBorder,
-          textStyle: { color: ink, fontSize: 13 },
-          axisPointer: { type: 'line', lineStyle: { color: muted, type: 'dashed' } },
-          formatter: (params: any) => {
-            const items = (Array.isArray(params) ? params : [params])
-              .filter((p) => p.value != null)
-              .sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
-            if (!items.length) return '';
-            const head = `<div style="font-weight:700;margin-bottom:6px">N = ${targetN} · ${items[0].axisValue}</div>`;
-            const rows = items
-              .map(
-                (p) =>
-                  `<div style="display:flex;justify-content:space-between;gap:16px;font-variant-numeric:tabular-nums">
+        structKey: `threads|data|${targetN}|${theme}|${enableZoom}|${compact}|${scaleKeys.join(',')}`,
+        option: {
+          animation: !reducedMotion,
+          animationDuration: 320,
+          animationDurationUpdate: 260,
+          animationEasing: 'cubicOut',
+          animationEasingUpdate: 'cubicOut',
+          grid: {
+            top: compact ? 22 : 28,
+            right: compact ? 24 : 36,
+            bottom: enableZoom ? 54 : 36,
+            left: 16,
+            containLabel: true,
+          },
+          tooltip: {
+            trigger: 'axis',
+            backgroundColor: tooltipBg,
+            borderColor: tooltipBorder,
+            textStyle: { color: ink, fontSize: 13 },
+            axisPointer: { type: 'line', lineStyle: { color: muted, type: 'dashed' } },
+            formatter: (params: any) => {
+              const items = (Array.isArray(params) ? params : [params])
+                .filter((p) => p.value != null)
+                .sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
+              if (!items.length) return '';
+              const head = `<div style="font-weight:700;margin-bottom:6px">N = ${targetN} · ${items[0].axisValue}</div>`;
+              const rows = items
+                .map(
+                  (p) =>
+                    `<div style="display:flex;justify-content:space-between;gap:16px;font-variant-numeric:tabular-nums">
                     <span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:${p.color};margin-right:6px"></span>${p.seriesName}</span>
                     <strong>${Number(p.value).toFixed(2)} GFLOPS</strong>
                   </div>`
-              )
-              .join('');
-            return head + rows;
+                )
+                .join('');
+              return head + rows;
+            },
           },
+          xAxis: {
+            type: 'category',
+            data: threads.map((t) => `${t}T`),
+            axisLabel: { color: ink, fontSize, fontWeight: 600 },
+            axisLine: { lineStyle: { color: gridColor } },
+            axisTick: { show: false },
+          },
+          yAxis: {
+            type: 'value',
+            name: 'GFLOPS',
+            nameTextStyle: { color: muted, fontSize: 12.5, padding: [0, 0, 4, 0] },
+            axisLabel: { color: muted, fontSize, formatter: (v: number) => fmtAxisTick(v, 'gflops') },
+            splitLine: { lineStyle: { color: gridColor, type: 'dashed' } },
+          },
+          dataZoom: enableZoom ? [{ type: 'inside' }, { type: 'slider', height: 20, bottom: 6 }] : [],
+          series,
         },
-        xAxis: {
-          type: 'category',
-          data: threads.map((t) => `${t}T`),
-          axisLabel: { color: ink, fontSize, fontWeight: 600 },
-          axisLine: { lineStyle: { color: gridColor } },
-          axisTick: { show: false },
-        },
-        yAxis: {
-          type: 'value',
-          name: 'GFLOPS',
-          nameTextStyle: { color: muted, fontSize: 12.5, padding: [0, 0, 4, 0] },
-          axisLabel: { color: muted, fontSize, formatter: (v: number) => fmtAxisTick(v, 'gflops') },
-          splitLine: { lineStyle: { color: gridColor, type: 'dashed' } },
-        },
-        dataZoom: enableZoom ? [{ type: 'inside' }, { type: 'slider', height: 20, bottom: 6 }] : [],
-        series,
       };
     }
 
     // -------------------------------------------------------------------------
     // MODE B: HORIZONTAL BAR (Live Running View for active N, OR when 1 N, OR forced)
-    // While running: BOTH GFLOPS/Speedup AND Time show live per-algorithm bars for active N!
+    // No live-growing jitter: bars stay empty until a kernel finishes, then rise crisply!
     // Once finished with >=2 N: smoothly transitions to Multi-N Line+Dot curves.
     // -------------------------------------------------------------------------
     const isSingleN = allNs.length <= 1;
-    const showLiveGrowingBar = isRunning || isSingleN || forceBar;
+    const showBarView = isRunning || isSingleN || forceBar;
 
-    if (showLiveGrowingBar) {
+    if (showBarView) {
       const targetN =
         (isRunning && activeStep?.n) ||
         measuredNs[measuredNs.length - 1] ||
@@ -306,39 +312,37 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
         plan?.sizes?.[0] ||
         512;
 
-      const algoKeys = ALGO_ORDER.filter(
-        (k) =>
-          !hiddenAlgos.has(k) &&
-          !(k === 'seq' && targetN >= 2048) &&
-          !(plan?.gpu_only && ALGO_META[k].group === 'cpu')
-      );
+      const algoKeys = ALGO_ORDER.filter((k) => {
+        if (hiddenAlgos.has(k)) return false;
+        if (k === 'seq' && targetN >= 2048) return false;
+        if (isRunning) {
+          if (plan?.algos?.length) return plan.algos.includes(k);
+          if (plan?.gpu_only && ALGO_META[k].group === 'cpu') return false;
+          return true;
+        }
+        return visible.some((r) => r.n === targetN && r.key === k);
+      });
 
       interface BarRow {
         key: AlgoKey;
         name: string;
         value: number | null;
-        isActiveNow: boolean;
         rec: BenchmarkRecord | null;
       }
 
       const rows: BarRow[] = algoKeys.map((k) => {
         const rec = getBest(visible, targetN, k);
-        const isActiveNow =
-          isRunning &&
-          activeStep?.phase === 'compute' &&
-          activeStep.n === targetN &&
-          activeStep.key === k;
-
-        let val: number | null = null;
-        if (kind === 'time' && isActiveNow && liveElapsedSec != null) {
-          val = Math.max(1, liveElapsedSec * 1000);
-        } else if (rec) {
-          val = kind === 'gflops' ? rec.gflops : kind === 'time' ? rec.time * 1000 : rec.speedup;
-        }
-        return { key: k, name: ALGO_META[k].name, value: val, isActiveNow, rec };
+        const val = rec
+          ? kind === 'gflops'
+            ? rec.gflops
+            : kind === 'time'
+            ? rec.time * 1000
+            : rec.speedup
+          : null;
+        return { key: k, name: ALGO_META[k].name, value: val, rec };
       });
 
-      // Keep stable top-to-bottom order while running so bars grow cleanly in place without jumping rows
+      // Keep stable top-to-bottom order while running so completed bars rise in place without jumping rows
       if (!isRunning) {
         rows.sort((a, b) => {
           const av = a.value ?? -1;
@@ -352,22 +356,24 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
       const hasAnyValue = rows.some((r) => r.value != null && r.value > 0);
       if (!hasAnyValue) {
         return {
-          title: {
-            text: isRunning
-              ? `Đang đo N = ${targetN}... cột sẽ tự mọc ngay khi từng thuật toán chạy`
-              : 'Chưa có dữ liệu — bấm Chạy thực nghiệm để bắt đầu',
-            left: 'center',
-            top: 'middle',
-            textStyle: { color: muted, fontSize: 14, fontWeight: 500 },
+          structKey: `bar|empty|${kind}|${targetN}|${theme}|${isRunning}`,
+          option: {
+            title: {
+              text: isRunning
+                ? `Đang đo N = ${targetN}... cột sẽ hiện lên ngay khi từng thuật toán xong`
+                : 'Chưa có dữ liệu — bấm Chạy thực nghiệm để bắt đầu',
+              left: 'center',
+              top: 'middle',
+              textStyle: { color: muted, fontSize: 14, fontWeight: 500 },
+            },
+            xAxis: { show: false },
+            yAxis: { show: false },
+            series: [],
           },
-          xAxis: { show: false },
-          yAxis: { show: false },
-          series: [],
         };
       }
 
-      // Use proportional linear axis while actively growing a live Time bar so real-time growth is unmistakable
-      const logAxis = useLogScale && !(isRunning && kind === 'time');
+      const logAxis = useLogScale;
       const unitLabel =
         kind === 'gflops'
           ? isRunning
@@ -375,118 +381,100 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
             : 'GFLOPS'
           : kind === 'time'
           ? isRunning
-            ? `Thời gian thực (ms · N=${targetN})`
+            ? `Thời gian (ms · N=${targetN})`
             : 'Thời gian (ms)'
           : isRunning
           ? `Speedup (× · N=${targetN})`
           : 'Speedup (×)';
 
       return {
-        animation: !reducedMotion && !(isRunning && kind === 'time' && liveElapsedSec != null),
-        animationDuration: 340,
-        animationDurationUpdate: isRunning && kind === 'time' ? 0 : 240,
-        animationEasing: 'cubicOut',
-        grid: {
-          top: compact ? 18 : 26,
-          right: compact ? 84 : 122,
-          bottom: enableZoom ? 54 : 34,
-          left: 14,
-          containLabel: true,
-        },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: { type: 'shadow' },
-          backgroundColor: tooltipBg,
-          borderColor: tooltipBorder,
-          textStyle: { color: ink, fontSize: 13 },
-          formatter: (params: any) => {
-            const p = Array.isArray(params) ? params[0] : params;
-            const row = rows[p.dataIndex];
-            if (!row) return '';
-            if (row.isActiveNow && kind === 'time') {
-              return `<strong>${row.name}</strong> (N = ${targetN})<br/><span style="color:${ALGO_META[row.key].color}">● Đang thực thi: <strong>${fmtMs(row.value ?? 0)}</strong></span>`;
-            }
-            if (!row.rec) return `<strong>${row.name}</strong><br/><span style="color:${muted}">Đang chờ thực thi...</span>`;
-            const tag = ALGO_META[row.key].group === 'gpu' ? 'GPU CUDA' : `${row.rec.threads}T`;
-            return `<div style="font-variant-numeric:tabular-nums">
+        structKey: `bar|data|${kind}|${targetN}|${theme}|${logAxis}|${enableZoom}|${compact}|${isRunning}|${rows.map((r) => r.key).join(',')}`,
+        option: {
+          animation: !reducedMotion,
+          animationDuration: 300,
+          animationDurationUpdate: 280,
+          animationEasing: 'cubicOut',
+          animationEasingUpdate: 'cubicOut',
+          grid: {
+            top: compact ? 18 : 26,
+            right: compact ? 84 : 122,
+            bottom: enableZoom ? 54 : 34,
+            left: 14,
+            containLabel: true,
+          },
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: { type: 'shadow' },
+            backgroundColor: tooltipBg,
+            borderColor: tooltipBorder,
+            textStyle: { color: ink, fontSize: 13 },
+            formatter: (params: any) => {
+              const p = Array.isArray(params) ? params[0] : params;
+              const row = rows[p.dataIndex];
+              if (!row) return '';
+              if (!row.rec) return `<strong>${row.name}</strong><br/><span style="color:${muted}">Đang chờ thực thi...</span>`;
+              const tag = ALGO_META[row.key].group === 'gpu' ? 'GPU CUDA' : `${row.rec.threads}T`;
+              return `<div style="font-variant-numeric:tabular-nums">
               <strong>${row.name}</strong> · N = ${targetN} (${tag})<br/>
               Hiệu năng: <strong>${row.rec.gflops.toFixed(2)} GFLOPS</strong><br/>
               Thời gian: <strong>${fmtMs(row.rec.time * 1000)}</strong><br/>
               Speedup: <strong>${row.rec.speedup.toFixed(2)}×</strong>
             </div>`;
+            },
           },
-        },
-        xAxis: {
-          type: logAxis ? 'log' : 'value',
-          logBase: 10,
-          min: logAxis ? undefined : 0,
-          name: unitLabel,
-          nameLocation: 'end',
-          nameTextStyle: { color: muted, fontSize: 12 },
-          axisLabel: {
-            color: muted,
-            fontSize,
-            formatter: (v: number) => fmtAxisTick(v, kind),
+          xAxis: {
+            type: logAxis ? 'log' : 'value',
+            logBase: 10,
+            min: logAxis ? undefined : 0,
+            name: unitLabel,
+            nameLocation: 'end',
+            nameTextStyle: { color: muted, fontSize: 12 },
+            axisLabel: {
+              color: muted,
+              fontSize,
+              formatter: (v: number) => fmtAxisTick(v, kind),
+            },
+            splitLine: { lineStyle: { color: gridColor, type: 'dashed' } },
           },
-          splitLine: { lineStyle: { color: gridColor, type: 'dashed' } },
-        },
-        yAxis: {
-          type: 'category',
-          data: rows.map((r) => (compact ? ALGO_META[r.key].shortName : r.name)),
-          axisLabel: { color: ink, fontSize, fontWeight: 600 },
-          axisLine: { lineStyle: { color: gridColor } },
-          axisTick: { show: false },
-        },
-        series: [
-          {
-            type: 'bar',
-            barMaxWidth: compact ? 22 : 30,
-            universalTransition: !isRunning,
-            data: rows.map((r) => {
-              const color = ALGO_META[r.key].color;
-              if (r.isActiveNow && kind === 'time') {
+          yAxis: {
+            type: 'category',
+            data: rows.map((r) => (compact ? ALGO_META[r.key].shortName : r.name)),
+            axisLabel: { color: ink, fontSize, fontWeight: 600 },
+            axisLine: { lineStyle: { color: gridColor } },
+            axisTick: { show: false },
+          },
+          series: [
+            {
+              id: `bar-${kind}`,
+              type: 'bar',
+              barMaxWidth: compact ? 22 : 30,
+              universalTransition: !isRunning,
+              data: rows.map((r) => {
+                const color = ALGO_META[r.key].color;
                 return {
                   value: r.value,
                   itemStyle: {
-                    color: `${color}55`,
-                    borderColor: color,
-                    borderWidth: 2,
-                    borderType: 'dashed',
+                    color,
                     borderRadius: [0, 4, 4, 0],
                   },
                   label: {
-                    show: true,
+                    show: r.value != null,
                     position: 'right',
-                    formatter: `● ${fmtMs(r.value ?? 0)}`,
-                    color,
-                    fontWeight: 700,
+                    formatter: () => {
+                      if (r.value == null) return '';
+                      if (kind === 'time') return fmtMs(r.value);
+                      if (kind === 'speedup') return `${r.value.toFixed(1)}×`;
+                      return `${r.value.toFixed(1)} G`;
+                    },
+                    color: ink,
+                    fontWeight: 600,
                     fontSize,
                   },
                 };
-              }
-              return {
-                value: r.value,
-                itemStyle: {
-                  color,
-                  borderRadius: [0, 4, 4, 0],
-                },
-                label: {
-                  show: r.value != null,
-                  position: 'right',
-                  formatter: () => {
-                    if (r.value == null) return '';
-                    if (kind === 'time') return fmtMs(r.value);
-                    if (kind === 'speedup') return `${r.value.toFixed(1)}×`;
-                    return `${r.value.toFixed(1)} G`;
-                  },
-                  color: ink,
-                  fontWeight: 600,
-                  fontSize,
-                },
-              };
-            }),
-          },
-        ],
+              }),
+            },
+          ],
+        },
       };
     }
 
@@ -495,15 +483,18 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
     // -------------------------------------------------------------------------
     if (!allNs.length || !presentKeys.length) {
       return {
-        title: {
-          text: 'Chưa có dữ liệu — bấm Chạy thực nghiệm để vẽ biểu đồ',
-          left: 'center',
-          top: 'middle',
-          textStyle: { color: muted, fontSize: 14, fontWeight: 500 },
+        structKey: `line|empty|${kind}|${theme}`,
+        option: {
+          title: {
+            text: 'Chưa có dữ liệu — bấm Chạy thực nghiệm để vẽ biểu đồ',
+            left: 'center',
+            top: 'middle',
+            textStyle: { color: muted, fontSize: 14, fontWeight: 500 },
+          },
+          xAxis: { show: false },
+          yAxis: { show: false },
+          series: [],
         },
-        xAxis: { show: false },
-        yAxis: { show: false },
-        series: [],
       };
     }
 
@@ -576,130 +567,87 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
       };
     });
 
-    // Subtle pulsing ripple on currently executing point (if running and we have a reference Y)
-    if (isRunning && activeStep && activeStep.phase === 'compute' && activeStep.key !== 'ref') {
-      const aKey = activeStep.key as AlgoKey;
-      const prevRec = visible.filter((r) => r.key === aKey).slice(-1)[0];
-      const approxY = prevRec
-        ? kind === 'gflops'
-          ? prevRec.gflops
-          : kind === 'time'
-          ? prevRec.time * 1000
-          : prevRec.speedup
-        : null;
-      const xIdx = allNs.indexOf(activeStep.n);
-      if (xIdx >= 0 && approxY != null && approxY > 0) {
-        series.push({
-          name: 'Đang đo',
-          type: 'effectScatter',
-          silent: true,
-          rippleEffect: { brushType: 'stroke', scale: 3.4, period: 2.2 },
-          symbolSize: 10,
-          itemStyle: { color: ALGO_META[aKey].color },
-          data: [[`N=${activeStep.n}`, approxY]],
-        });
-      }
-    }
-
     return {
-      animation: !reducedMotion,
-      animationDuration: 360,
-      animationDurationUpdate: 220,
-      animationEasing: 'cubicOut',
-      grid: {
-        top: compact ? 22 : 28,
-        right: compact ? 26 : 156,
-        bottom: enableZoom ? 56 : 36,
-        left: 16,
-        containLabel: true,
-      },
-      tooltip: {
-        trigger: 'axis',
-        backgroundColor: tooltipBg,
-        borderColor: tooltipBorder,
-        textStyle: { color: ink, fontSize: 13 },
-        axisPointer: { type: 'line', lineStyle: { color: muted, type: 'dashed' } },
-        formatter: (params: any) => {
-          const items = (Array.isArray(params) ? params : [params])
-            .filter((p) => p.value != null && p.seriesType === 'line')
-            .sort((a, b) => (kind === 'time' ? a.value - b.value : b.value - a.value));
-          if (!items.length) return '';
-          const head = `<div style="font-weight:700;margin-bottom:6px">${items[0].axisValue} — Xếp hạng ${unitLabel}</div>`;
-          const rows = items
-            .map((p) => {
-              const v = Number(p.value);
-              const txt =
-                kind === 'time'
-                  ? fmtMs(v)
-                  : kind === 'speedup'
-                  ? `${v.toFixed(2)}×`
-                  : `${v.toFixed(2)} GFLOPS`;
-              return `<div style="display:flex;justify-content:space-between;gap:18px;font-variant-numeric:tabular-nums;margin:2px 0">
+      structKey: `line|data|${kind}|${theme}|${logAxis}|${enableZoom}|${compact}|${presentKeys.join(',')}`,
+      option: {
+        animation: !reducedMotion,
+        animationDuration: 320,
+        animationDurationUpdate: 260,
+        animationEasing: 'cubicOut',
+        animationEasingUpdate: 'cubicOut',
+        grid: {
+          top: compact ? 22 : 28,
+          right: compact ? 26 : 156,
+          bottom: enableZoom ? 56 : 36,
+          left: 16,
+          containLabel: true,
+        },
+        tooltip: {
+          trigger: 'axis',
+          backgroundColor: tooltipBg,
+          borderColor: tooltipBorder,
+          textStyle: { color: ink, fontSize: 13 },
+          axisPointer: { type: 'line', lineStyle: { color: muted, type: 'dashed' } },
+          formatter: (params: any) => {
+            const items = (Array.isArray(params) ? params : [params])
+              .filter((p) => p.value != null && p.seriesType === 'line')
+              .sort((a, b) => (kind === 'time' ? a.value - b.value : b.value - a.value));
+            if (!items.length) return '';
+            const head = `<div style="font-weight:700;margin-bottom:6px">${items[0].axisValue} — Xếp hạng ${unitLabel}</div>`;
+            const rows = items
+              .map((p) => {
+                const v = Number(p.value);
+                const txt =
+                  kind === 'time'
+                    ? fmtMs(v)
+                    : kind === 'speedup'
+                    ? `${v.toFixed(2)}×`
+                    : `${v.toFixed(2)} GFLOPS`;
+                return `<div style="display:flex;justify-content:space-between;gap:18px;font-variant-numeric:tabular-nums;margin:2px 0">
                 <span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:${p.color};margin-right:6px"></span>${p.seriesName}</span>
                 <strong>${txt}</strong>
               </div>`;
-            })
-            .join('');
-          return head + rows;
+              })
+              .join('');
+            return head + rows;
+          },
         },
-      },
-      xAxis: {
-        type: 'category',
-        boundaryGap: true,
-        data: allNs.map((n) => `N=${n}`),
-        axisLabel: { color: ink, fontSize, fontWeight: 600 },
-        axisLine: { lineStyle: { color: gridColor } },
-        axisTick: { show: false },
-      },
-      yAxis: {
-        type: logAxis ? 'log' : 'value',
-        logBase: 10,
-        min: logAxis ? undefined : 0,
-        name: unitLabel,
-        nameTextStyle: { color: muted, fontSize: 12.5, padding: [0, 0, 4, 0] },
-        axisLabel: {
-          color: muted,
-          fontSize,
-          formatter: (v: number) => fmtAxisTick(v, kind),
+        xAxis: {
+          type: 'category',
+          boundaryGap: true,
+          data: allNs.map((n) => `N=${n}`),
+          axisLabel: { color: ink, fontSize, fontWeight: 600 },
+          axisLine: { lineStyle: { color: gridColor } },
+          axisTick: { show: false },
         },
-        splitLine: { lineStyle: { color: gridColor, type: 'dashed' } },
+        yAxis: {
+          type: logAxis ? 'log' : 'value',
+          logBase: 10,
+          min: logAxis ? undefined : 0,
+          name: unitLabel,
+          nameTextStyle: { color: muted, fontSize: 12.5, padding: [0, 0, 4, 0] },
+          axisLabel: {
+            color: muted,
+            fontSize,
+            formatter: (v: number) => fmtAxisTick(v, kind),
+          },
+          splitLine: { lineStyle: { color: gridColor, type: 'dashed' } },
+        },
+        dataZoom: enableZoom ? [{ type: 'inside' }, { type: 'slider', height: 20, bottom: 6 }] : [],
+        series,
       },
-      dataZoom: enableZoom ? [{ type: 'inside' }, { type: 'slider', height: 20, bottom: 6 }] : [],
-      series,
     };
   };
 
-  // Standard reactive update when records / settings / theme change
+  // Reactive update: smooth incremental rise when only records change; full replace on structural changes
   useEffect(() => {
     if (!chartRef.current) return;
-    const elapsed =
-      isRunning && activeStep?.phase === 'compute'
-        ? Math.max(0.01, (performance.now() - activeStep.startedAtMs) / 1000)
-        : null;
-    chartRef.current.setOption(buildOption(elapsed), { notMerge: true });
+    const { option, structKey } = buildOption();
+    const shouldReplace = prevStructKeyRef.current !== structKey;
+    prevStructKeyRef.current = structKey;
+    chartRef.current.setOption(option, { notMerge: shouldReplace });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [kind, records, hiddenAlgos, useLogScale, threadN, theme, plan, activeStep, isRunning, enableZoom, compact, forceBar]);
-
-  // Dedicated 25fps rAF loop for LIVE GROWING active Time bar (outside React state!)
-  useEffect(() => {
-    if (kind !== 'time' || !isRunning || !activeStep || activeStep.phase !== 'compute') return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    let rafId = 0;
-    let lastDraw = 0;
-    const loop = (now: number) => {
-      if (now - lastDraw >= 40) {
-        lastDraw = now;
-        const elapsed = Math.max(0.01, (performance.now() - activeStep.startedAtMs) / 1000);
-        liveElapsedRef.current = elapsed;
-        chartRef.current?.setOption(buildOption(elapsed), { notMerge: true });
-      }
-      rafId = requestAnimationFrame(loop);
-    };
-    rafId = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(rafId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [kind, isRunning, activeStep, records, hiddenAlgos, useLogScale, theme]);
 
   return <div ref={containerRef} style={{ width: '100%', height }} />;
 });

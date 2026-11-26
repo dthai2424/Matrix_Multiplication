@@ -56,12 +56,24 @@ if (DIST_DIR / "assets").exists():
     app.mount("/assets", StaticFiles(directory=str(DIST_DIR / "assets")), name="assets")
 
 
+ALL_ALGOS: List[str] = [
+    "seq",
+    "omp_basic",
+    "omp_l2_l3",
+    "omp_bypass",
+    "hybrid",
+    "cuda_global",
+    "cuda_shared",
+]
+
+
 class RunRequest(BaseModel):
     sizes: List[int] = Field(default=[512, 1024, 2048], min_length=1, max_length=12)
     threads: List[int] = Field(default=[1, 2, 4, 8], min_length=1, max_length=12)
     runs: int = Field(default=3, ge=1, le=20)
     cuda_tile: int = Field(default=16)
     gpu_only: bool = Field(default=False)
+    algos: Optional[List[str]] = Field(default=None)
     reset_hybrid_cfg: bool = Field(default=False)
 
 
@@ -304,7 +316,7 @@ def parse_hybrid_cfg(cfg_path: Path) -> List[Dict[str, Any]]:
 def build_execution_plan(
     sizes: List[int],
     threads: List[int],
-    gpu_only: bool,
+    algos: List[str],
     has_gpu: bool,
     logical_cores: int,
 ) -> Dict[str, Any]:
@@ -314,25 +326,30 @@ def build_execution_plan(
         eff_threads.append(logical_cores)
         eff_threads.sort()
 
+    algo_set = set(algos)
+    cpu_parallel_cnt = sum(1 for k in ("omp_basic", "omp_l2_l3", "omp_bypass") if k in algo_set)
+    hybrid_cnt = 1 if ("hybrid" in algo_set and has_gpu) else 0
+    threaded_cnt = cpu_parallel_cnt + hybrid_cnt
+    cuda_cnt = sum(1 for k in ("cuda_global", "cuda_shared") if k in algo_set and has_gpu)
+
     per_size: Dict[str, int] = {}
     total = 0
     for n in sizes:
         cur_t = [8, 16] if n >= 2048 else eff_threads
         cnt = 0
-        if not gpu_only and n < 2048:
-            cnt += 1  # Sequential baseline
-        if not gpu_only:
-            cnt += len(cur_t) * (4 if has_gpu else 3)
-        elif has_gpu:
-            cnt += len(cur_t)  # Hybrid only per thread
-        if has_gpu:
-            cnt += 2  # CUDA Global + CUDA Shared
+        if "seq" in algo_set and n < 2048:
+            cnt += 1
+        if threaded_cnt > 0:
+            cnt += len(cur_t) * threaded_cnt
+        cnt += cuda_cnt
         per_size[str(n)] = cnt
         total += cnt
 
+    gpu_only = not any(k in algo_set for k in ("seq", "omp_basic", "omp_l2_l3", "omp_bypass"))
     return {
         "sizes": sizes,
         "threads": eff_threads,
+        "algos": algos,
         "gpu_only": gpu_only,
         "has_gpu": has_gpu,
         "per_size": per_size,
@@ -747,6 +764,16 @@ def api_run(req: RunRequest):
     if not clean_sizes or not clean_threads:
         raise HTTPException(status_code=400, detail="Danh sách N và Threads không hợp lệ.")
 
+    if req.algos is not None:
+        req_set = {a.strip().lower() for a in req.algos}
+        selected_algos = [a for a in ALL_ALGOS if a in req_set]
+        if not selected_algos:
+            raise HTTPException(status_code=400, detail="Hãy chọn ít nhất 1 thuật toán hợp lệ.")
+    elif req.gpu_only:
+        selected_algos = ["hybrid", "cuda_global", "cuda_shared"]
+    else:
+        selected_algos = list(ALL_ALGOS)
+
     cwd = binary.parent
     if req.reset_hybrid_cfg:
         cfg_file = cwd / "hybrid_alpha.cfg"
@@ -769,14 +796,14 @@ def api_run(req: RunRequest):
         "-o",
         "benchmark_results.csv",
     ]
-    if req.gpu_only:
-        cmd.append("--gpu-only")
+    if selected_algos != ALL_ALGOS:
+        cmd.extend(["--algos", ",".join(selected_algos)])
 
     hw = detect_hardware_info()
     plan = build_execution_plan(
         clean_sizes,
         clean_threads,
-        req.gpu_only,
+        selected_algos,
         hw["has_gpu"],
         hw["logical_cores"],
     )

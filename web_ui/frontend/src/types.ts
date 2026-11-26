@@ -71,6 +71,7 @@ export interface HybridState {
 export interface ExecutionPlan {
   sizes: number[];
   threads: number[];
+  algos?: AlgoKey[];
   gpu_only: boolean;
   has_gpu: boolean;
   per_size: Record<string, number>;
