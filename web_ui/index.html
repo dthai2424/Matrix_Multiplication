@@ -1,0 +1,2331 @@
+<!DOCTYPE html>
+<html lang="vi" data-type="software" data-radius="sharp" data-buttons="solid" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>MatMul Bench — Thực nghiệm nhân ma trận OpenMP và CUDA</title>
+  <style>
+    /* =========================================================================
+       Design System — Sharp Developer Tool (90-95% neutral, zero violet)
+       ========================================================================= */
+    :root {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --subtle: #f4f4f5;
+      --border: #e4e4e7;
+      --border-strong: #a1a1aa;
+      --ink: #18181b;
+      --muted: #52525b;
+      --accent: #0f766e;
+      --accent-ink: #ffffff;
+      --danger: #e11d48;
+      --ok: #15803d;
+      --warn: #b45309;
+      --r-sm: 4px;
+      --r-md: 6px;
+      --r-lg: 8px;
+      --ease: cubic-bezier(.2, .8, .2, 1);
+      --ease-enter: cubic-bezier(.22, 1, .36, 1);
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+
+    html[data-theme="dark"] {
+      --bg: #09090b;
+      --surface: #111113;
+      --subtle: #18181b;
+      --border: #27272a;
+      --border-strong: #52525b;
+      --ink: #f4f4f5;
+      --muted: #a1a1aa;
+      --accent: #14b8a6;
+      --accent-ink: #042f2e;
+      --danger: #fb7185;
+      --ok: #4ade80;
+      --warn: #fbbf24;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      width: min(100% - clamp(24px, 5vw, 96px), 1280px);
+      margin-inline: auto;
+    }
+
+    .tabular { font-variant-numeric: tabular-nums; }
+    .mono { font-family: var(--font-mono); }
+    .muted { color: var(--muted); }
+    .hidden { display: none !important; }
+
+    .visually-hidden:where(:not(:focus-within, :active)) {
+      position: absolute !important;
+      clip-path: inset(50%) !important;
+      overflow: hidden !important;
+      width: 1px !important;
+      height: 1px !important;
+      margin: -1px !important;
+      padding: 0 !important;
+      border: 0 !important;
+      white-space: nowrap !important;
+    }
+    .skip-link:focus-visible {
+      position: fixed;
+      top: 8px;
+      left: 16px;
+      z-index: 80;
+      padding: 10px 16px;
+      border-radius: var(--r-md);
+      background: var(--accent);
+      color: var(--accent-ink);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    @keyframes settleIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .enter-once {
+      animation: settleIn 500ms var(--ease-enter) both;
+    }
+
+    /* Header */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      height: 56px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+    }
+    .topbar__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .brand__name {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+    }
+    .brand__hw {
+      font-size: 13px;
+      color: var(--muted);
+      border-left: 1px solid var(--border);
+      padding-left: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .mode-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--muted);
+      flex-shrink: 0;
+    }
+    .mode-dot--live { background: var(--ok); }
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    /* Buttons: one strict pair */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 0 18px;
+      border-radius: var(--r-md);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1;
+      cursor: pointer;
+      white-space: nowrap;
+      border: 1px solid transparent;
+      text-decoration: none;
+      transition: transform 150ms var(--ease), background-color 150ms var(--ease), border-color 150ms var(--ease), opacity 150ms ease;
+    }
+    .btn--sm {
+      min-height: 36px;
+      padding: 0 12px;
+      font-size: 13px;
+    }
+    .btn--full { width: 100%; }
+    .btn--primary {
+      background: var(--accent);
+      color: var(--accent-ink);
+      border-color: var(--accent);
+    }
+    .btn--secondary {
+      background: transparent;
+      color: var(--ink);
+      border-color: var(--border);
+    }
+    .btn--secondary[aria-pressed="true"] {
+      background: var(--subtle);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .btn--danger {
+      background: transparent;
+      color: var(--danger);
+      border-color: var(--danger);
+    }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn .m-arrow { transition: transform 150ms var(--ease); }
+
+    @media (hover: hover) and (pointer: fine) {
+      .btn:not(:disabled):hover { transform: translateY(-1px); }
+      .btn--primary:not(:disabled):hover { opacity: 0.92; }
+      .btn--primary:not(:disabled):hover .m-arrow { transform: translateX(3px); }
+      .btn--secondary:not(:disabled):hover { background: var(--subtle); border-color: var(--ink); }
+      .btn--danger:not(:disabled):hover { background: rgba(225, 29, 72, 0.08); }
+    }
+    .btn:not(:disabled):active {
+      transform: translateY(1px) scale(0.985);
+      transition-duration: 90ms;
+    }
+
+    .text-btn {
+      background: none;
+      border: 0;
+      padding: 0;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent);
+      cursor: pointer;
+    }
+    .text-btn:hover { text-decoration: underline; }
+    .text-btn--danger { color: var(--danger); }
+
+    /* Layout */
+    main {
+      padding-block: 28px 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 44px;
+    }
+    .page-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .page-head h1 {
+      margin: 0;
+      font-size: clamp(22px, 2.2vw, 28px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    .page-head p {
+      margin: 6px 0 0;
+      font-size: 15px;
+      color: var(--muted);
+    }
+
+    /* Split Workbench */
+    .workbench {
+      display: grid;
+      grid-template-columns: 360px minmax(0, 1fr);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      background: var(--surface);
+      overflow: hidden;
+    }
+    .rail {
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .stage {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* Tabs */
+    .tablist {
+      display: flex;
+      overflow-x: auto;
+      gap: 4px;
+      border-bottom: 1px solid var(--border);
+      scroll-snap-type: inline proximity;
+    }
+    .tablist--bare { border-bottom: 0; }
+    .rail__tabs {
+      padding: 6px 16px 0;
+      background: var(--subtle);
+    }
+    .tab-btn {
+      position: relative;
+      flex: none;
+      min-height: 42px;
+      padding: 0 12px;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--muted);
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+      white-space: nowrap;
+      scroll-snap-align: start;
+      transition: color 150ms var(--ease);
+    }
+    .tab-btn:hover,
+    .tab-btn[aria-selected="true"] { color: var(--ink); }
+    .tab-btn[aria-selected="true"]::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0 0;
+      border-block-end: 2px solid var(--accent);
+    }
+
+    /* Forms */
+    .panel-pad {
+      padding: 18px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .field-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+    .field-hint {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .field-input {
+      width: 100%;
+      min-height: 42px;
+      padding: 8px 11px;
+      font-family: inherit;
+      font-size: 14px;
+      border-radius: var(--r-md);
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--ink);
+      transition: border-color 140ms ease;
+    }
+    .field-input:hover { border-color: var(--border-strong); }
+    .field-input--area {
+      min-height: 112px;
+      resize: vertical;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .error-msg {
+      display: none;
+      margin-top: 5px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--danger);
+    }
+    .field-input:is(:user-invalid, .user-invalid-fallback) { border-color: var(--danger); }
+    .field-input:is(:user-invalid, .user-invalid-fallback) + .error-msg { display: block; }
+    .field-input:is(:user-valid, .user-valid-fallback) { border-color: var(--ok); }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .grid-5 { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+    .row-between { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+
+    .seg-btn {
+      min-height: 36px;
+      padding: 0 6px;
+      border-radius: var(--r-sm);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: transform 100ms var(--ease), border-color 140ms ease, background-color 140ms ease, color 140ms ease;
+    }
+    .seg-btn[aria-pressed="true"] {
+      background: var(--ink);
+      color: var(--bg);
+      border-color: var(--ink);
+    }
+    .seg-btn:hover { border-color: var(--ink); color: var(--ink); }
+    .seg-btn[aria-pressed="true"]:hover { color: var(--bg); opacity: 0.9; }
+    .seg-btn:active { transform: scale(0.97); }
+
+    .check-list {
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      background: var(--bg);
+      overflow: hidden;
+    }
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 11px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      font-size: 13.5px;
+      user-select: none;
+    }
+    .check-item:last-child { border-bottom: 0; }
+    .check-item:hover { background: var(--subtle); }
+    .check-item input { width: 16px; height: 16px; accent-color: var(--accent); margin: 0; }
+    .swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .cli-box {
+      padding: 9px 11px;
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      background: var(--subtle);
+      overflow-x: auto;
+      font-size: 12.5px;
+      white-space: nowrap;
+    }
+
+    .checkbox-inline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--muted);
+      cursor: pointer;
+      user-select: none;
+    }
+    .checkbox-inline input { width: 16px; height: 16px; accent-color: var(--accent); margin: 0; }
+
+    /* Progress & Console */
+    .progress-box {
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .progress-track {
+      width: 100%;
+      height: 4px;
+      background: var(--subtle);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 160ms linear;
+    }
+    .console-log {
+      margin: 0;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      background: var(--subtle);
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.5;
+      max-height: 150px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* Right Stage */
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      background: var(--subtle);
+      border-bottom: 1px solid var(--border);
+    }
+    .kpi-cell {
+      padding: 14px 18px;
+      border-right: 1px solid var(--border);
+      min-width: 0;
+    }
+    .kpi-cell:last-child { border-right: 0; }
+    .kpi-cell__label { font-size: 13px; color: var(--muted); font-weight: 500; }
+    .kpi-cell__val {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-top: 2px;
+      color: var(--ink);
+    }
+    .kpi-cell__val--accent { color: var(--accent); }
+    .kpi-cell__sub {
+      font-size: 12.5px;
+      color: var(--muted);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .stage-bar {
+      padding: 8px 20px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .stage-bar__controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 6px;
+    }
+    .select-sm {
+      height: 36px;
+      padding: 0 10px;
+      border-radius: var(--r-md);
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--ink);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .legend-bar {
+      padding: 10px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .legend-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 30px;
+      padding: 0 9px;
+      border-radius: var(--r-sm);
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--ink);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 140ms ease, border-color 140ms ease;
+    }
+    .legend-toggle:hover { border-color: var(--ink); }
+    .legend-toggle[aria-pressed="false"] { opacity: 0.36; text-decoration: line-through; }
+
+    .stage-body {
+      padding: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+    .chart-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .chart-head h2 { margin: 0; font-size: 15px; font-weight: 600; }
+    .chart-head span { font-size: 13px; color: var(--muted); }
+
+    .canvas-single { width: 100%; height: 370px; display: block; }
+    .canvas-grid { width: 100%; height: 250px; display: block; }
+    .charts-2x2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    /* Hybrid Load-Balancing Panel */
+    .hybrid-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .score-pair {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      overflow: hidden;
+    }
+    .score-box {
+      padding: 14px 16px;
+      border-right: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .score-box:last-child { border-right: 0; }
+    .score-box__lbl { font-size: 13px; color: var(--muted); font-weight: 500; }
+    .score-box__val { font-size: 22px; font-weight: 700; margin-top: 2px; }
+    .score-box__sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+    .split-bar-wrap { display: flex; flex-direction: column; gap: 8px; }
+    .split-bar {
+      display: flex;
+      height: 36px;
+      border-radius: var(--r-sm);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .split-bar__gpu {
+      background: #16a34a;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      transition: width 160ms var(--ease);
+    }
+    .split-bar__cpu {
+      background: #0284c7;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      transition: width 160ms var(--ease);
+    }
+
+    .sim-slider-box {
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      background: var(--subtle);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .sim-slider-box input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    /* Tables Section */
+    .section-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 14px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      margin-bottom: 18px;
+    }
+    .section-head h2 {
+      margin: 0 0 6px;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .table-wrapper {
+      overflow: auto;
+      max-inline-size: 100%;
+      max-block-size: min(460px, 65vh);
+      container-type: inline-size;
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      background: var(--surface);
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 13px;
+    }
+    .data-table thead {
+      position: sticky;
+      inset-block-start: 0;
+      z-index: 2;
+    }
+    .data-table thead th {
+      background: var(--subtle);
+      color: var(--muted);
+      font-weight: 600;
+      text-align: left;
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .data-table tbody th,
+    .data-table tbody td {
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+    .data-table tbody tr:last-child th,
+    .data-table tbody tr:last-child td { border-bottom: 0; }
+    .data-table tbody th {
+      position: sticky;
+      inset-inline-start: 0;
+      z-index: 1;
+      background: var(--surface);
+      text-align: left;
+      font-weight: 600;
+    }
+    .data-table tbody tr:hover th,
+    .data-table tbody tr:hover td { background: var(--subtle); }
+
+    .data-table--detail {
+      --label-2: "Kích thước N";
+      --label-3: "Luồng";
+      --label-4: "Thời gian (s)";
+      --label-5: "GFLOPS";
+      --label-6: "Speedup";
+      --label-7: "Kiểm định";
+      --label-8: "Thao tác";
+    }
+    .data-table--milestone {
+      --label-2: "Phương pháp tối ưu";
+      --label-3: "CPU thuần tốt nhất";
+      --label-4: "Hybrid CPU+GPU";
+      --label-5: "GPU thuần tốt nhất";
+      --label-6: "Tỷ lệ GPU / CPU";
+    }
+
+    @container (width < 680px) {
+      .data-table, .data-table thead, .data-table tbody,
+      .data-table tr, .data-table th, .data-table td { display: block; }
+      .data-table thead { display: none; }
+      .data-table tr {
+        margin: 12px;
+        border: 1px solid var(--border);
+        border-radius: var(--r-md);
+        overflow: hidden;
+      }
+      .data-table tbody th {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 2;
+        background: var(--subtle);
+        border-bottom: 1px solid var(--border);
+      }
+      .data-table tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        white-space: normal;
+      }
+      .data-table tbody td::before { font-weight: 500; color: var(--muted); }
+      .data-table tbody td:nth-child(2)::before { content: var(--label-2) ": "; }
+      .data-table tbody td:nth-child(3)::before { content: var(--label-3) ": "; }
+      .data-table tbody td:nth-child(4)::before { content: var(--label-4) ": "; }
+      .data-table tbody td:nth-child(5)::before { content: var(--label-5) ": "; }
+      .data-table tbody td:nth-child(6)::before { content: var(--label-6) ": "; }
+      .data-table tbody td:nth-child(7)::before { content: var(--label-7) ": "; }
+      .data-table tbody td:nth-child(8)::before { content: var(--label-8) ": "; }
+    }
+
+    #chartTooltip {
+      position: fixed;
+      pointer-events: none;
+      display: none;
+      z-index: 60;
+      padding: 10px 12px;
+      border-radius: var(--r-md);
+      font-size: 13px;
+      line-height: 1.5;
+      background: var(--surface);
+      color: var(--ink);
+      border: 1px solid var(--border);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+      max-width: 280px;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding-block: 18px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 1024px) {
+      .workbench { grid-template-columns: 1fr; }
+      .rail { border-right: 0; border-bottom: 1px solid var(--border); }
+      .kpi-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .kpi-cell:nth-child(2) { border-right: 0; }
+      .kpi-cell:nth-child(1), .kpi-cell:nth-child(2) { border-bottom: 1px solid var(--border); }
+    }
+    @media (max-width: 680px) {
+      .brand__hw { display: none; }
+      .charts-2x2, .score-pair { grid-template-columns: 1fr; }
+      .score-box { border-right: 0; border-bottom: 1px solid var(--border); }
+      .score-box:last-child { border-bottom: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .enter-once, .btn, .seg-btn, .tab-btn, .m-arrow { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="wrap topbar__inner">
+      <a class="skip-link visually-hidden" href="#workbench">Bỏ qua đến vùng làm việc</a>
+
+      <div class="brand">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <rect x="2" y="2" width="6.5" height="6.5" rx="1" fill="currentColor"/>
+          <rect x="11.5" y="2" width="6.5" height="6.5" rx="1" stroke="currentColor" stroke-width="1.5"/>
+          <rect x="2" y="11.5" width="6.5" height="6.5" rx="1" stroke="currentColor" stroke-width="1.5"/>
+          <rect x="11.5" y="11.5" width="6.5" height="6.5" rx="1" fill="var(--accent)"/>
+        </svg>
+        <span class="brand__name">MatMul Bench</span>
+        <span id="modeDot" class="mode-dot" title="Trạng thái kết nối backend"></span>
+        <span id="hwHeaderLine" class="brand__hw">Đang kiểm tra phần cứng Colab...</span>
+      </div>
+
+      <div class="toolbar-actions">
+        <a id="btnDownloadXls" href="/api/download/xls" class="btn btn--secondary btn--sm hidden" download>Tải Excel (.xls)</a>
+        <button type="button" id="btnExportCsv" class="btn btn--secondary btn--sm">Xuất CSV</button>
+        <button type="button" id="btnLoadSample" class="btn btn--secondary btn--sm">Nạp mẫu</button>
+        <button type="button" id="btnTheme" class="btn btn--secondary btn--sm" aria-label="Chuyển giao diện sáng tối">Tối</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="workbench" class="wrap">
+    <section aria-labelledby="pageTitle" class="enter-once">
+      <div class="page-head">
+        <div>
+          <h1 id="pageTitle">Thực nghiệm nhân ma trận OpenMP và CUDA</h1>
+          <p id="modeSubtitle">Nhập tham số ở cột trái để chạy thực nghiệm trực tiếp và xem biểu đồ cập nhật ngay bên phải.</p>
+        </div>
+        <div id="datasetMeta" class="muted tabular" style="font-weight: 500;">0 điểm đo · 0 mốc N</div>
+      </div>
+
+      <div class="workbench">
+        <!-- LEFT RAIL -->
+        <div class="rail">
+          <div class="rail__tabs">
+            <div id="inputTablist" class="tablist tablist--bare" role="tablist" focusgroup="tablist nomemory" aria-label="Phương thức nhập thực nghiệm">
+              <button type="button" role="tab" id="tab-run" class="tab-btn" aria-selected="true" focusgroupstart>Cấu hình chạy</button>
+              <button type="button" role="tab" id="tab-manual" class="tab-btn" aria-selected="false">Nhập tay</button>
+              <button type="button" role="tab" id="tab-csv" class="tab-btn" aria-selected="false">Import CSV</button>
+            </div>
+          </div>
+
+          <!-- Panel 1: Run Config -->
+          <div role="tabpanel" id="panel-run" aria-labelledby="tab-run" tabindex="0">
+            <div class="panel-pad">
+              <form id="simRunForm" novalidate style="display:flex; flex-direction:column; gap:16px;">
+                <div>
+                  <span class="field-label">Kích thước ma trận (N × N)</span>
+                  <div id="nChipsGroup" class="grid-5" role="group" aria-label="Chọn nhanh kích thước N">
+                    <button type="button" class="seg-btn tabular" data-n="256" aria-pressed="false">256</button>
+                    <button type="button" class="seg-btn tabular" data-n="512" aria-pressed="true">512</button>
+                    <button type="button" class="seg-btn tabular" data-n="1024" aria-pressed="true">1024</button>
+                    <button type="button" class="seg-btn tabular" data-n="2048" aria-pressed="true">2048</button>
+                    <button type="button" class="seg-btn tabular" data-n="4096" aria-pressed="false">4096</button>
+                  </div>
+                  <div style="margin-top:10px;">
+                    <label for="customNInput" class="field-label">Thêm N tùy chỉnh</label>
+                    <span id="customNHint" class="field-hint">Số nguyên 64–16384, cách nhau bởi dấu phẩy</span>
+                    <input type="text" id="customNInput" class="field-input tabular" placeholder="768, 1536" pattern="^\s*(\d+(\s*,\s*\d+)*)?\s*$" aria-describedby="customNHint" data-error="customNError">
+                    <div id="customNError" class="error-msg">Lỗi: Chỉ nhập số nguyên dương cách nhau bởi dấu phẩy.</div>
+                  </div>
+                </div>
+
+                <div>
+                  <span class="field-label">Số luồng CPU OpenMP</span>
+                  <div id="tChipsGroup" class="grid-5" role="group" aria-label="Chọn danh sách số luồng CPU">
+                    <button type="button" class="seg-btn tabular" data-t="1" aria-pressed="true">1T</button>
+                    <button type="button" class="seg-btn tabular" data-t="2" aria-pressed="true">2T</button>
+                    <button type="button" class="seg-btn tabular" data-t="4" aria-pressed="true">4T</button>
+                    <button type="button" class="seg-btn tabular" data-t="8" aria-pressed="true">8T</button>
+                    <button type="button" class="seg-btn tabular" data-t="16" aria-pressed="false">16T</button>
+                  </div>
+                </div>
+
+                <div class="grid-2">
+                  <div>
+                    <label for="runsInput" class="field-label">Số lần lặp</label>
+                    <span id="runsHint" class="field-hint">1 đến 10</span>
+                    <input type="number" id="runsInput" class="field-input tabular" value="3" min="1" max="10" required aria-describedby="runsHint" data-error="runsError">
+                    <div id="runsError" class="error-msg">Lỗi: Nhập từ 1 đến 10.</div>
+                  </div>
+                  <div>
+                    <label for="cudaTileSelect" class="field-label">CUDA Shared Tile</label>
+                    <span class="field-hint">Kích thước khối</span>
+                    <select id="cudaTileSelect" class="field-input tabular">
+                      <option value="16" selected>16 × 16</option>
+                      <option value="32">32 × 32</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="row-between" style="margin-bottom:6px;">
+                    <span class="field-label" style="margin:0;">Nhóm thuật toán</span>
+                    <div style="display:flex; gap:12px;">
+                      <button type="button" id="btnSelectAllAlgos" class="text-btn">Tất cả</button>
+                      <button type="button" id="btnSelectGpuOnly" class="text-btn">Chỉ GPU &amp; Hybrid</button>
+                    </div>
+                  </div>
+                  <div id="algoCheckboxGroup" class="check-list"></div>
+                </div>
+
+                <div>
+                  <div class="row-between" style="margin-bottom:5px;">
+                    <span class="field-label" style="margin:0;">Lệnh CLI thực thi</span>
+                    <button type="button" id="btnCopyCli" class="text-btn" style="display:inline-flex; align-items:center; gap:5px;">
+                      <svg id="copyIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                      </svg>
+                      <span id="copyLabel">Sao chép</span>
+                    </button>
+                  </div>
+                  <div class="cli-box mono" id="cliPreview">./matmul_benchmark -N 512,1024,2048 -t 1,2,4,8 -r 3 --cuda-tile 16</div>
+                </div>
+
+                <label class="checkbox-inline">
+                  <input type="checkbox" id="chkResetHybrid" checked>
+                  Đo lại điểm CPU/GPU mới (xóa cache hybrid_alpha.cfg)
+                </label>
+
+                <div style="display:flex; gap:8px;">
+                  <button type="submit" id="btnRunBenchmark" class="btn btn--primary btn--full">
+                    <span id="runBtnLabel">Chạy thực nghiệm</span>
+                    <svg class="m-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>
+                    </svg>
+                  </button>
+                  <button type="button" id="btnCancelJob" class="btn btn--danger hidden">Dừng</button>
+                </div>
+              </form>
+
+              <div id="runProgressBox" class="progress-box hidden">
+                <div class="row-between" style="font-size:13px; font-weight:600;">
+                  <span id="runStatusText" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Đang chạy...</span>
+                  <span id="runPercentText" class="tabular" style="color:var(--accent);">0%</span>
+                </div>
+                <div class="progress-track"><div id="runProgressBar" class="progress-fill"></div></div>
+                <pre id="runConsoleLog" class="console-log"></pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel 2: Manual Entry -->
+          <div role="tabpanel" id="panel-manual" aria-labelledby="tab-manual" hidden="until-found">
+            <div class="panel-pad">
+              <form id="manualEntryForm" novalidate style="display:flex; flex-direction:column; gap:14px;">
+                <div>
+                  <label for="mAlgo" class="field-label">Thuật toán</label>
+                  <select id="mAlgo" class="field-input"></select>
+                </div>
+                <div class="grid-2">
+                  <div>
+                    <label for="mSize" class="field-label">Kích thước N</label>
+                    <span id="mSizeHint" class="field-hint">64 đến 16384</span>
+                    <input type="number" id="mSize" class="field-input tabular" value="1024" min="64" max="16384" step="64" required aria-describedby="mSizeHint" data-error="mSizeError">
+                    <div id="mSizeError" class="error-msg">Lỗi: Nhập N từ 64 đến 16384.</div>
+                  </div>
+                  <div>
+                    <label for="mThreads" class="field-label">Số luồng</label>
+                    <span id="mThreadsHint" class="field-hint">CPU 1–64 · GPU 2560</span>
+                    <input type="number" id="mThreads" class="field-input tabular" value="2560" min="1" max="16384" required aria-describedby="mThreadsHint" data-error="mThreadsError">
+                    <div id="mThreadsError" class="error-msg">Lỗi: Số luồng phải ≥ 1.</div>
+                  </div>
+                </div>
+                <div class="grid-2">
+                  <div>
+                    <label for="mTime" class="field-label">Thời gian (giây)</label>
+                    <span id="mTimeHint" class="field-hint">Ví dụ: 0.0208</span>
+                    <input type="number" id="mTime" class="field-input tabular" value="0.0208" min="0.00001" step="any" required aria-describedby="mTimeHint" data-error="mTimeError">
+                    <div id="mTimeError" class="error-msg">Lỗi: Thời gian phải &gt; 0.</div>
+                  </div>
+                  <div>
+                    <label for="mVerified" class="field-label">Kiểm định</label>
+                    <span class="field-hint">Frobenius Norm</span>
+                    <select id="mVerified" class="field-input">
+                      <option value="true" selected>Đạt (PASSED)</option>
+                      <option value="false">Lỗi (FAILED)</option>
+                    </select>
+                  </div>
+                </div>
+                <div style="padding:12px; border:1px solid var(--border); border-radius:var(--r-md); background:var(--subtle);" class="tabular">
+                  <div style="font-size:12.5px; color:var(--muted);">Ước tính tức thời</div>
+                  <div id="mAutoCalc" style="font-weight:600; margin-top:2px;">103.24 GFLOPS · Speedup 19.46×</div>
+                </div>
+                <button type="submit" class="btn btn--primary btn--full">
+                  <span>Thêm điểm đo</span>
+                  <svg class="m-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>
+                  </svg>
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Panel 3: Import CSV -->
+          <div role="tabpanel" id="panel-csv" aria-labelledby="tab-csv" hidden="until-found">
+            <div class="panel-pad">
+              <div>
+                <label for="csvTextarea" class="field-label">Nội dung benchmark_results.csv</label>
+                <span class="field-hint">Đọc trực tiếp file CSV xuất từ ./matmul_benchmark.</span>
+                <textarea id="csvTextarea" class="field-input field-input--area" placeholder="KichThuoc_N,SoLuong_Luong_q,ThuatToan,ThoiGian_s&#10;1024,16,2. Song song OpenMP Co ban,0.141951"></textarea>
+              </div>
+              <div class="row-between">
+                <label class="btn btn--secondary btn--sm">
+                  Chọn file .csv
+                  <input type="file" id="csvFileInput" accept=".csv,text/csv" class="visually-hidden">
+                </label>
+                <span id="csvFeedback" style="font-size:13px; color:var(--muted);">Sẵn sàng nạp CSV</span>
+              </div>
+              <button type="button" id="btnParseCsv" class="btn btn--primary btn--full">
+                <span>Nạp dữ liệu CSV</span>
+                <svg class="m-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT STAGE -->
+        <div class="stage">
+          <div id="kpiStrip" class="kpi-strip"></div>
+
+          <div class="stage-bar">
+            <div id="chartTablist" class="tablist tablist--bare" role="tablist" focusgroup="tablist nomemory" aria-label="Chọn biểu đồ">
+              <button type="button" role="tab" class="tab-btn" data-view="gflops" aria-selected="true" focusgroupstart>GFLOPS</button>
+              <button type="button" role="tab" class="tab-btn" data-view="time" aria-selected="false">Thời gian</button>
+              <button type="button" role="tab" class="tab-btn" data-view="speedup" aria-selected="false">Speedup</button>
+              <button type="button" role="tab" class="tab-btn" data-view="threads" aria-selected="false">Thread Scaling</button>
+              <button type="button" role="tab" class="tab-btn" data-view="hybrid" aria-selected="false">Cân bằng Hybrid (α*)</button>
+              <button type="button" role="tab" class="tab-btn" data-view="grid" aria-selected="false">Lưới 2×2</button>
+            </div>
+
+            <div class="stage-bar__controls">
+              <button type="button" id="btnToggleLog" aria-pressed="true" class="btn btn--secondary btn--sm hidden">Thang Log</button>
+              <label for="nScaleSelect" class="visually-hidden">Chọn kích thước N</label>
+              <select id="nScaleSelect" class="select-sm tabular hidden"></select>
+              <button type="button" id="btnDownloadActive" class="btn btn--secondary btn--sm">Tải PNG</button>
+            </div>
+          </div>
+
+          <div id="globalLegend" class="legend-bar" aria-label="Lọc thuật toán hiển thị trên biểu đồ"></div>
+
+          <div class="stage-body">
+            <!-- Single Chart View -->
+            <div id="singleChartWrap">
+              <div class="chart-head">
+                <h2 id="singleChartTitle">Hiệu năng tính toán (GFLOPS) theo kích thước N</h2>
+                <span id="singleChartUnit">Cao hơn tốt hơn · Peak mỗi mốc N</span>
+              </div>
+              <canvas id="cMain" class="canvas-single" aria-label="Biểu đồ hiệu năng chính"></canvas>
+            </div>
+
+            <!-- 2x2 Grid View -->
+            <div id="gridChartWrap" class="charts-2x2 hidden">
+              <div>
+                <div class="chart-head"><h2>1. Hiệu năng (GFLOPS)</h2><button type="button" class="text-btn" data-dl-grid="cGridGflops" data-fn="matmul_gflops.png">Tải PNG</button></div>
+                <canvas id="cGridGflops" class="canvas-grid" aria-label="Biểu đồ GFLOPS"></canvas>
+              </div>
+              <div>
+                <div class="chart-head"><h2>2. Thời gian thực thi (s)</h2><button type="button" class="text-btn" data-dl-grid="cGridTime" data-fn="matmul_time.png">Tải PNG</button></div>
+                <canvas id="cGridTime" class="canvas-grid" aria-label="Biểu đồ thời gian"></canvas>
+              </div>
+              <div>
+                <div class="chart-head"><h2>3. Hệ số tăng tốc (Speedup)</h2><button type="button" class="text-btn" data-dl-grid="cGridSpeedup" data-fn="matmul_speedup.png">Tải PNG</button></div>
+                <canvas id="cGridSpeedup" class="canvas-grid" aria-label="Biểu đồ Speedup"></canvas>
+              </div>
+              <div>
+                <div class="chart-head"><h2>4. Mở rộng luồng CPU</h2><button type="button" class="text-btn" data-dl-grid="cGridThreads" data-fn="matmul_threads.png">Tải PNG</button></div>
+                <canvas id="cGridThreads" class="canvas-grid" aria-label="Biểu đồ Thread Scaling"></canvas>
+              </div>
+            </div>
+
+            <!-- Hybrid CPU-GPU Scoring & Alpha* Load-Balancing View -->
+            <div id="hybridViewWrap" class="hybrid-panel hidden">
+              <div class="chart-head" style="margin-bottom:0;">
+                <h2>Chấm điểm thực lực CPU–GPU &amp; Tỷ lệ chia tải Hybrid (α*)</h2>
+                <span id="hybridSourceTag">Dữ liệu hiệu chuẩn từ tune_heterogeneous_gpu_fraction()</span>
+              </div>
+
+              <!-- Step 1 & 2 Scores -->
+              <div class="score-pair tabular">
+                <div class="score-box">
+                  <div class="score-box__lbl">Bước 1 · Điểm CPU (N=1024)</div>
+                  <div id="hybCpuScore" class="score-box__val" style="color:#0284c7;">14.8 GFLOPS</div>
+                  <div id="hybCpuTime" class="score-box__sub">Thời gian đo: 0.1450s</div>
+                </div>
+                <div class="score-box">
+                  <div class="score-box__lbl">Bước 1 · Điểm GPU (N=1024)</div>
+                  <div id="hybGpuScore" class="score-box__val" style="color:#16a34a;">103.1 GFLOPS</div>
+                  <div id="hybGpuTime" class="score-box__sub">Thời gian đo: 0.0208s</div>
+                </div>
+                <div class="score-box">
+                  <div class="score-box__lbl">Bước 2–3 · Chốt tỷ lệ α*</div>
+                  <div id="hybAlphaStar" class="score-box__val" style="color:var(--accent);">87.5% GPU</div>
+                  <div id="hybImbalance" class="score-box__sub">α₀ = 87.4% · Imbalance = 1.032</div>
+                </div>
+              </div>
+
+              <!-- Proportional Split Bar (Aligned to 64 rows) -->
+              <div class="split-bar-wrap tabular">
+                <div class="row-between" style="font-size:13px;">
+                  <strong>Phân chia hàng ma trận N = 2048 (căn bội 64)</strong>
+                  <span id="hybRowsSummary" class="muted">GPU: 1792 hàng (87.5%) · CPU: 256 hàng (12.5%)</span>
+                </div>
+                <div class="split-bar">
+                  <div id="hybBarGpu" class="split-bar__gpu" style="width: 87.5%;">GPU 87.5%</div>
+                  <div id="hybBarCpu" class="split-bar__cpu" style="width: 12.5%;">CPU 12.5%</div>
+                </div>
+              </div>
+
+              <!-- Step 3 Convergence Table -->
+              <div>
+                <div style="font-size:13px; font-weight:600; margin-bottom:8px;">Bước 3 · Tinh chỉnh thực nghiệm tối đa 3 vòng (mục tiêu Imbalance ≤ 1.05)</div>
+                <div class="table-wrapper" style="max-block-size:210px;">
+                  <table class="data-table tabular">
+                    <thead>
+                      <tr>
+                        <th>Vòng</th>
+                        <th>Hàng GPU (M_GPU)</th>
+                        <th>Hàng CPU (M_CPU)</th>
+                        <th>t_GPU (s)</th>
+                        <th>t_CPU (s)</th>
+                        <th>Imbalance</th>
+                      </tr>
+                    </thead>
+                    <tbody id="hybIterBody"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Interactive What-if Alpha Slider for Seminar Demo -->
+              <div class="sim-slider-box tabular">
+                <div class="row-between">
+                  <label for="alphaSlider" style="font-size:13.5px; font-weight:600;">
+                    Thử kéo tỷ lệ α thủ công (so sánh lệch tải với α* tối ưu)
+                  </label>
+                  <button type="button" id="btnSnapAlpha" class="text-btn">Về mức tối ưu α*</button>
+                </div>
+                <input type="range" id="alphaSlider" min="5" max="97" step="1" value="88">
+                <div id="alphaSimOutput" class="row-between" style="font-size:13px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: Comparison & Detail Data Tables -->
+    <section aria-labelledby="tablesHeading">
+      <div class="section-head">
+        <div>
+          <h2 id="tablesHeading">Đối chiếu kết quả và dữ liệu đo</h2>
+          <div id="tableTablist" class="tablist tablist--bare" role="tablist" focusgroup="tablist nomemory" aria-label="Chọn bảng dữ liệu">
+            <button type="button" role="tab" id="tab-tbl-milestone" class="tab-btn" aria-selected="true" focusgroupstart>Đối chiếu theo mốc N</button>
+            <button type="button" role="tab" id="tab-tbl-detail" class="tab-btn" aria-selected="false">Dữ liệu chi tiết</button>
+          </div>
+        </div>
+
+        <div id="detailFilters" class="hidden" style="display:flex; gap:8px; flex-wrap:wrap;">
+          <label for="filterN" class="visually-hidden">Lọc theo N</label>
+          <select id="filterN" class="select-sm tabular"><option value="all">Tất cả N</option></select>
+          <label for="filterGroup" class="visually-hidden">Lọc theo nhóm phần cứng</label>
+          <select id="filterGroup" class="select-sm">
+            <option value="all">Tất cả nhóm</option>
+            <option value="cpu">CPU thuần</option>
+            <option value="hybrid">Hybrid CPU+GPU</option>
+            <option value="gpu">GPU CUDA</option>
+          </select>
+        </div>
+      </div>
+
+      <div role="tabpanel" id="panel-tbl-milestone" aria-labelledby="tab-tbl-milestone" tabindex="0">
+        <div tabindex="0" role="region" aria-labelledby="milestoneCaption" class="table-wrapper">
+          <table class="data-table data-table--milestone tabular">
+            <caption id="milestoneCaption" class="visually-hidden">Bảng đối chiếu phương pháp tối ưu theo từng kích thước N</caption>
+            <thead>
+              <tr>
+                <th scope="col">Kích thước N</th>
+                <th scope="col">Phương pháp tối ưu</th>
+                <th scope="col">CPU thuần tốt nhất</th>
+                <th scope="col">Hybrid CPU+GPU</th>
+                <th scope="col">GPU thuần tốt nhất</th>
+                <th scope="col">Tỷ lệ GPU / CPU</th>
+              </tr>
+            </thead>
+            <tbody id="milestoneBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div role="tabpanel" id="panel-tbl-detail" aria-labelledby="tab-tbl-detail" hidden="until-found">
+        <div tabindex="0" role="region" aria-labelledby="detailCaption" class="table-wrapper">
+          <table class="data-table data-table--detail tabular">
+            <caption id="detailCaption" class="visually-hidden">Bảng chi tiết toàn bộ điểm đo thực nghiệm</caption>
+            <thead>
+              <tr>
+                <th scope="col">Thuật toán</th>
+                <th scope="col">N</th>
+                <th scope="col">Luồng</th>
+                <th scope="col">Thời gian (s)</th>
+                <th scope="col">GFLOPS</th>
+                <th scope="col">Speedup</th>
+                <th scope="col">Kiểm định</th>
+                <th scope="col">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="resultsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap row-between">
+      <span>MatMul Bench · C++17 / OpenMP / AVX2 / CUDA</span>
+      <span id="footerModeNote">Sẵn sàng kết nối FastAPI Backend trên Google Colab Pro</span>
+    </div>
+  </footer>
+
+  <div id="chartTooltip" role="tooltip" class="tabular"></div>
+
+  <script>
+    // =========================================================================
+    // 1. Metadata, Zero-Violet Palette & Seed Dataset
+    // =========================================================================
+    const ALGO_META = {
+      seq:         { name: "Tuần tự Baseline",     csvName: "1. Tuan tu (Baseline)",        color: "#737373", group: "cpu" },
+      omp_basic:   { name: "OpenMP Cơ bản",        csvName: "2. Song song OpenMP Co ban",   color: "#0284c7", group: "cpu" },
+      omp_l2_l3:   { name: "OpenMP Tiled L2+L3",   csvName: "3. Song song Tiled L2+L3",     color: "#2563eb", group: "cpu" },
+      omp_bypass:  { name: "OpenMP Bypass L2",     csvName: "4. Song song Bypass L2",       color: "#0d9488", group: "cpu" },
+      hybrid:      { name: "Hybrid CPU + CUDA",    csvName: "5. Ket hop CPU + CUDA GPU",    color: "#d97706", group: "hybrid" },
+      cuda_global: { name: "CUDA Global Memory",   csvName: "CUDA Global Memory",           color: "#e11d48", group: "gpu" },
+      cuda_shared: { name: "CUDA Shared Tiling",   csvName: "CUDA Shared Memory Tiling",    color: "#16a34a", group: "gpu" }
+    };
+    const ALGO_ORDER = ["seq", "omp_basic", "omp_l2_l3", "omp_bypass", "hybrid", "cuda_global", "cuda_shared"];
+
+    const SAMPLE_DATA = [
+      { n: 512, threads: 1, key: "seq", time: 0.043037, verified: true },
+      { n: 512, threads: 4, key: "omp_basic", time: 0.042987, verified: true },
+      { n: 512, threads: 8, key: "omp_basic", time: 0.032513, verified: true },
+      { n: 512, threads: 16, key: "omp_basic", time: 0.028423, verified: true },
+      { n: 512, threads: 8, key: "omp_l2_l3", time: 0.066385, verified: true },
+      { n: 512, threads: 8, key: "omp_bypass", time: 0.065263, verified: true },
+      { n: 512, threads: 8, key: "hybrid", time: 0.006867, verified: true },
+      { n: 512, threads: 16, key: "hybrid", time: 0.006663, verified: true },
+      { n: 512, threads: 2560, key: "cuda_global", time: 0.004652, verified: true },
+      { n: 512, threads: 2560, key: "cuda_shared", time: 0.004423, verified: true },
+
+      { n: 1024, threads: 1, key: "seq", time: 0.404824, verified: true },
+      { n: 1024, threads: 2, key: "omp_basic", time: 0.445326, verified: true },
+      { n: 1024, threads: 4, key: "omp_basic", time: 0.300551, verified: true },
+      { n: 1024, threads: 8, key: "omp_basic", time: 0.226992, verified: true },
+      { n: 1024, threads: 16, key: "omp_basic", time: 0.141951, verified: true },
+      { n: 1024, threads: 8, key: "omp_l2_l3", time: 0.408417, verified: true },
+      { n: 1024, threads: 8, key: "omp_bypass", time: 0.383927, verified: true },
+      { n: 1024, threads: 8, key: "hybrid", time: 0.068812, verified: true },
+      { n: 1024, threads: 16, key: "hybrid", time: 0.054814, verified: true },
+      { n: 1024, threads: 2560, key: "cuda_global", time: 0.021556, verified: true },
+      { n: 1024, threads: 2560, key: "cuda_shared", time: 0.020835, verified: true },
+
+      { n: 2048, threads: 8, key: "omp_basic", time: 1.480612, verified: true },
+      { n: 2048, threads: 16, key: "omp_basic", time: 1.331741, verified: true },
+      { n: 2048, threads: 8, key: "omp_l2_l3", time: 1.818611, verified: true },
+      { n: 2048, threads: 16, key: "omp_l2_l3", time: 1.804818, verified: true },
+      { n: 2048, threads: 8, key: "omp_bypass", time: 1.976217, verified: true },
+      { n: 2048, threads: 16, key: "omp_bypass", time: 2.050059, verified: true },
+      { n: 2048, threads: 8, key: "hybrid", time: 0.408985, verified: true },
+      { n: 2048, threads: 16, key: "hybrid", time: 0.312442, verified: true },
+      { n: 2048, threads: 2560, key: "cuda_global", time: 0.131862, verified: true },
+      { n: 2048, threads: 2560, key: "cuda_shared", time: 0.128934, verified: true },
+
+      { n: 4096, threads: 8, key: "omp_basic", time: 12.298708, verified: true },
+      { n: 4096, threads: 16, key: "omp_basic", time: 10.673928, verified: true },
+      { n: 4096, threads: 16, key: "omp_l2_l3", time: 13.145053, verified: true },
+      { n: 4096, threads: 16, key: "omp_bypass", time: 12.733192, verified: true },
+      { n: 4096, threads: 8, key: "hybrid", time: 3.175659, verified: true },
+      { n: 4096, threads: 16, key: "hybrid", time: 2.553720, verified: true },
+      { n: 4096, threads: 2560, key: "cuda_global", time: 1.015614, verified: true },
+      { n: 4096, threads: 2560, key: "cuda_shared", time: 0.979826, verified: true }
+    ];
+
+    let liveBackend = false;
+    let activeJobId = null;
+    let activeEventSource = null;
+    let nextId = 1;
+    let benchData = [];
+    let hiddenAlgos = new Set();
+    let activeChartView = "gflops";
+    let useLogTime = true;
+    const hitRegions = {};
+
+    // Hybrid Calibration State (updated live from Colab stdout or simulated)
+    let hybridState = {
+      calib_n: 1024,
+      perf_cpu: 15.1,
+      t_cpu_cal: 0.1422,
+      perf_gpu: 103.1,
+      t_gpu_cal: 0.0208,
+      alpha0: 0.8722,
+      alpha_star: 0.8750,
+      imbalance: 1.032,
+      from_cache: false,
+      iterations: [
+        { round: 1, m_gpu: 1792, m_cpu: 256, t_gpu: 0.1412, t_cpu: 0.1505, imbalance: 1.032 }
+      ]
+    };
+
+    function computeMetrics(records) {
+      const seqMap = new Map();
+      records.forEach(r => { if (r.key === "seq" && r.time > 0) seqMap.set(r.n, r.time); });
+      return records.map(r => {
+        const flops = 2.0 * r.n * r.n * r.n;
+        const gflops = r.gflops || (r.time > 0 ? flops / (r.time * 1e9) : 0);
+        const tSeq = seqMap.has(r.n) ? seqMap.get(r.n) : flops / (6.2 * 1e9);
+        const speedup = r.speedup || (r.time > 0 ? tSeq / r.time : 0);
+        return { ...r, gflops, speedup };
+      });
+    }
+
+    function loadDataset(rawList) {
+      nextId = 1;
+      benchData = computeMetrics(rawList.map(item => ({ id: nextId++, ...item })));
+      refreshAll();
+    }
+
+    function addRecord(raw) {
+      benchData.push({ id: nextId++, ...raw });
+      benchData = computeMetrics(benchData);
+      refreshAll();
+    }
+
+    function deleteRecord(id) {
+      benchData = computeMetrics(benchData.filter(r => r.id !== id));
+      refreshAll();
+    }
+
+    // =========================================================================
+    // 2. Live Backend Auto-Detection (FastAPI on Colab Pro)
+    // =========================================================================
+    async function probeBackend() {
+      const hwLine = document.getElementById("hwHeaderLine");
+      const dot = document.getElementById("modeDot");
+      const sub = document.getElementById("modeSubtitle");
+      const foot = document.getElementById("footerModeNote");
+
+      try {
+        const res = await fetch("/api/hardware", { cache: "no-store" });
+        if (!res.ok) throw new Error("offline");
+        const data = await res.json();
+        liveBackend = true;
+        dot.classList.add("mode-dot--live");
+
+        const hw = data.hardware;
+        const vramStr = hw.vram_mb ? `${(hw.vram_mb / 1024).toFixed(0)}GB VRAM` : "No CUDA";
+        hwLine.textContent = `${hw.gpu} (${vramStr}) · ${hw.logical_cores} vCPU · ${hw.ram_gb}GB RAM`;
+        sub.textContent = hw.binary_ready
+          ? "Đã kết nối trực tiếp backend C++/CUDA trên Colab. Bấm Chạy thực nghiệm để đo thật."
+          : "Đã kết nối FastAPI nhưng chưa thấy binary ./matmul_benchmark — hãy chạy make CUDA_ENABLED=1.";
+        foot.textContent = `Live Colab Backend · ${hw.os} · ${hw.gpu}`;
+
+        if (data.files?.xls) document.getElementById("btnDownloadXls").classList.remove("hidden");
+
+        // Load existing results if already run on Colab
+        const rRes = await fetch("/api/results");
+        if (rRes.ok) {
+          const rData = await rRes.json();
+          if (rData.records?.length) loadDataset(rData.records);
+          else loadDataset(SAMPLE_DATA);
+          if (rData.hybrid_cfg?.length) {
+            const last = rData.hybrid_cfg[rData.hybrid_cfg.length - 1];
+            hybridState.alpha_star = last.alpha;
+            hybridState.imbalance = last.imbalance;
+            hybridState.from_cache = true;
+            renderHybridPanel();
+          }
+        }
+      } catch {
+        liveBackend = false;
+        hwLine.textContent = "Chế độ tĩnh xem trước · Tesla T4 (mô phỏng)";
+        sub.textContent = "Đang chạy ở chế độ file tĩnh (không có FastAPI). Bấm Chạy thực nghiệm để mô phỏng hoặc nhập tay/Import CSV.";
+        foot.textContent = "Offline Preview Mode · Chạy python server.py trên Colab để nối GPU thật";
+        loadDataset(SAMPLE_DATA);
+      }
+    }
+
+    // Theme toggle
+    document.getElementById("btnTheme").addEventListener("click", e => {
+      const root = document.documentElement;
+      const next = root.dataset.theme === "dark" ? "light" : "dark";
+      root.dataset.theme = next;
+      e.currentTarget.textContent = next === "dark" ? "Sáng" : "Tối";
+      renderCharts();
+    });
+
+    // =========================================================================
+    // 3. Accessible Tabs & Form Validation
+    // =========================================================================
+    function initTabGroup(tablistId, onSelect) {
+      const tablist = document.getElementById(tablistId);
+      const tabs = [...tablist.querySelectorAll('[role="tab"]')];
+      const panels = tabs.map(t => t.id ? document.querySelector(`[aria-labelledby="${t.id}"]`) : null);
+      const hasFG = Object.hasOwn(HTMLElement.prototype, "focusGroup");
+
+      function select(target, shouldFocus = false) {
+        tabs.forEach((tab, idx) => {
+          const isSel = tab === target;
+          tab.setAttribute("aria-selected", String(isSel));
+          tab.toggleAttribute("focusgroupstart", isSel);
+          if (!hasFG) tab.tabIndex = isSel ? 0 : -1;
+          const p = panels[idx];
+          if (p) {
+            if (isSel) { p.removeAttribute("hidden"); p.tabIndex = 0; }
+            else { p.setAttribute("hidden", "until-found"); p.removeAttribute("tabindex"); }
+          }
+        });
+        target.scrollIntoView({ block: "nearest", inline: "nearest" });
+        if (shouldFocus) target.focus();
+        if (onSelect) onSelect(target);
+      }
+
+      tabs.forEach((tab, idx) => {
+        if (!hasFG) tab.tabIndex = idx === 0 ? 0 : -1;
+        tab.addEventListener("click", () => select(tab));
+        tab.addEventListener("keydown", e => {
+          if (hasFG) return;
+          let next = null;
+          if (e.key === "ArrowRight") next = (idx + 1) % tabs.length;
+          else if (e.key === "ArrowLeft") next = (idx - 1 + tabs.length) % tabs.length;
+          else if (e.key === "Home") next = 0;
+          else if (e.key === "End") next = tabs.length - 1;
+          if (next !== null) { e.preventDefault(); select(tabs[next], true); }
+        });
+        if (panels[idx]) panels[idx].addEventListener("beforematch", () => select(tab));
+      });
+    }
+
+    initTabGroup("inputTablist");
+    initTabGroup("tableTablist", tab => {
+      document.getElementById("detailFilters").classList.toggle("hidden", tab.id !== "tab-tbl-detail");
+    });
+    initTabGroup("chartTablist", tab => {
+      activeChartView = tab.dataset.view;
+      updateChartControls();
+      renderCharts();
+    });
+
+    // Validation ARIA sync
+    const announcer = document.createElement("div");
+    announcer.setAttribute("aria-live", "polite");
+    announcer.classList.add("visually-hidden");
+    document.body.append(announcer);
+    const supportsUI = CSS.supports("selector(:user-invalid)");
+    const dirtyMap = new WeakMap();
+
+    function syncAria(el) {
+      if (!el.matches?.("input[data-error]")) return;
+      const errId = el.dataset.error;
+      let inv;
+      if (supportsUI) inv = el.matches(":user-invalid");
+      else {
+        const st = dirtyMap.get(el);
+        inv = Boolean(st && st.blurred && st.interacted && !el.validity.valid);
+        el.classList.toggle("user-invalid-fallback", inv);
+        el.classList.toggle("user-valid-fallback", Boolean(st && st.blurred && st.interacted && el.validity.valid));
+      }
+      el.setAttribute("aria-invalid", inv ? "true" : "false");
+      const ids = (el.getAttribute("aria-describedby") || "").split(/\s+/).filter(id => id && id !== errId);
+      if (inv) ids.push(errId);
+      if (ids.length) el.setAttribute("aria-describedby", ids.join(" "));
+      else el.removeAttribute("aria-describedby");
+    }
+    document.querySelectorAll("input[data-error]").forEach(syncAria);
+    document.addEventListener("blur", e => {
+      if (!supportsUI && e.target.dataset?.error) {
+        const st = dirtyMap.get(e.target) || {}; st.blurred = true; dirtyMap.set(e.target, st);
+      }
+      syncAria(e.target);
+    }, true);
+    document.addEventListener("input", e => {
+      if (!supportsUI && e.target.dataset?.error) {
+        const st = dirtyMap.get(e.target) || {}; st.interacted = true; dirtyMap.set(e.target, st);
+      }
+      syncAria(e.target);
+    });
+    document.addEventListener("invalid", e => {
+      if (!supportsUI && e.target.dataset?.error) dirtyMap.set(e.target, { interacted: true, blurred: true });
+      syncAria(e.target);
+    }, true);
+
+    // =========================================================================
+    // 4. Form Population & CLI Builder
+    // =========================================================================
+    const algoGroup = document.getElementById("algoCheckboxGroup");
+    const mAlgoSel = document.getElementById("mAlgo");
+    ALGO_ORDER.forEach(k => {
+      const m = ALGO_META[k];
+      const lbl = document.createElement("label");
+      lbl.className = "check-item";
+      lbl.innerHTML = `<input type="checkbox" name="algoSel" value="${k}" checked><span class="swatch" style="background:${m.color}"></span><span>${m.name}</span>`;
+      algoGroup.appendChild(lbl);
+
+      const opt = document.createElement("option");
+      opt.value = k;
+      opt.textContent = m.name;
+      if (k === "cuda_shared") opt.selected = true;
+      mAlgoSel.appendChild(opt);
+    });
+
+    function getSelectedN() {
+      const set = new Set();
+      document.querySelectorAll('#nChipsGroup .seg-btn[aria-pressed="true"]').forEach(b => set.add(Number(b.dataset.n)));
+      const raw = document.getElementById("customNInput").value.trim();
+      if (raw) raw.split(",").forEach(s => { const v = parseInt(s.trim(), 10); if (v >= 64 && v <= 16384) set.add(v); });
+      return [...set].sort((a, b) => a - b);
+    }
+    function getSelectedT() {
+      return [...document.querySelectorAll('#tChipsGroup .seg-btn[aria-pressed="true"]')].map(b => Number(b.dataset.t)).sort((a, b) => a - b);
+    }
+    function getSelectedAlgos() {
+      return [...document.querySelectorAll('input[name="algoSel"]:checked')].map(c => c.value);
+    }
+
+    function updateCliPreview() {
+      const nList = getSelectedN();
+      const tList = getSelectedT();
+      const runs = document.getElementById("runsInput").value || 3;
+      const tile = document.getElementById("cudaTileSelect").value || 16;
+      const algos = getSelectedAlgos();
+      const gpuOnly = algos.length > 0 && algos.every(k => ["hybrid", "cuda_global", "cuda_shared"].includes(k));
+      const parts = ["./matmul_benchmark"];
+      if (nList.length) parts.push(`-N ${nList.join(",")}`);
+      if (tList.length) parts.push(`-t ${tList.join(",")}`);
+      parts.push(`-r ${runs}`, `--cuda-tile ${tile}`);
+      if (gpuOnly) parts.push("--gpu-only");
+      document.getElementById("cliPreview").textContent = parts.join(" ");
+    }
+
+    document.querySelectorAll(".seg-btn").forEach(b => b.addEventListener("click", () => {
+      b.setAttribute("aria-pressed", String(b.getAttribute("aria-pressed") !== "true"));
+      updateCliPreview();
+    }));
+    ["customNInput", "runsInput", "cudaTileSelect"].forEach(id => document.getElementById(id).addEventListener("input", updateCliPreview));
+    algoGroup.addEventListener("change", updateCliPreview);
+    document.getElementById("btnSelectAllAlgos").addEventListener("click", () => {
+      document.querySelectorAll('input[name="algoSel"]').forEach(c => { c.checked = true; });
+      updateCliPreview();
+    });
+    document.getElementById("btnSelectGpuOnly").addEventListener("click", () => {
+      document.querySelectorAll('input[name="algoSel"]').forEach(c => {
+        c.checked = ["hybrid", "cuda_global", "cuda_shared"].includes(c.value);
+      });
+      updateCliPreview();
+    });
+    document.getElementById("btnCopyCli").addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(document.getElementById("cliPreview").textContent); } catch {}
+      document.getElementById("copyIcon").innerHTML = `<polyline points="20 6 9 17 4 12"/>`;
+      document.getElementById("copyLabel").textContent = "Đã chép";
+      setTimeout(() => {
+        document.getElementById("copyIcon").innerHTML = `<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>`;
+        document.getElementById("copyLabel").textContent = "Sao chép";
+      }, 1500);
+    });
+
+    // =========================================================================
+    // 5. Run Execution (Live FastAPI SSE on Colab Pro OR Offline Fallback)
+    // =========================================================================
+    function setRunningUI(running, statusText = "") {
+      const btn = document.getElementById("btnRunBenchmark");
+      const lbl = document.getElementById("runBtnLabel");
+      const cancelBtn = document.getElementById("btnCancelJob");
+      btn.disabled = running;
+      lbl.textContent = running ? "Đang đo thực nghiệm..." : "Chạy thực nghiệm";
+      cancelBtn.classList.toggle("hidden", !(running && liveBackend));
+      if (statusText) document.getElementById("runStatusText").textContent = statusText;
+    }
+
+    document.getElementById("btnCancelJob").addEventListener("click", async () => {
+      if (activeJobId) {
+        try { await fetch(`/api/cancel/${activeJobId}`, { method: "POST" }); } catch {}
+      }
+      if (activeEventSource) { activeEventSource.close(); activeEventSource = null; }
+      setRunningUI(false, "Đã hủy thực nghiệm");
+    });
+
+    async function runLiveColab(nList, tList, runs, cudaTile, gpuOnly, resetHybrid) {
+      const box = document.getElementById("runProgressBox");
+      const bar = document.getElementById("runProgressBar");
+      const pctTxt = document.getElementById("runPercentText");
+      const logEl = document.getElementById("runConsoleLog");
+
+      box.classList.remove("hidden");
+      bar.style.width = "12%";
+      pctTxt.textContent = "Live";
+      logEl.textContent = "";
+      setRunningUI(true, "Đang gửi yêu cầu tới Colab GPU...");
+
+      try {
+        const res = await fetch("/api/run", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            sizes: nList,
+            threads: tList,
+            runs,
+            cuda_tile: cudaTile,
+            gpu_only: gpuOnly,
+            reset_hybrid_cfg: resetHybrid
+          })
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({ detail: res.statusText }));
+          throw new Error(err.detail || "Lỗi khởi chạy backend");
+        }
+        const { job_id, command } = await res.json();
+        activeJobId = job_id;
+        logEl.textContent = `$ ${command}\n`;
+
+        let lineCount = 0;
+        const es = new EventSource(`/api/stream/${job_id}`);
+        activeEventSource = es;
+
+        es.onmessage = ev => {
+          const msg = JSON.parse(ev.data);
+          if (msg.type === "log") {
+            lineCount++;
+            logEl.textContent += msg.line + "\n";
+            logEl.scrollTop = logEl.scrollHeight;
+            const estPct = Math.min(92, 12 + lineCount * 2);
+            bar.style.width = `${estPct}%`;
+            if (msg.line.includes("DANG THUC HIEN") || msg.line.includes("Can bang tai")) {
+              document.getElementById("runStatusText").textContent = msg.line.replace(/^[\s>]+/, "");
+            }
+          } else if (msg.type === "hybrid" && msg.data) {
+            hybridState = { ...hybridState, ...msg.data };
+            renderHybridPanel();
+          } else if (msg.type === "done") {
+            es.close();
+            activeEventSource = null;
+            activeJobId = null;
+            bar.style.width = "100%";
+            pctTxt.textContent = msg.exit_code === 0 ? "100%" : `Exit ${msg.exit_code}`;
+            setRunningUI(false, msg.exit_code === 0 ? `Hoàn tất (${msg.records.length} điểm đo)` : "Kết thúc với cảnh báo/lỗi");
+            if (msg.records?.length) loadDataset(msg.records);
+            if (msg.files?.xls) document.getElementById("btnDownloadXls").classList.remove("hidden");
+            if (msg.hybrid_runs?.length) {
+              const latest = msg.hybrid_runs[msg.hybrid_runs.length - 1];
+              hybridState = { ...hybridState, ...latest };
+              renderHybridPanel();
+            }
+          }
+        };
+
+        es.onerror = () => {
+          es.close();
+          activeEventSource = null;
+          setRunningUI(false, "Mất kết nối stream — kiểm tra log trên Colab");
+        };
+      } catch (err) {
+        logEl.textContent += `[ERROR] ${err.message}\n`;
+        setRunningUI(false, "Không thể chạy benchmark");
+      }
+    }
+
+    async function runOfflineSimulation(nList, tList, algos, runs, cudaTile) {
+      const box = document.getElementById("runProgressBox");
+      const bar = document.getElementById("runProgressBar");
+      const pctTxt = document.getElementById("runPercentText");
+      const logEl = document.getElementById("runConsoleLog");
+      box.classList.remove("hidden");
+      logEl.textContent = `$ ${document.getElementById("cliPreview").textContent}\n[Offline Demo] Chạy mô phỏng hiệu năng...\n`;
+      setRunningUI(true, "Đang mô phỏng...");
+
+      const simG = (n, t, k) => {
+        const j = 0.94 + Math.random() * 0.12;
+        const sN = Math.min(1.2, 0.72 + Math.log2(n / 256) * 0.13);
+        if (k === "seq") return 6.0 * j;
+        if (k === "omp_basic") return 2.6 * Math.pow(t, 0.56) * (n <= 512 ? 0.95 : 1.15) * j;
+        if (k === "omp_l2_l3") return 2.1 * Math.pow(t, 0.58) * (n >= 1024 ? 1.25 : 0.75) * j;
+        if (k === "omp_bypass") return 2.2 * Math.pow(t, 0.57) * (n >= 1024 ? 1.22 : 0.78) * j;
+        if (k === "hybrid") return (16 + 3.2 * Math.min(t, 16) * 0.75) * sN * (cudaTile === 32 ? 1.05 : 1) * j;
+        if (k === "cuda_global") return 58 * Math.pow(n / 512, 0.42) * j;
+        return 64 * Math.pow(n / 512, 0.45) * (cudaTile === 32 ? 1.08 : 1) * j;
+      };
+
+      const tasks = [];
+      nList.forEach(n => algos.forEach(k => {
+        if (k === "seq") { if (n < 2048) tasks.push({ n, threads: 1, key: k }); }
+        else if (k === "cuda_global" || k === "cuda_shared") tasks.push({ n, threads: 2560, key: k });
+        else {
+          const ts = n >= 2048 ? tList.filter(t => t >= 8) : tList;
+          (ts.length ? ts : [tList[tList.length - 1] || 8]).forEach(t => tasks.push({ n, threads: t, key: k }));
+        }
+      }));
+
+      // Simulate Hybrid calibration
+      const pCpu = simG(1024, Math.max(1, (tList[tList.length - 1] || 8) - 1), "omp_basic");
+      const pGpu = simG(1024, 2560, "cuda_shared");
+      const a0 = Math.max(0.05, Math.min(0.97, pGpu / (pCpu + pGpu)));
+      const mGpu = Math.max(64, Math.min(1984, Math.floor((a0 * 2048) / 64) * 64));
+      const aStar = mGpu / 2048;
+      hybridState = {
+        calib_n: 1024,
+        perf_cpu: pCpu,
+        t_cpu_cal: (2 * 1024 ** 3) / (pCpu * 1e9),
+        perf_gpu: pGpu,
+        t_gpu_cal: (2 * 1024 ** 3) / (pGpu * 1e9),
+        alpha0: a0,
+        alpha_star: aStar,
+        imbalance: 1.028,
+        from_cache: false,
+        iterations: [{
+          round: 1, m_gpu: mGpu, m_cpu: 2048 - mGpu,
+          t_gpu: ((2 * 2048 ** 3 * aStar) / (pGpu * 1e9)),
+          t_cpu: ((2 * 2048 ** 3 * (1 - aStar)) / (pCpu * 1e9)),
+          imbalance: 1.028
+        }]
+      };
+      renderHybridPanel();
+
+      benchData = [];
+      nextId = 1;
+      for (let i = 0; i < tasks.length; i++) {
+        const tk = tasks[i];
+        const g = simG(tk.n, tk.threads, tk.key);
+        const time = (2.0 * tk.n ** 3) / (g * 1e9);
+        benchData.push({ id: nextId++, n: tk.n, threads: tk.threads, key: tk.key, time, verified: true });
+        benchData = computeMetrics(benchData);
+        const pct = Math.round(((i + 1) / tasks.length) * 100);
+        bar.style.width = `${pct}%`;
+        pctTxt.textContent = `${pct}%`;
+        document.getElementById("runStatusText").textContent = `N=${tk.n} · ${ALGO_META[tk.key].name}`;
+        logEl.textContent += `[${i + 1}/${tasks.length}] N=${tk.n} ${ALGO_META[tk.key].name} (${tk.threads}T): ${time.toFixed(4)}s · ${g.toFixed(1)} GFLOPS\n`;
+        logEl.scrollTop = logEl.scrollHeight;
+        refreshAll();
+        await new Promise(r => setTimeout(r, Math.max(18, Math.min(55, 650 / tasks.length))));
+      }
+      setRunningUI(false, `Hoàn tất mô phỏng ${tasks.length} điểm đo`);
+    }
+
+    document.getElementById("simRunForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      if (!e.currentTarget.reportValidity()) return;
+      const nList = getSelectedN();
+      const tList = getSelectedT();
+      const algos = getSelectedAlgos();
+      const runs = Number(document.getElementById("runsInput").value) || 3;
+      const cudaTile = Number(document.getElementById("cudaTileSelect").value) || 16;
+      const resetHybrid = document.getElementById("chkResetHybrid").checked;
+      if (!nList.length || !tList.length || !algos.length) return;
+
+      const gpuOnly = algos.every(k => ["hybrid", "cuda_global", "cuda_shared"].includes(k));
+      if (liveBackend) await runLiveColab(nList, tList, runs, cudaTile, gpuOnly, resetHybrid);
+      else await runOfflineSimulation(nList, tList, algos, runs, cudaTile);
+    });
+
+    // =========================================================================
+    // 6. Manual Entry & CSV Handlers
+    // =========================================================================
+    function updateManualCalc() {
+      const n = Number(document.getElementById("mSize").value);
+      const t = Number(document.getElementById("mTime").value);
+      const out = document.getElementById("mAutoCalc");
+      if (n >= 64 && t > 0) {
+        const flops = 2.0 * n * n * n;
+        const g = flops / (t * 1e9);
+        const seq = benchData.find(r => r.n === n && r.key === "seq");
+        const sp = (seq ? seq.time : flops / (6.2 * 1e9)) / t;
+        out.textContent = `${g.toFixed(2)} GFLOPS · Speedup ${sp.toFixed(2)}×`;
+      } else out.textContent = "Nhập N và thời gian hợp lệ";
+    }
+    ["mSize", "mTime"].forEach(id => document.getElementById(id).addEventListener("input", updateManualCalc));
+    mAlgoSel.addEventListener("change", () => {
+      const k = mAlgoSel.value;
+      const tIn = document.getElementById("mThreads");
+      if (k === "cuda_global" || k === "cuda_shared") tIn.value = 2560;
+      else if (k === "seq") tIn.value = 1;
+      else if (Number(tIn.value) === 2560) tIn.value = 8;
+    });
+    document.getElementById("manualEntryForm").addEventListener("submit", e => {
+      e.preventDefault();
+      if (!e.currentTarget.reportValidity()) return;
+      addRecord({
+        n: Number(document.getElementById("mSize").value),
+        key: mAlgoSel.value,
+        threads: Number(document.getElementById("mThreads").value),
+        time: Number(document.getElementById("mTime").value),
+        verified: document.getElementById("mVerified").value === "true"
+      });
+    });
+
+    function detectKey(name) {
+      const s = String(name || "").toLowerCase();
+      if (s.includes("tuan tu") || s.includes("baseline") || s.includes("seq")) return "seq";
+      if (s.includes("co ban") || s.includes("basic")) return "omp_basic";
+      if (s.includes("bypass")) return "omp_bypass";
+      if (s.includes("tiled") && !s.includes("cuda")) return "omp_l2_l3";
+      if (s.includes("ket hop") || s.includes("hybrid")) return "hybrid";
+      if (s.includes("global")) return "cuda_global";
+      if (s.includes("shared")) return "cuda_shared";
+      return "omp_basic";
+    }
+    function splitCsv(line) {
+      const out = []; let cur = "", q = false;
+      for (let i = 0; i < line.length; i++) {
+        if (line[i] === '"') q = !q;
+        else if (line[i] === "," && !q) { out.push(cur.trim()); cur = ""; }
+        else cur += line[i];
+      }
+      out.push(cur.trim());
+      return out;
+    }
+    function parseCsv(text) {
+      const lines = text.replace(/^\uFEFF/, "").split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      if (lines.length < 2) return [];
+      const h = splitCsv(lines[0]).map(x => x.toLowerCase());
+      const iN = h.findIndex(x => x.includes("kichthuoc_n") || x === "n");
+      const iT = h.findIndex(x => x.includes("luong") || x.includes("thread"));
+      const iA = h.findIndex(x => x.includes("thuattoan") || x.includes("algo"));
+      const iS = h.findIndex(x => x === "thoigian_s" || x.includes("time"));
+      const iP = h.findIndex(x => x.includes("kiemdinh") || x.includes("verified"));
+      const rows = [];
+      for (let i = 1; i < lines.length; i++) {
+        const c = splitCsv(lines[i]);
+        const n = Number(c[iN]), time = Number(c[iS]);
+        if (n > 0 && time > 0) rows.push({
+          n, threads: Number(c[iT]) || 1, key: detectKey(c[iA]), time,
+          verified: iP >= 0 ? !String(c[iP]).toLowerCase().includes("fail") : true
+        });
+      }
+      return rows;
+    }
+    document.getElementById("csvFileInput").addEventListener("change", e => {
+      const f = e.target.files?.[0]; if (!f) return;
+      const rd = new FileReader();
+      rd.onload = () => {
+        document.getElementById("csvTextarea").value = rd.result;
+        const rows = parseCsv(rd.result);
+        document.getElementById("csvFeedback").textContent = rows.length ? `Đã nạp ${rows.length} dòng` : "CSV không hợp lệ";
+        if (rows.length) loadDataset(rows);
+      };
+      rd.readAsText(f);
+    });
+    document.getElementById("btnParseCsv").addEventListener("click", () => {
+      const rows = parseCsv(document.getElementById("csvTextarea").value);
+      document.getElementById("csvFeedback").textContent = rows.length ? `Đã nạp ${rows.length} dòng` : "CSV không hợp lệ";
+      if (rows.length) loadDataset(rows);
+    });
+    document.getElementById("btnExportCsv").addEventListener("click", () => {
+      if (liveBackend) { window.location.href = "/api/download/csv"; return; }
+      const header = "STT,KichThuoc_N,SoLuong_Luong_q,ThuatToan,ThoiGian_s,HieuNang_GFLOPS,TangToc_Speedup,KiemDinh";
+      const rows = benchData.map((r, i) => `${i + 1},${r.n},${r.threads},"${ALGO_META[r.key].csvName}",${r.time.toFixed(6)},${r.gflops.toFixed(2)},${r.speedup.toFixed(2)},${r.verified ? "PASSED" : "FAILED"}`);
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([[header, ...rows].join("\n")], { type: "text/csv;charset=utf-8;" }));
+      a.download = "benchmark_results.csv";
+      a.click();
+    });
+    document.getElementById("btnLoadSample").addEventListener("click", () => loadDataset(SAMPLE_DATA));
+
+    // =========================================================================
+    // 7. Hybrid CPU–GPU Scoring & Alpha* Visualizer
+    // =========================================================================
+    function updateAlphaSimulation() {
+      const pct = Number(document.getElementById("alphaSlider").value);
+      const alpha = pct / 100;
+      const N = 2048;
+      const mGpu = Math.max(64, Math.min(N - 64, Math.floor((alpha * N) / 64) * 64));
+      const mCpu = N - mGpu;
+      const effAlpha = mGpu / N;
+
+      const pCpu = hybridState.perf_cpu || 15.0;
+      const pGpu = hybridState.perf_gpu || 103.0;
+      const totalFlops = 2.0 * N * N * N;
+      const tGpu = (totalFlops * effAlpha) / (pGpu * 1e9);
+      const tCpu = (totalFlops * (1 - effAlpha)) / (pCpu * 1e9);
+      const tTotal = Math.max(tGpu, tCpu);
+      const imb = tTotal / (0.5 * (tGpu + tCpu));
+
+      const gpuPct = (effAlpha * 100).toFixed(1);
+      const cpuPct = ((1 - effAlpha) * 100).toFixed(1);
+      document.getElementById("hybBarGpu").style.width = `${gpuPct}%`;
+      document.getElementById("hybBarGpu").textContent = Number(gpuPct) >= 14 ? `GPU ${gpuPct}%` : "";
+      document.getElementById("hybBarCpu").style.width = `${cpuPct}%`;
+      document.getElementById("hybBarCpu").textContent = Number(cpuPct) >= 14 ? `CPU ${cpuPct}%` : "";
+      document.getElementById("hybRowsSummary").textContent = `GPU: ${mGpu} hàng (${gpuPct}%) · CPU: ${mCpu} hàng (${cpuPct}%)`;
+
+      const statusColor = imb <= 1.08 ? "var(--ok)" : (imb <= 1.35 ? "var(--warn)" : "var(--danger)");
+      document.getElementById("alphaSimOutput").innerHTML = `
+        <span><strong>α = ${gpuPct}%</strong> → t_GPU = <strong>${tGpu.toFixed(3)}s</strong> · t_CPU = <strong>${tCpu.toFixed(3)}s</strong></span>
+        <span>Tổng chờ max(t): <strong>${tTotal.toFixed(3)}s</strong> · Imbalance: <strong style="color:${statusColor}">${imb.toFixed(3)}</strong></span>
+      `;
+    }
+
+    function renderHybridPanel() {
+      const s = hybridState;
+      document.getElementById("hybCpuScore").textContent = s.perf_cpu ? `${s.perf_cpu.toFixed(1)} GFLOPS` : "Từ cache";
+      document.getElementById("hybCpuTime").textContent = s.t_cpu_cal ? `Thời gian đo: ${s.t_cpu_cal.toFixed(4)}s` : "Nạp từ hybrid_alpha.cfg";
+      document.getElementById("hybGpuScore").textContent = s.perf_gpu ? `${s.perf_gpu.toFixed(1)} GFLOPS` : "Từ cache";
+      document.getElementById("hybGpuTime").textContent = s.t_gpu_cal ? `Thời gian đo: ${s.t_gpu_cal.toFixed(4)}s` : "Nạp từ hybrid_alpha.cfg";
+
+      const aPct = ((s.alpha_star || s.alpha0 || 0.85) * 100).toFixed(1);
+      document.getElementById("hybAlphaStar").textContent = `${aPct}% GPU`;
+      const a0Txt = s.alpha0 ? `α₀ = ${(s.alpha0 * 100).toFixed(1)}% · ` : "";
+      document.getElementById("hybImbalance").textContent = `${a0Txt}Imbalance = ${(s.imbalance || 1.0).toFixed(3)}`;
+      document.getElementById("hybridSourceTag").textContent = s.from_cache
+        ? "Đọc từ hybrid_alpha.cfg (tích ô Đo lại điểm để hiệu chuẩn mới)"
+        : "Đo trực tiếp bởi tune_heterogeneous_gpu_fraction()";
+
+      const tbody = document.getElementById("hybIterBody");
+      if (!s.iterations?.length) {
+        tbody.innerHTML = `<tr><td colspan="6" class="muted" style="text-align:center;">Đã dùng α* lưu sẵn trong hybrid_alpha.cfg (không cần lặp lại 3 vòng).</td></tr>`;
+      } else {
+        tbody.innerHTML = s.iterations.map(it => `
+          <tr>
+            <th scope="row">Vòng ${it.round}</th>
+            <td>${it.m_gpu} (${((it.m_gpu / (it.m_gpu + it.m_cpu)) * 100).toFixed(1)}%)</td>
+            <td>${it.m_cpu} (${((it.m_cpu / (it.m_gpu + it.m_cpu)) * 100).toFixed(1)}%)</td>
+            <td class="mono">${it.t_gpu.toFixed(4)}</td>
+            <td class="mono">${it.t_cpu.toFixed(4)}</td>
+            <td class="mono" style="font-weight:600; color:${it.imbalance <= 1.05 ? "var(--ok)" : "var(--ink)"}">${it.imbalance.toFixed(3)}</td>
+          </tr>
+        `).join("");
+      }
+
+      document.getElementById("alphaSlider").value = String(Math.round((s.alpha_star || 0.875) * 100));
+      updateAlphaSimulation();
+    }
+
+    document.getElementById("alphaSlider").addEventListener("input", updateAlphaSimulation);
+    document.getElementById("btnSnapAlpha").addEventListener("click", () => {
+      document.getElementById("alphaSlider").value = String(Math.round((hybridState.alpha_star || 0.875) * 100));
+      updateAlphaSimulation();
+    });
+
+    // =========================================================================
+    // 8. Canvas Charting Engine
+    // =========================================================================
+    function getTheme() {
+      const cs = getComputedStyle(document.documentElement);
+      const get = (v, fb) => cs.getPropertyValue(v).trim() || fb;
+      return { bg: get("--surface", "#fff"), fg: get("--ink", "#18181b"), muted: get("--muted", "#52525b"), grid: get("--border", "#e4e4e7") };
+    }
+    function visibleData() { return benchData.filter(d => !hiddenAlgos.has(d.key)); }
+    function bestFor(data, n, k) {
+      const l = data.filter(d => d.n === n && d.key === k);
+      return l.length ? l.reduce((a, b) => (b.gflops > a.gflops ? b : a)) : null;
+    }
+
+    function setupCanvas(id, fixedH) {
+      const c = document.getElementById(id);
+      const dpr = Math.max(window.devicePixelRatio || 1, 2);
+      const w = Math.max(c.getBoundingClientRect().width || 560, 280);
+      c.width = Math.round(w * dpr);
+      c.height = Math.round(fixedH * dpr);
+      const ctx = c.getContext("2d");
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const th = getTheme();
+      ctx.fillStyle = th.bg;
+      ctx.fillRect(0, 0, w, fixedH);
+      return { ctx, w, h: fixedH, th };
+    }
+
+    function drawGroupedBar(id, fixedH, field, yLabel, isLog, unit) {
+      const { ctx, w, h, th } = setupCanvas(id, fixedH);
+      hitRegions[id] = [];
+      const data = visibleData();
+      const Ns = [...new Set(data.map(d => d.n))].sort((a, b) => a - b);
+      const keys = ALGO_ORDER.filter(k => data.some(d => d.key === k));
+      if (!Ns.length || !keys.length) {
+        ctx.fillStyle = th.muted; ctx.font = "14px sans-serif"; ctx.textAlign = "center";
+        ctx.fillText("Chưa có dữ liệu — bấm Chạy thực nghiệm hoặc Nạp mẫu.", w / 2, h / 2);
+        return;
+      }
+
+      const pad = { top: 24, right: 16, bottom: 36, left: 66 };
+      const pW = w - pad.left - pad.right, pH = h - pad.top - pad.bottom;
+      const vals = [];
+      Ns.forEach(n => keys.forEach(k => { const r = bestFor(data, n, k); if (r && r[field] > 0) vals.push(r[field]); }));
+      if (!vals.length) return;
+
+      const minV = isLog ? Math.max(Math.min(...vals) * 0.55, 1e-5) : 0;
+      const maxV = Math.max(...vals) * (isLog ? 1.8 : 1.15);
+      const mapY = v => isLog
+        ? pad.top + pH * (1 - (Math.log10(Math.max(v, minV)) - Math.log10(minV)) / (Math.log10(maxV) - Math.log10(minV) || 1))
+        : pad.top + pH * (1 - v / (maxV || 1));
+
+      ctx.save();
+      ctx.strokeStyle = th.grid; ctx.setLineDash([3, 3]); ctx.font = "13px sans-serif"; ctx.fillStyle = th.muted; ctx.textAlign = "right";
+      for (let i = 0; i <= 4; i++) {
+        const val = isLog ? Math.pow(10, Math.log10(minV) + (i / 4) * (Math.log10(maxV) - Math.log10(minV))) : (i / 4) * maxV;
+        const y = pad.top + pH * (1 - i / 4);
+        ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + pW, y); ctx.stroke();
+        ctx.fillText(val >= 100 ? val.toFixed(0) : (val >= 1 ? val.toFixed(1) : val.toFixed(3)), pad.left - 10, y + 4);
+      }
+      ctx.restore();
+
+      ctx.strokeStyle = th.muted; ctx.beginPath(); ctx.moveTo(pad.left, pad.top + pH); ctx.lineTo(pad.left + pW, pad.top + pH); ctx.stroke();
+
+      const grpW = pW / Ns.length, gap = 4, innerW = grpW * 0.76;
+      Ns.forEach((n, gi) => {
+        const act = keys.map(k => ({ k, rec: bestFor(data, n, k) })).filter(x => x.rec);
+        const bw = Math.max(7, (innerW - gap * (act.length - 1)) / Math.max(1, act.length));
+        const sx = pad.left + gi * grpW + (grpW - (bw * act.length + gap * (act.length - 1))) / 2;
+
+        act.forEach((it, bi) => {
+          const v = it.rec[field], bx = sx + bi * (bw + gap), by = mapY(v), bh = Math.max(3, pad.top + pH - by);
+          ctx.fillStyle = ALGO_META[it.k].color;
+          ctx.beginPath(); ctx.roundRect(bx, by, bw, bh, [2, 2, 0, 0]); ctx.fill();
+          if (bw >= 26) {
+            ctx.fillStyle = th.fg; ctx.font = "600 13px sans-serif"; ctx.textAlign = "center";
+            ctx.fillText(v >= 100 ? v.toFixed(0) : (v >= 10 ? v.toFixed(1) : v.toFixed(2)), bx + bw / 2, by - 6);
+          }
+          const tag = ALGO_META[it.k].group === "gpu" ? "GPU" : `${it.rec.threads}T`;
+          hitRegions[id].push({
+            x: bx, y: by, w: bw, h: bh,
+            html: `<strong>${ALGO_META[it.k].name}</strong><br>N = ${n} · ${tag}<br>${yLabel}: <strong>${v.toFixed(field === "time" ? 4 : 2)}${unit}</strong><br>GFLOPS: ${it.rec.gflops.toFixed(2)} · Speedup: ${it.rec.speedup.toFixed(2)}×`
+          });
+        });
+        ctx.fillStyle = th.fg; ctx.font = "600 13px sans-serif"; ctx.textAlign = "center";
+        ctx.fillText(`N = ${n}`, pad.left + gi * grpW + grpW / 2, pad.top + pH + 22);
+      });
+    }
+
+    function drawLine(id, fixedH, xs, series, yLabel, xPre, unit, empty) {
+      const { ctx, w, h, th } = setupCanvas(id, fixedH);
+      hitRegions[id] = [];
+      const ys = []; series.forEach(s => s.points.forEach(p => { if (p) ys.push(p.y); }));
+      if (!ys.length || !xs.length) {
+        ctx.fillStyle = th.muted; ctx.font = "14px sans-serif"; ctx.textAlign = "center";
+        ctx.fillText(empty, w / 2, h / 2);
+        return;
+      }
+      const pad = { top: 24, right: 20, bottom: 36, left: 66 };
+      const pW = w - pad.left - pad.right, pH = h - pad.top - pad.bottom;
+      const maxY = Math.max(...ys) * 1.15 || 1;
+      const mapX = i => xs.length === 1 ? pad.left + pW / 2 : pad.left + (i / (xs.length - 1)) * pW;
+      const mapY = v => pad.top + pH * (1 - v / maxY);
+
+      ctx.save();
+      ctx.strokeStyle = th.grid; ctx.setLineDash([3, 3]); ctx.font = "13px sans-serif"; ctx.fillStyle = th.muted; ctx.textAlign = "right";
+      for (let i = 0; i <= 4; i++) {
+        const y = pad.top + pH * (1 - i / 4);
+        ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + pW, y); ctx.stroke();
+        const val = (i / 4) * maxY;
+        ctx.fillText(val >= 100 ? val.toFixed(0) : val.toFixed(1), pad.left - 10, y + 4);
+      }
+      ctx.restore();
+
+      ctx.strokeStyle = th.muted; ctx.beginPath(); ctx.moveTo(pad.left, pad.top + pH); ctx.lineTo(pad.left + pW, pad.top + pH); ctx.stroke();
+      xs.forEach((xv, i) => { ctx.fillStyle = th.fg; ctx.font = "600 13px sans-serif"; ctx.textAlign = "center"; ctx.fillText(`${xPre}${xv}`, mapX(i), pad.top + pH + 22); });
+
+      series.forEach(s => {
+        ctx.strokeStyle = s.color; ctx.lineWidth = 2.25; ctx.beginPath();
+        let st = false;
+        s.points.forEach((pt, i) => {
+          if (!pt) { st = false; return; }
+          if (!st) { ctx.moveTo(mapX(i), mapY(pt.y)); st = true; } else ctx.lineTo(mapX(i), mapY(pt.y));
+        });
+        ctx.stroke();
+        s.points.forEach((pt, i) => {
+          if (!pt) return;
+          const px = mapX(i), py = mapY(pt.y);
+          ctx.fillStyle = th.bg; ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = s.color; ctx.beginPath(); ctx.arc(px, py, 3.5, 0, Math.PI * 2); ctx.fill();
+          hitRegions[id].push({ x: px - 10, y: py - 10, w: 20, h: 20, html: `<strong>${s.label}</strong> (${xPre}${xs[i]})<br>${yLabel}: <strong>${pt.y.toFixed(2)}${unit}</strong><br>${pt.extra}` });
+        });
+      });
+    }
+
+    function updateChartControls() {
+      const isGrid = activeChartView === "grid";
+      const isHyb = activeChartView === "hybrid";
+      document.getElementById("singleChartWrap").classList.toggle("hidden", isGrid || isHyb);
+      document.getElementById("gridChartWrap").classList.toggle("hidden", !isGrid);
+      document.getElementById("hybridViewWrap").classList.toggle("hidden", !isHyb);
+      document.getElementById("globalLegend").classList.toggle("hidden", isHyb);
+
+      document.getElementById("btnToggleLog").classList.toggle("hidden", !(activeChartView === "time" || isGrid));
+      document.getElementById("nScaleSelect").classList.toggle("hidden", !(activeChartView === "threads" || isGrid));
+      document.getElementById("btnDownloadActive").classList.toggle("hidden", isGrid || isHyb);
+
+      const titles = {
+        gflops:  ["Hiệu năng tính toán (GFLOPS) theo kích thước N", "Cao hơn tốt hơn · Peak mỗi mốc N"],
+        time:    ["Thời gian thực thi (giây) theo kích thước N", useLogTime ? "Thấp hơn tốt hơn · Thang Log10" : "Thấp hơn tốt hơn · Thang tuyến tính"],
+        speedup: ["Hệ số tăng tốc (Speedup) so với tuần tự", "N ≥ 2048 ngoại suy theo mốc Baseline"],
+        threads: ["Mở rộng theo số luồng CPU (Thread Scaling)", `Biến thiên GFLOPS tại N = ${document.getElementById("nScaleSelect").value || "—"}`]
+      };
+      if (titles[activeChartView]) {
+        document.getElementById("singleChartTitle").textContent = titles[activeChartView][0];
+        document.getElementById("singleChartUnit").textContent = titles[activeChartView][1];
+      }
+    }
+
+    function renderCharts() {
+      if (activeChartView === "hybrid") { renderHybridPanel(); return; }
+      const data = visibleData();
+      const Ns = [...new Set(data.map(d => d.n))].sort((a, b) => a - b);
+      const keys = ALGO_ORDER.filter(k => data.some(d => d.key === k));
+      const nVal = Number(document.getElementById("nScaleSelect").value || Ns[0]);
+
+      const spSeries = keys.map(k => ({
+        key: k, label: ALGO_META[k].name, color: ALGO_META[k].color,
+        points: Ns.map(n => { const r = bestFor(data, n, k); return r ? { y: r.speedup, extra: `GFLOPS: ${r.gflops.toFixed(2)} · Time: ${r.time.toFixed(4)}s` } : null; })
+      }));
+
+      const tKeys = ["omp_basic", "omp_l2_l3", "omp_bypass", "hybrid"].filter(k => data.some(d => d.n === nVal && d.key === k));
+      const ts = [...new Set(data.filter(d => d.n === nVal && tKeys.includes(d.key)).map(d => d.threads))].sort((a, b) => a - b);
+      const tSeries = tKeys.map(k => ({
+        key: k, label: ALGO_META[k].name, color: ALGO_META[k].color,
+        points: ts.map(t => {
+          const m = data.filter(d => d.n === nVal && d.key === k && d.threads === t);
+          if (!m.length) return null;
+          const r = m.reduce((a, b) => (b.gflops > a.gflops ? b : a));
+          return { y: r.gflops, extra: `Speedup: ${r.speedup.toFixed(2)}× · Time: ${r.time.toFixed(4)}s` };
+        })
+      }));
+
+      if (activeChartView === "grid") {
+        drawGroupedBar("cGridGflops", 250, "gflops", "GFLOPS", false, " GFLOPS");
+        drawGroupedBar("cGridTime", 250, "time", "Thời gian (s)", useLogTime, "s");
+        drawLine("cGridSpeedup", 250, Ns, spSeries, "Speedup", "N=", "×", "Chưa có dữ liệu Speedup.");
+        drawLine("cGridThreads", 250, ts, tSeries, "GFLOPS", "T=", " GFLOPS", "Chưa có dữ liệu đa luồng.");
+        return;
+      }
+
+      if (activeChartView === "gflops") drawGroupedBar("cMain", 370, "gflops", "GFLOPS", false, " GFLOPS");
+      else if (activeChartView === "time") drawGroupedBar("cMain", 370, "time", "Thời gian (s)", useLogTime, "s");
+      else if (activeChartView === "speedup") drawLine("cMain", 370, Ns, spSeries, "Speedup", "N=", "×", "Chưa có dữ liệu Speedup.");
+      else if (activeChartView === "threads") drawLine("cMain", 370, ts, tSeries, "GFLOPS", "T=", " GFLOPS", "Chọn mốc N có dữ liệu đa luồng.");
+    }
+
+    // =========================================================================
+    // 9. KPI, Legend & Tables
+    // =========================================================================
+    function renderKPI() {
+      const strip = document.getElementById("kpiStrip");
+      const Ns = [...new Set(benchData.map(d => d.n))].sort((a, b) => a - b);
+      document.getElementById("datasetMeta").textContent = `${benchData.length} điểm đo · ${Ns.length} mốc N`;
+      if (!benchData.length) {
+        strip.innerHTML = `<div style="grid-column:1/-1; padding:16px 20px;" class="muted">Chưa có dữ liệu — bấm <strong>Chạy thực nghiệm</strong> hoặc <strong>Nạp mẫu</strong>.</div>`;
+        return;
+      }
+      const bG = benchData.reduce((a, b) => (b.gflops > a.gflops ? b : a));
+      const bS = benchData.reduce((a, b) => (b.speedup > a.speedup ? b : a));
+      const pass = benchData.filter(d => d.verified).length;
+      const maxN = Ns[Ns.length - 1];
+      const atMax = benchData.filter(d => d.n === maxN);
+      const cpus = atMax.filter(d => ALGO_META[d.key].group === "cpu");
+      const gpus = atMax.filter(d => ALGO_META[d.key].group !== "cpu");
+      const bCpu = cpus.length ? cpus.reduce((a, b) => (b.gflops > a.gflops ? b : a)) : null;
+      const bGpu = gpus.length ? gpus.reduce((a, b) => (b.gflops > a.gflops ? b : a)) : null;
+      const ratio = (bCpu && bGpu) ? `${(bGpu.gflops / bCpu.gflops).toFixed(1)}×` : `${bG.gflops.toFixed(1)}`;
+
+      strip.innerHTML = `
+        <div class="kpi-cell tabular">
+          <div class="kpi-cell__label">Hiệu năng đỉnh</div>
+          <div class="kpi-cell__val">${bG.gflops.toFixed(2)} <span style="font-size:12.5px; font-weight:500;" class="muted">GFLOPS</span></div>
+          <div class="kpi-cell__sub">${ALGO_META[bG.key].name} · N=${bG.n}</div>
+        </div>
+        <div class="kpi-cell tabular">
+          <div class="kpi-cell__label">Tăng tốc tối đa</div>
+          <div class="kpi-cell__val">${bS.speedup.toFixed(2)}×</div>
+          <div class="kpi-cell__sub">${ALGO_META[bS.key].name} · N=${bS.n}</div>
+        </div>
+        <div class="kpi-cell tabular">
+          <div class="kpi-cell__label">Kiểm định Frobenius</div>
+          <div class="kpi-cell__val">${pass} / ${benchData.length}</div>
+          <div class="kpi-cell__sub">${pass === benchData.length ? "Đạt chuẩn toàn vẹn" : "Có sai số vượt ngưỡng"}</div>
+        </div>
+        <div class="kpi-cell tabular">
+          <div class="kpi-cell__label">GPU / CPU tại N=${maxN}</div>
+          <div class="kpi-cell__val kpi-cell__val--accent">${ratio}</div>
+          <div class="kpi-cell__sub">${ALGO_META[(bGpu || bCpu).key].name}</div>
+        </div>
+      `;
+    }
+
+    function renderLegend() {
+      const box = document.getElementById("globalLegend");
+      const present = ALGO_ORDER.filter(k => benchData.some(d => d.key === k));
+      box.innerHTML = "";
+      present.forEach(k => {
+        const m = ALGO_META[k];
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "legend-toggle";
+        b.setAttribute("aria-pressed", String(!hiddenAlgos.has(k)));
+        b.innerHTML = `<span class="swatch" style="background:${m.color}"></span><span>${m.name}</span>`;
+        b.addEventListener("click", () => {
+          if (hiddenAlgos.has(k)) hiddenAlgos.delete(k); else hiddenAlgos.add(k);
+          renderLegend(); renderCharts();
+        });
+        box.appendChild(b);
+      });
+    }
+
+    function syncSelectors() {
+      const Ns = [...new Set(benchData.map(d => d.n))].sort((a, b) => a - b);
+      const sSel = document.getElementById("nScaleSelect");
+      const pS = Number(sSel.value);
+      sSel.innerHTML = Ns.length ? Ns.map(n => `<option value="${n}">N = ${n}</option>`).join("") : `<option value="">—</option>`;
+      if (Ns.includes(pS)) sSel.value = String(pS);
+      else if (Ns.length) sSel.value = String(Ns.find(n => benchData.filter(d => d.n === n && ALGO_META[d.key].group === "cpu").length >= 2) || Ns[Ns.length - 1]);
+
+      const fN = document.getElementById("filterN");
+      const pF = fN.value;
+      fN.innerHTML = `<option value="all">Tất cả N (${Ns.length})</option>` + Ns.map(n => `<option value="${n}">N = ${n}</option>`).join("");
+      fN.value = (pF === "all" || Ns.includes(Number(pF))) ? pF : "all";
+    }
+
+    function renderTables() {
+      const mBody = document.getElementById("milestoneBody");
+      const Ns = [...new Set(benchData.map(d => d.n))].sort((a, b) => a - b);
+      mBody.innerHTML = !Ns.length
+        ? `<tr><td colspan="6" class="muted" style="text-align:center; padding:24px;">Chưa có dữ liệu.</td></tr>`
+        : Ns.map(n => {
+            const atN = benchData.filter(d => d.n === n);
+            const best = atN.reduce((a, b) => (b.gflops > a.gflops ? b : a));
+            const cL = atN.filter(d => ALGO_META[d.key].group === "cpu");
+            const hL = atN.filter(d => d.key === "hybrid");
+            const gL = atN.filter(d => ALGO_META[d.key].group === "gpu");
+            const bC = cL.length ? cL.reduce((a, b) => (b.gflops > a.gflops ? b : a)) : null;
+            const bH = hL.length ? hL.reduce((a, b) => (b.gflops > a.gflops ? b : a)) : null;
+            const bG = gL.length ? gL.reduce((a, b) => (b.gflops > a.gflops ? b : a)) : null;
+            const ratio = (bC && (bG || bH)) ? `${(Math.max(bG ? bG.gflops : 0, bH ? bH.gflops : 0) / bC.gflops).toFixed(2)}×` : "—";
+            return `<tr>
+              <th scope="row">N = ${n}</th>
+              <td><span style="display:inline-flex; align-items:center; gap:7px; font-weight:600;"><span class="swatch" style="background:${ALGO_META[best.key].color}"></span>${ALGO_META[best.key].name} (${best.gflops.toFixed(1)})</span></td>
+              <td>${bC ? `${ALGO_META[bC.key].name} (${bC.threads}T): <strong>${bC.gflops.toFixed(1)}</strong>` : "—"}</td>
+              <td>${bH ? `${bH.threads}T: <strong>${bH.gflops.toFixed(1)}</strong>` : "—"}</td>
+              <td>${bG ? `${ALGO_META[bG.key].name}: <strong>${bG.gflops.toFixed(1)}</strong>` : "—"}</td>
+              <td style="font-weight:700; color:var(--accent);">${ratio}</td>
+            </tr>`;
+          }).join("");
+
+      const tbody = document.getElementById("resultsTableBody");
+      const fN = document.getElementById("filterN").value;
+      const fG = document.getElementById("filterGroup").value;
+      const list = benchData.filter(r => (fN === "all" || r.n === Number(fN)) && (fG === "all" || ALGO_META[r.key].group === fG));
+      tbody.innerHTML = !list.length
+        ? `<tr><td colspan="8" class="muted" style="text-align:center; padding:24px;">Không có bản ghi khớp bộ lọc.</td></tr>`
+        : list.map(r => {
+            const m = ALGO_META[r.key];
+            return `<tr>
+              <th scope="row"><span style="display:inline-flex; align-items:center; gap:8px;"><span class="swatch" style="background:${m.color}"></span>${m.name}</span></th>
+              <td>${r.n}</td>
+              <td>${m.group === "gpu" ? `${r.threads} CUDA` : `${r.threads}T`}</td>
+              <td class="mono">${r.time.toFixed(5)}</td>
+              <td class="mono" style="font-weight:600;">${r.gflops.toFixed(2)}</td>
+              <td class="mono">${r.speedup.toFixed(2)}×</td>
+              <td style="font-weight:600; color:${r.verified ? "var(--ok)" : "var(--danger)"};">${r.verified ? "Đạt" : "Lỗi"}</td>
+              <td><button type="button" class="text-btn text-btn--danger" data-del="${r.id}">Xóa</button></td>
+            </tr>`;
+          }).join("");
+      tbody.querySelectorAll("[data-del]").forEach(b => b.addEventListener("click", () => deleteRecord(Number(b.dataset.del))));
+    }
+
+    function refreshAll() {
+      renderKPI();
+      renderLegend();
+      syncSelectors();
+      updateChartControls();
+      renderCharts();
+      renderTables();
+      updateManualCalc();
+    }
+
+    // Controls
+    document.getElementById("btnToggleLog").addEventListener("click", e => {
+      useLogTime = !useLogTime;
+      e.currentTarget.setAttribute("aria-pressed", String(useLogTime));
+      updateChartControls(); renderCharts();
+    });
+    document.getElementById("nScaleSelect").addEventListener("change", () => { updateChartControls(); renderCharts(); });
+    document.getElementById("filterN").addEventListener("change", renderTables);
+    document.getElementById("filterGroup").addEventListener("change", renderTables);
+    function dlCanvas(id, fn) {
+      const a = document.createElement("a"); a.download = fn; a.href = document.getElementById(id).toDataURL("image/png"); a.click();
+    }
+    document.getElementById("btnDownloadActive").addEventListener("click", () => dlCanvas("cMain", `matmul_${activeChartView}.png`));
+    document.querySelectorAll("[data-dl-grid]").forEach(b => b.addEventListener("click", () => dlCanvas(b.dataset.dlGrid, b.dataset.fn)));
+
+    const tip = document.getElementById("chartTooltip");
+    ["cMain", "cGridGflops", "cGridTime", "cGridSpeedup", "cGridThreads"].forEach(id => {
+      const c = document.getElementById(id);
+      c.addEventListener("mousemove", e => {
+        const r = c.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top;
+        const hit = (hitRegions[id] || []).find(h => mx >= h.x && mx <= h.x + h.w && my >= h.y && my <= h.y + h.h);
+        if (hit) {
+          tip.style.display = "block"; tip.innerHTML = hit.html;
+          tip.style.left = `${Math.min(e.clientX + 14, window.innerWidth - 290)}px`;
+          tip.style.top = `${Math.max(e.clientY - 12, 10)}px`;
+        } else tip.style.display = "none";
+      });
+      c.addEventListener("mouseleave", () => { tip.style.display = "none"; });
+    });
+
+    window.addEventListener("resize", renderCharts);
+
+    updateCliPreview();
+    probeBackend();
+  </script>
+</body>
+</html>
