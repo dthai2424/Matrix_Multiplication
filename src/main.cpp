@@ -800,169 +800,130 @@ void run_custom_interactive(std::vector<BenchmarkRecord> &records,
     }
 
     std::cout << "\nChon phuong thuc chay:\n";
-    std::cout << "  1. So sanh cac thuat toan CPU va GPU CUDA\n";
-    std::cout << "  2. Chi chay Song song Tiled L2 + L3\n";
-    std::cout << "  3. Chi chay Song song Tiled L3 + L1 Bypass L2\n";
-    std::cout << "  4. Chi chay ket hop CPU OpenMP + CUDA GPU\n";
-    std::cout << "  5. So sanh hai kernel CUDA (Global Memory / Shared Tiling)\n";
-    std::cout << "  6. Chi chay cac thuat toan GPU (Ket hop CPU + CUDA GPU va CUDA thuan)\n";
-    std::cout << "Lua chon cua ban [1-6]: ";
-    int choice = 1;
-    std::cin >> choice;
+    std::cout << "  1. Song song CPU (OpenMP Co ban, Tiled L2+L3, Bypass L2)\n";
+    std::cout << "  2. Chi CUDA GPU (Global Memory + Shared Memory Tiling)\n";
+    std::cout << "  3. Ket hop CPU + CUDA GPU (Can bang tai tu dong)\n";
+    std::cout << "  4. Toan bo (Song song CPU + Ket hop CPU/GPU + CUDA GPU)\n";
+    std::cout << "Lua chon cua ban [1-4]: ";
+    int choice = 4;
+    if (!(std::cin >> choice) || choice < 1 || choice > 4)
+    {
+        std::cin.clear();
+        std::string dummy;
+        std::getline(std::cin, dummy);
+        std::cout << "  [Loi] Lua chon khong hop le.\n";
+        return;
+    }
+
+    const bool run_cpu = (choice == 1 || choice == 4);
+    const bool run_hybrid = (choice == 3 || choice == 4);
+    const bool run_cuda = (choice == 2 || choice == 4);
+
+    if ((choice == 2 || choice == 3) && !cuda_backend_available())
+    {
+        std::cout << "  [Loi] CUDA GPU khong san sang. Hay build voi ho tro CUDA "
+                     "tren may co GPU NVIDIA.\n";
+        return;
+    }
 
     int test_id = static_cast<int>(records.size()) + 1;
     Matrix A(N), B(N), C_ref(N), C_test(N);
     A.fill_random(1.0, 5.0, 1234);
     B.fill_random(1.0, 5.0, 5678);
 
-    int bs_l3 = (N >= 1024) ? 256 : 128;
-    int bs_l2 = 64;
-    int bs_l1 = 32;
+    const int bs_l3 = (N >= 1024) ? 256 : 128;
+    const int bs_l2 = 64;
+    const int bs_l1 = 32;
 
-    std::cout << "\nDang khoi chay thuc nghiem voi N = " << N << ", Luong = " << threads << "...\n";
+    std::cout << "\nDang khoi chay thuc nghiem voi N = " << N
+              << ", Luong CPU = " << threads << "...\n";
 
-    if (choice == 1)
+    // Chuan bi moc Baseline (t_seq) va ma tran doi chung (C_ref):
+    // N > 2000: tu dong bo qua Tuan tu (chi chay Song song) va ngoai suy t_seq.
+    double t_seq = -1.0;
+    if (N <= 2000)
     {
-        double t_seq = -1.0;
-        if (N < 2048)
+        if (run_cpu)
         {
-            std::cout << "  [1/7] Chay Tuan tu Baseline... " << std::flush;
-            BenchmarkRecord r1 = run_single_test(test_id++, N, 1, AlgorithmType::SEQUENTIAL_BASELINE,
-                                                 "1. Tuan tu (Baseline)", 0, 0, 0, A, B, C_ref, nullptr, -1.0);
+            std::cout << "  + Tuan tu (Baseline)     : " << std::flush;
+            BenchmarkRecord r1 = run_single_test(
+                test_id++, N, 1, AlgorithmType::SEQUENTIAL_BASELINE,
+                "1. Tuan tu (Baseline)", 0, 0, 0, A, B, C_ref, nullptr, -1.0);
             t_seq = r1.time_sec;
             records.push_back(r1);
-            std::cout << r1.time_sec << "s (" << r1.gflops << " GFLOPS)\n";
+            std::cout << std::fixed << std::setprecision(4) << r1.time_sec << "s | "
+                      << std::setprecision(1) << r1.gflops << " GFLOPS\n";
         }
         else
         {
-            t_seq = (2.0 * N * N * N) / (6.2 * 1e9);
-            std::cout << "  [Bo qua Tuan tu] N = " << N << " >= 2048: Bo qua Baseline (Uoc tinh: "
-                      << std::fixed << std::setprecision(2) << t_seq << "s tai 6.2 GFLOPS)\n";
-            std::cout << "  Tao ma tran C_ref bang CPU Tiled L2+L3 (" << threads << " luong)... " << std::flush;
-            matmul_omp_tiled_l2_l3(A, B, C_ref, threads, bs_l3, bs_l2, bs_l1);
-            std::cout << "Xong.\n";
-        }
-
-        std::cout << "  [2/7] Chay Song song OpenMP Co ban... " << std::flush;
-        BenchmarkRecord r2 = run_single_test(test_id++, N, threads, AlgorithmType::OMP_BASIC_PARALLEL,
-                                             "2. Song song OpenMP Co ban", 0, 0, 0, A, B, C_test, &C_ref, t_seq);
-        records.push_back(r2);
-        std::cout << r2.time_sec << "s (" << r2.gflops << " GFLOPS, Speedup: " << r2.speedup << "x)\n";
-
-        std::cout << "  [3/7] Chay Song song Tiled L2+L3 ... " << std::flush;
-        BenchmarkRecord r3 = run_single_test(test_id++, N, threads, AlgorithmType::OMP_TILED_L2_L3,
-                                             "3. Song song Tiled L2+L3", bs_l3, bs_l2, bs_l1, A, B, C_test, &C_ref, t_seq);
-        records.push_back(r3);
-        std::cout << r3.time_sec << "s (" << r3.gflops << " GFLOPS, Speedup: " << r3.speedup << "x)\n";
-
-        std::cout << "  [4/7] Chay Song song Tiled L3+L1 Bypass L2 ... " << std::flush;
-        BenchmarkRecord r4 = run_single_test(test_id++, N, threads, AlgorithmType::OMP_TILED_L3_L1_BYPASS,
-                                             "4. Song song Bypass L2", bs_l3, 0, 64, A, B, C_test, &C_ref, t_seq);
-        records.push_back(r4);
-        std::cout << r4.time_sec << "s (" << r4.gflops << " GFLOPS, Speedup: " << r4.speedup << "x)\n";
-
-        if (cuda_backend_available())
-        {
-            tune_heterogeneous_gpu_fraction(threads, cuda_tile, true);
-            std::cout << "  [5/7] Chay ket hop CPU OpenMP + CUDA GPU ... " << std::flush;
-            BenchmarkRecord r5 = run_single_test(
-                test_id++, N, threads, AlgorithmType::HETEROGENEOUS_OMP_CUDA,
-                "5. Ket hop CPU + CUDA GPU", 0, 0, 16, A, B, C_test, &C_ref,
-                t_seq, 1, cuda_tile);
-            records.push_back(r5);
-            std::cout << r5.time_sec << "s (" << r5.gflops
-                      << " GFLOPS, Speedup: " << r5.speedup << "x)\n";
-        }
-        else
-        {
-            std::cout << "  [Bo qua] Khong co CUDA GPU hoac chuong trinh chua "
-                         "duoc build voi CUDA_ENABLED=1.\n";
-        }
-        run_cuda_benchmarks(records, test_id, N, cuda_tile, A, B, C_test,
-                            C_ref, t_seq, 1, hw.gpu_cuda_cores);
-    }
-    else if (choice == 2)
-    {
-        std::cout << "  Chay Song song Tiled L2+L3 ... " << std::flush;
-        BenchmarkRecord r = run_single_test(test_id++, N, threads, AlgorithmType::OMP_TILED_L2_L3,
-                                            "3. Song song Tiled L2+L3", bs_l3, bs_l2, bs_l1, A, B, C_test, nullptr, -1.0);
-        records.push_back(r);
-        std::cout << r.time_sec << "s (" << r.gflops << " GFLOPS)\n";
-    }
-    else if (choice == 3)
-    {
-        std::cout << "  Chay Song song Tiled L3+L1 Bypass L2 ... " << std::flush;
-        BenchmarkRecord r = run_single_test(test_id++, N, threads, AlgorithmType::OMP_TILED_L3_L1_BYPASS,
-                                            "4. Song song Bypass L2", bs_l3, 0, 64, A, B, C_test, nullptr, -1.0);
-        records.push_back(r);
-        std::cout << r.time_sec << "s (" << r.gflops << " GFLOPS)\n";
-    }
-    else if (choice == 4)
-    {
-        if (!cuda_backend_available())
-        {
-            std::cout << "  [Loi] CUDA GPU khong san sang. Hay build bang "
-                         "'make CUDA_ENABLED=1' tren may co GPU NVIDIA.\n";
-        }
-        else
-        {
-            tune_heterogeneous_gpu_fraction(threads, cuda_tile, true);
-            std::cout << "  Chay ket hop CPU OpenMP + CUDA GPU ... " << std::flush;
-            BenchmarkRecord r = run_single_test(
-                test_id++, N, threads, AlgorithmType::HETEROGENEOUS_OMP_CUDA,
-                "5. Ket hop CPU + CUDA GPU", 0, 0, 16, A, B, C_test, nullptr,
-                -1.0, 1, cuda_tile);
-            records.push_back(r);
-            std::cout << r.time_sec << "s (" << r.gflops << " GFLOPS)\n";
-        }
-    }
-    else if (choice == 5)
-    {
-        if (!cuda_backend_available())
-        {
-            std::cout << "  [Loi] CUDA GPU khong san sang. Hay build bang "
-                         "'make CUDA_ENABLED=1' tren may co GPU NVIDIA.\n";
-        }
-        else
-        {
-            const double reference_start = omp_get_wtime();
+            std::cout << "  [Kiem dinh] Tao C_ref & do moc Tuan tu (N <= 2000)... " << std::flush;
+            const double ref_start = omp_get_wtime();
             matmul_sequential(A, B, C_ref);
-            const double t_seq = omp_get_wtime() - reference_start;
-            run_cuda_benchmarks(records, test_id, N, cuda_tile, A, B, C_test,
-                                C_ref, t_seq, 1, hw.gpu_cuda_cores);
-        }
-    }
-    else if (choice == 6)
-    {
-        if (!cuda_backend_available())
-        {
-            std::cout << "  [Loi] CUDA GPU khong san sang. Hay build bang "
-                         "'make CUDA_ENABLED=1' tren may co GPU NVIDIA.\n";
-        }
-        else
-        {
-            double t_seq = (2.0 * N * N * N) / (6.2 * 1e9);
-            std::cout << "  [Kiem dinh] Tao ma tran C_ref bang CUDA Shared Memory Tiling... " << std::flush;
-            matmul_cuda_shared(A.data(), B.data(), C_ref.data(), N, cuda_tile);
-            std::cout << "Xong.\n";
-
-            tune_heterogeneous_gpu_fraction(threads, cuda_tile, true);
-            std::cout << "  [1/3] Chay ket hop CPU OpenMP + CUDA GPU ... " << std::flush;
-            BenchmarkRecord r5 = run_single_test(
-                test_id++, N, threads, AlgorithmType::HETEROGENEOUS_OMP_CUDA,
-                "5. Ket hop CPU + CUDA GPU", 0, 0, 16, A, B, C_test, &C_ref,
-                t_seq, 1, cuda_tile);
-            records.push_back(r5);
-            std::cout << r5.time_sec << "s (" << r5.gflops
-                      << " GFLOPS, Speedup: " << r5.speedup << "x)\n";
-
-            run_cuda_benchmarks(records, test_id, N, cuda_tile, A, B, C_test,
-                                C_ref, t_seq, 1, hw.gpu_cuda_cores);
+            t_seq = omp_get_wtime() - ref_start;
+            std::cout << "Xong (" << std::fixed << std::setprecision(3) << t_seq << "s).\n";
         }
     }
     else
     {
-        std::cout << "  [Loi] Lua chon khong hop le.\n";
+        t_seq = (2.0 * N * N * N) / (6.2 * 1e9);
+        std::cout << "  [Bo qua Tuan tu] N = " << N
+                  << " > 2000: Tu dong chi chay SONG SONG (Uoc tinh Baseline: "
+                  << std::fixed << std::setprecision(2) << t_seq << "s tai 6.2 GFLOPS)\n";
+        if (!run_cpu && cuda_backend_available())
+        {
+            std::cout << "  [Kiem dinh] Tao C_ref bang CUDA Shared Memory Tiling... " << std::flush;
+            matmul_cuda_shared(A.data(), B.data(), C_ref.data(), N, cuda_tile);
+            std::cout << "Xong.\n";
+        }
+        else
+        {
+            std::cout << "  [Kiem dinh] Tao C_ref bang CPU Tiled L2+L3 (" << threads << " luong)... " << std::flush;
+            matmul_omp_tiled_l2_l3(A, B, C_ref, threads, bs_l3, bs_l2, bs_l1);
+            std::cout << "Xong.\n";
+        }
+    }
+
+    auto log_and_record = [&](const char *label, AlgorithmType algo,
+                              const std::string &algo_name, int l3, int l2, int l1)
+    {
+        std::cout << label << std::flush;
+        BenchmarkRecord rec = run_single_test(
+            test_id++, N, threads, algo, algo_name, l3, l2, l1,
+            A, B, C_test, &C_ref, t_seq, 1, cuda_tile);
+        records.push_back(rec);
+        std::cout << std::fixed << std::setprecision(4) << rec.time_sec << "s | "
+                  << std::setprecision(1) << rec.gflops << " GFLOPS | Speedup: "
+                  << std::setprecision(2) << rec.speedup << "x\n";
+    };
+
+    if (run_cpu)
+    {
+        log_and_record("  + OpenMP Co ban          : ",
+                       AlgorithmType::OMP_BASIC_PARALLEL, "2. Song song OpenMP Co ban", 0, 0, 0);
+        log_and_record("  + OpenMP Tiled L2+L3     : ",
+                       AlgorithmType::OMP_TILED_L2_L3, "3. Song song Tiled L2+L3", bs_l3, bs_l2, bs_l1);
+        log_and_record("  + OpenMP Bypass L2       : ",
+                       AlgorithmType::OMP_TILED_L3_L1_BYPASS, "4. Song song Bypass L2", bs_l3, 0, 64);
+    }
+
+    if (run_hybrid)
+    {
+        if (cuda_backend_available())
+        {
+            tune_heterogeneous_gpu_fraction(threads, cuda_tile, true);
+            log_and_record("  + Ket hop CPU + CUDA GPU : ",
+                           AlgorithmType::HETEROGENEOUS_OMP_CUDA, "5. Ket hop CPU + CUDA GPU", 0, 0, 16);
+        }
+        else
+        {
+            std::cout << "  [Bo qua] Khong co CUDA GPU hoac chua build voi ho tro CUDA.\n";
+        }
+    }
+
+    if (run_cuda)
+    {
+        run_cuda_benchmarks(records, test_id, N, cuda_tile, A, B, C_test,
+                            C_ref, t_seq, 1, hw.gpu_cuda_cores);
     }
 
     std::cout << ">>> Thuc nghiem tuy chinh hoan tat!\n";
