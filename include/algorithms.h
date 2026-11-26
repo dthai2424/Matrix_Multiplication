@@ -30,11 +30,21 @@ void matmul_omp_tiled_l3_l1_bypass(const Matrix &A, const Matrix &B, Matrix &C,
                                    int num_threads,
                                    int bs_l3 = 256, int bs_l1 = 64);
 
-// Phân chia theo dải hàng: GPU xử lý gpu_fraction, CPU xử lý phần còn lại.
-// Hai phần chạy đồng thời; kết quả không ghi đè vì mỗi thiết bị sở hữu một
-// vùng hàng độc lập của C.
+// Cập nhật tên phần cứng CPU/GPU để định danh khi lưu/đọc file cấu hình hybrid_alpha.cfg
+void set_heterogeneous_hardware_names(const std::string &cpu_name,
+                                      const std::string &gpu_name);
+
+// Tự động hiệu chỉnh và trả về tỷ lệ chia tải tối ưu alpha* cho GPU
+// (đọc từ hybrid_alpha.cfg nếu đã có, hoặc chạy 3 bước đo đạc + tinh chỉnh rồi lưu lại).
+double tune_heterogeneous_gpu_fraction(int num_threads, int cuda_tile = 16,
+                                       bool verbose = false);
+
+// Phân chia theo dải hàng cân bằng tải: GPU xử lý gpu_fraction hàng đầu,
+// CPU xử lý phần còn lại bằng (num_threads - 1) luồng song song với 1 luồng quản lý GPU.
+// - gpu_fraction <= 0.0: tự động dùng tỷ lệ cân bằng tải alpha* (mặc định).
+// - gpu_fraction trong (0, 1): sử dụng tỷ lệ chỉ định thủ công.
 void matmul_heterogeneous_omp_cuda(const Matrix &A, const Matrix &B, Matrix &C,
-                                   int num_threads, double gpu_fraction = 0.8,
+                                   int num_threads, double gpu_fraction = -1.0,
                                    int cuda_tile = 16);
 
 // GPU-only CUDA kernels; tile_size must be 16 or 32.

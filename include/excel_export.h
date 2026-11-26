@@ -17,6 +17,12 @@ public:
     static bool exportToCSV(const std::string& filename,
                            const std::vector<BenchmarkRecord>& records,
                            const HardwareInfo& hw);
+
+    // Xuất báo cáo biểu đồ tương tác offline (.html) vẽ trực tiếp GFLOPS, Time, Speedup, Thread Scaling
+    // kèm bảng so sánh ưu/nhược điểm và nút tải ảnh PNG chất lượng cao.
+    static bool exportToHTMLChart(const std::string& filename,
+                                  const std::vector<BenchmarkRecord>& records,
+                                  const HardwareInfo& hw);
 };
 
 #endif // EXCEL_EXPORT_H

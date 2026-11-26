@@ -62,6 +62,14 @@ if exist "matmul_benchmark.exe" (
     echo [INFO] Khoi dong chuong trinh...
     echo.
     matmul_benchmark.exe %*
+    if %ERRORLEVEL% EQU 0 (
+        if not "%~1"=="-h" if not "%~1"=="--help" (
+            if exist "benchmark_charts.html" (
+                echo [INFO] Dang mo bieu do ket qua thuc nghiem ^(benchmark_charts.html^)...
+                start "" "benchmark_charts.html"
+            )
+        )
+    )
 ) else (
     echo [LOI] Khong tim thay file thuc thi matmul_benchmark.exe.
 )

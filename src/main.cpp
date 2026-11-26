@@ -721,6 +721,7 @@ void run_standard_benchmark_suite(std::vector<BenchmarkRecord> &records, const H
 
                 if (cuda_backend_available())
                 {
+                    tune_heterogeneous_gpu_fraction(q, cuda_tile, true);
                     std::cout << "       + CPU + CUDA GPU      : " << std::flush;
                     BenchmarkRecord r_heterogeneous = run_single_test(
                         test_id++, N, q, AlgorithmType::HETEROGENEOUS_OMP_CUDA,
@@ -744,6 +745,7 @@ void run_standard_benchmark_suite(std::vector<BenchmarkRecord> &records, const H
                 for (int q : current_threads)
                 {
                     std::cout << "   --- So luong: " << q << " Cores/Threads ---\n";
+                    tune_heterogeneous_gpu_fraction(q, cuda_tile, true);
                     std::cout << "       + CPU + CUDA GPU      : " << std::flush;
                     BenchmarkRecord r_heterogeneous = run_single_test(
                         test_id++, N, q, AlgorithmType::HETEROGENEOUS_OMP_CUDA,
@@ -861,6 +863,7 @@ void run_custom_interactive(std::vector<BenchmarkRecord> &records,
 
         if (cuda_backend_available())
         {
+            tune_heterogeneous_gpu_fraction(threads, cuda_tile, true);
             std::cout << "  [5/7] Chay ket hop CPU OpenMP + CUDA GPU ... " << std::flush;
             BenchmarkRecord r5 = run_single_test(
                 test_id++, N, threads, AlgorithmType::HETEROGENEOUS_OMP_CUDA,
@@ -903,6 +906,7 @@ void run_custom_interactive(std::vector<BenchmarkRecord> &records,
         }
         else
         {
+            tune_heterogeneous_gpu_fraction(threads, cuda_tile, true);
             std::cout << "  Chay ket hop CPU OpenMP + CUDA GPU ... " << std::flush;
             BenchmarkRecord r = run_single_test(
                 test_id++, N, threads, AlgorithmType::HETEROGENEOUS_OMP_CUDA,
@@ -942,6 +946,7 @@ void run_custom_interactive(std::vector<BenchmarkRecord> &records,
             matmul_cuda_shared(A.data(), B.data(), C_ref.data(), N, cuda_tile);
             std::cout << "Xong.\n";
 
+            tune_heterogeneous_gpu_fraction(threads, cuda_tile, true);
             std::cout << "  [1/3] Chay ket hop CPU OpenMP + CUDA GPU ... " << std::flush;
             BenchmarkRecord r5 = run_single_test(
                 test_id++, N, threads, AlgorithmType::HETEROGENEOUS_OMP_CUDA,
@@ -1007,10 +1012,11 @@ void run_cache_tuning_experiment(std::vector<BenchmarkRecord> &records, const Ha
     std::cout << ">>> Hoan thanh khao sat do nhay khoi Cache!\n";
 }
 
-// Lưu file Excel và CSV
+// Lưu file Excel, CSV và biểu đồ HTML tương tác
 void export_all_files(const std::vector<BenchmarkRecord> &records, const HardwareInfo &hw,
                       const std::string &xls_name = "benchmark_results.xls",
-                      const std::string &csv_name = "benchmark_results.csv")
+                      const std::string &csv_name = "benchmark_results.csv",
+                      const std::string &html_name = "benchmark_charts.html")
 {
     if (records.empty())
     {
@@ -1020,6 +1026,7 @@ void export_all_files(const std::vector<BenchmarkRecord> &records, const Hardwar
     std::cout << "\nDang xuat ket qua thuc nghiem ra file...\n";
     bool ok_xls = ExcelExporter::exportToExcel(xls_name, records, hw);
     bool ok_csv = ExcelExporter::exportToCSV(csv_name, records, hw);
+    bool ok_html = ExcelExporter::exportToHTMLChart(html_name, records, hw);
 
     if (ok_xls)
     {
@@ -1031,6 +1038,11 @@ void export_all_files(const std::vector<BenchmarkRecord> &records, const Hardwar
         std::cout << "  [+] Da xuat file CSV thuc nghiem thanh cong: " << csv_name << "\n";
         std::cout << "      (Phuc vu phan tich do thi Python, R, SPSS, MATLAB)\n";
     }
+    if (ok_html)
+    {
+        std::cout << "  [+] Da xuat Bieu do tuong tac thanh cong  : " << html_name << "\n";
+        std::cout << "      (Mo bang trinh duyet de xem 4 bieu do, so sanh uu/nhuoc & tai anh PNG)\n";
+    }
     std::cout << "\n";
 }
 
@@ -1038,6 +1050,7 @@ int main(int argc, char *argv[])
 {
     HardwareInfo hw;
     detect_hardware(hw);
+    set_heterogeneous_hardware_names(hw.cpu_name, hw.gpu_name);
     std::vector<BenchmarkRecord> records;
 
     // Phân tích tham số dòng lệnh chuyên nghiệp (CLI Flags)
