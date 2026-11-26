@@ -11,3 +11,6 @@ run_preview.csv
 # Local-only documents
 An - CPU song song hóa.docx
 BAO_CAO_TOAN_DIEN_THUC_NGHIEM.md
+
+__pycache__/
+*.pyc
