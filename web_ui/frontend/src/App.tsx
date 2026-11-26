@@ -146,7 +146,7 @@ export function App() {
   const [stepElapsedMs, setStepElapsedMs] = useState(0);
 
   const jobIdRef = useRef<string | null>(null);
-  const esRef = useRef<EventSource | null>(null);
+  const pollStopRef = useRef<boolean>(false);
   const runStartRef = useRef<number>(0);
   const activeStepRef = useRef<ActiveStep | null>(null);
   const mainChartRef = useRef<EChartPanelHandle>(null);
@@ -354,8 +354,9 @@ export function App() {
     });
   };
 
-  // Run Benchmark (Live Colab SSE or Offline Interactive Simulation)
+  // Run Benchmark (Unbuffered 200ms JSON Polling on Colab Pro — immune to Cloudflare SSE buffering!)
   const stopRun = async () => {
+    pollStopRef.current = true;
     if (jobIdRef.current) {
       try {
         await fetch(`/api/cancel/${jobIdRef.current}`, { method: 'POST' });
@@ -363,8 +364,6 @@ export function App() {
         // ignore
       }
     }
-    esRef.current?.close();
-    esRef.current = null;
     jobIdRef.current = null;
     activeStepRef.current = null;
     setActiveStep(null);
@@ -374,6 +373,7 @@ export function App() {
 
   const startRun = async () => {
     if (isRunning || !effectiveSizes.length || !threads.length) return;
+    pollStopRef.current = false;
     setConfigOpen(false);
     setMainTab('charts');
     if (metric === 'threads') setMetric('live_split');
@@ -411,85 +411,112 @@ export function App() {
         setPlan(serverPlan);
         setConsoleLog(`$ ${command}\n`);
 
-        const es = new EventSource(`/api/stream/${job_id}`);
-        esRef.current = es;
+        let cursor = 0;
+        let doneReceived = false;
 
-        es.onmessage = (ev) => {
-          const msg = JSON.parse(ev.data);
-          if (msg.type === 'plan' && msg.plan) {
-            setPlan(msg.plan);
-          } else if (msg.type === 'size_start') {
-            const st: ActiveStep = {
-              n: msg.n,
-              threads: 0,
-              key: 'ref',
-              label: `Chuẩn bị ma trận N = ${msg.n}`,
-              phase: 'prep',
-              startedAtMs: performance.now(),
-            };
-            activeStepRef.current = st;
-            setActiveStep(st);
-            setStepElapsedMs(0);
-          } else if (msg.type === 'step_start') {
-            const st: ActiveStep = {
-              n: msg.n,
-              threads: msg.threads,
-              key: msg.key,
-              label: msg.label,
-              phase: msg.phase,
-              startedAtMs: performance.now(),
-            };
-            activeStepRef.current = st;
-            setActiveStep(st);
-            setStepElapsedMs(0);
-          } else if (msg.type === 'record' && msg.record) {
-            setCompletedSteps(msg.completed || 0);
-            setDoneBySize((prev) => ({
-              ...prev,
-              [msg.record.n]: (prev[msg.record.n] || 0) + 1,
-            }));
-            setRecords((prev) => computeMetrics([...prev, msg.record]));
-          } else if (msg.type === 'log') {
-            setConsoleLog((prev) => prev + msg.line + '\n');
-          } else if (msg.type === 'hybrid' && msg.data) {
-            setHybrid((prev) => ({ ...prev, ...msg.data }));
-          } else if (msg.type === 'done') {
-            es.close();
-            esRef.current = null;
-            jobIdRef.current = null;
-            activeStepRef.current = null;
-            setActiveStep(null);
-            setIsRunning(false);
-            if (msg.records?.length) {
-              const parsed = computeMetrics(msg.records);
-              setRecords(parsed);
-              setCompletedSteps(parsed.length);
-              const byN: Record<number, number> = {};
-              parsed.forEach((r) => {
-                byN[r.n] = (byN[r.n] || 0) + 1;
+        while (!pollStopRef.current && !doneReceived) {
+          try {
+            const pRes = await fetch(`/api/job/${job_id}?cursor=${cursor}`, { cache: 'no-store' });
+            if (!pRes.ok) throw new Error(`HTTP ${pRes.status}`);
+            const batch = await pRes.json();
+            cursor = batch.next_cursor ?? cursor;
+
+            const newLogs: string[] = [];
+            const newRecords: BenchmarkRecord[] = [];
+            let latestCompleted: number | null = null;
+            const sizeIncrements: Record<number, number> = {};
+
+            for (const msg of batch.events || []) {
+              if (msg.type === 'plan' && msg.plan) {
+                setPlan(msg.plan);
+              } else if (msg.type === 'size_start') {
+                const st: ActiveStep = {
+                  n: msg.n,
+                  threads: 0,
+                  key: 'ref',
+                  label: `Chuẩn bị ma trận N = ${msg.n}`,
+                  phase: 'prep',
+                  startedAtMs: performance.now(),
+                };
+                activeStepRef.current = st;
+                setActiveStep(st);
+                setStepElapsedMs(0);
+              } else if (msg.type === 'step_start') {
+                const st: ActiveStep = {
+                  n: msg.n,
+                  threads: msg.threads,
+                  key: msg.key,
+                  label: msg.label,
+                  phase: msg.phase,
+                  startedAtMs: performance.now(),
+                };
+                activeStepRef.current = st;
+                setActiveStep(st);
+                setStepElapsedMs(0);
+              } else if (msg.type === 'record' && msg.record) {
+                newRecords.push(msg.record);
+                latestCompleted = msg.completed || 0;
+                sizeIncrements[msg.record.n] = (sizeIncrements[msg.record.n] || 0) + 1;
+              } else if (msg.type === 'log') {
+                newLogs.push(msg.line);
+              } else if (msg.type === 'hybrid' && msg.data) {
+                setHybrid((prev) => ({ ...prev, ...msg.data }));
+              } else if (msg.type === 'done') {
+                doneReceived = true;
+                jobIdRef.current = null;
+                activeStepRef.current = null;
+                setActiveStep(null);
+                setIsRunning(false);
+                if (msg.records?.length) {
+                  const parsed = computeMetrics(msg.records);
+                  setRecords(parsed);
+                  setCompletedSteps(parsed.length);
+                  const byN: Record<number, number> = {};
+                  parsed.forEach((r) => {
+                    byN[r.n] = (byN[r.n] || 0) + 1;
+                  });
+                  setDoneBySize(byN);
+                }
+                if (msg.files?.xls) setHasXls(true);
+                if (msg.hybrid_runs?.length) {
+                  setHybrid((prev) => ({ ...prev, ...msg.hybrid_runs[msg.hybrid_runs.length - 1] }));
+                }
+                setFinishBanner(
+                  msg.exit_code === 0
+                    ? `Hoàn tất ${msg.records?.length || 0} bài đo trong ${msg.elapsed_sec || 0}s`
+                    : `Kết thúc (mã thoát ${msg.exit_code})`
+                );
+              }
+            }
+
+            if (newLogs.length) {
+              setConsoleLog((prev) => prev + newLogs.join('\n') + '\n');
+            }
+            if (!doneReceived && newRecords.length) {
+              setRecords((prev) => computeMetrics([...prev, ...newRecords]));
+              if (latestCompleted !== null) setCompletedSteps(latestCompleted);
+              setDoneBySize((prev) => {
+                const next = { ...prev };
+                for (const [k, v] of Object.entries(sizeIncrements)) {
+                  const nk = Number(k);
+                  next[nk] = (next[nk] || 0) + v;
+                }
+                return next;
               });
-              setDoneBySize(byN);
             }
-            if (msg.files?.xls) setHasXls(true);
-            if (msg.hybrid_runs?.length) {
-              setHybrid((prev) => ({ ...prev, ...msg.hybrid_runs[msg.hybrid_runs.length - 1] }));
-            }
-            setFinishBanner(
-              msg.exit_code === 0
-                ? `Hoàn tất ${msg.records?.length || 0} bài đo trong ${msg.elapsed_sec || 0}s`
-                : `Kết thúc (mã thoát ${msg.exit_code})`
-            );
-          }
-        };
 
-        es.onerror = () => {
-          es.close();
-          esRef.current = null;
-          activeStepRef.current = null;
-          setActiveStep(null);
-          setIsRunning(false);
-          setFinishBanner('Mất kết nối stream — kiểm tra log trên Colab');
-        };
+            if (batch.finished && !doneReceived) {
+              doneReceived = true;
+              setIsRunning(false);
+            }
+          } catch {
+            // Brief transient network glitch over tunnel — retry on next tick
+          }
+
+          if (!doneReceived && !pollStopRef.current) {
+            await new Promise((r) => setTimeout(r, 200));
+          }
+        }
       } catch (err: any) {
         setConsoleLog((prev) => prev + `[ERROR] ${err.message}\n`);
         setIsRunning(false);

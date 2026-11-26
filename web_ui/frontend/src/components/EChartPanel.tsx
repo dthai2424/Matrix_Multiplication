@@ -285,17 +285,16 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
 
     // -------------------------------------------------------------------------
     // MODE B: HORIZONTAL BAR (Live Running View for active N, OR when 1 N, OR forced)
-    // Shows live-growing active Time bar in real time!
+    // While running: BOTH GFLOPS/Speedup AND Time show live per-algorithm bars for active N!
+    // Once finished with >=2 N: smoothly transitions to Multi-N Line+Dot curves.
     // -------------------------------------------------------------------------
     const isSingleN = allNs.length <= 1;
-    const showLiveGrowingBar =
-      (kind === 'time' && isRunning && activeStep?.phase === 'compute') ||
-      isSingleN ||
-      forceBar;
+    const showLiveGrowingBar = isRunning || isSingleN || forceBar;
 
     if (showLiveGrowingBar) {
       const targetN =
         (isRunning && activeStep?.n) ||
+        measuredNs[measuredNs.length - 1] ||
         allNs[allNs.length - 1] ||
         plan?.sizes?.[0] ||
         512;
@@ -332,7 +331,7 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
         return { key: k, name: ALGO_META[k].name, value: val, isActiveNow, rec };
       });
 
-      // Sort cleanly when not actively growing (or keep consistent order during live run so bars don't jump rows!)
+      // Keep stable top-to-bottom order while running so bars grow cleanly in place without jumping rows
       if (!isRunning) {
         rows.sort((a, b) => {
           const av = a.value ?? -1;
@@ -340,7 +339,7 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
           return kind === 'time' ? bv - av : av - bv;
         });
       } else {
-        rows.reverse(); // Top-to-bottom natural order (1. Baseline -> 7. CUDA Shared)
+        rows.reverse();
       }
 
       const hasAnyValue = rows.some((r) => r.value != null && r.value > 0);
@@ -348,7 +347,7 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
         return {
           title: {
             text: isRunning
-              ? `Đang đo N = ${targetN}... thanh sẽ tự mọc ngay khi kernel chạy`
+              ? `Đang đo N = ${targetN}... cột sẽ tự mọc ngay khi từng thuật toán chạy`
               : 'Chưa có dữ liệu — bấm Chạy thực nghiệm để bắt đầu',
             left: 'center',
             top: 'middle',
@@ -360,9 +359,20 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
         };
       }
 
-      const logAxis = useLogScale;
+      // Use proportional linear axis while actively growing a live Time bar so real-time growth is unmistakable
+      const logAxis = useLogScale && !(isRunning && kind === 'time');
       const unitLabel =
-        kind === 'gflops' ? 'GFLOPS' : kind === 'time' ? 'Thời gian (s)' : 'Speedup (×)';
+        kind === 'gflops'
+          ? isRunning
+            ? `GFLOPS (N=${targetN})`
+            : 'GFLOPS'
+          : kind === 'time'
+          ? isRunning
+            ? `Thời gian thực (s · N=${targetN})`
+            : 'Thời gian (s)'
+          : isRunning
+          ? `Speedup (× · N=${targetN})`
+          : 'Speedup (×)';
 
       return {
         animation: !reducedMotion && !(isRunning && kind === 'time' && liveElapsedSec != null),

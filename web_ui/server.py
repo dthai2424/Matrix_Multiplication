@@ -65,6 +65,30 @@ class RunRequest(BaseModel):
     reset_hybrid_cfg: bool = Field(default=False)
 
 
+class EventBus:
+    """Stores events both in a queue (SSE) and an indexed list (unbuffered polling)."""
+
+    def __init__(self) -> None:
+        self._q: "queue.Queue[Optional[Dict[str, Any]]]" = queue.Queue()
+        self._log: List[Dict[str, Any]] = []
+        self._lock = threading.Lock()
+
+    def put(self, item: Optional[Dict[str, Any]]) -> None:
+        if item is not None:
+            with self._lock:
+                self._log.append(item)
+        self._q.put(item)
+
+    def get(self, timeout: float = 8.0) -> Optional[Dict[str, Any]]:
+        return self._q.get(timeout=timeout)
+
+    def slice_from(self, cursor: int) -> Tuple[List[Dict[str, Any]], int]:
+        with self._lock:
+            n = len(self._log)
+            c = max(0, min(cursor, n))
+            return list(self._log[c:]), n
+
+
 class BenchmarkJob:
     def __init__(
         self,
@@ -79,7 +103,7 @@ class BenchmarkJob:
         self.cwd = cwd
         self.plan = plan
         self.gpu_cuda_cores = gpu_cuda_cores
-        self.events: "queue.Queue[Optional[Dict[str, Any]]]" = queue.Queue()
+        self.events = EventBus()
         self.process: Optional[subprocess.Popen] = None
         self.cancelled = False
         self.finished = False
@@ -416,6 +440,8 @@ def process_complete_line(job: BenchmarkJob, line: str) -> None:
         job.active_step_emitted = None
         t_sec = float(m.group(1))
         gflops = float(m.group(2))
+        if t_sec <= 0.0 and gflops > 0.0 and job.current_n > 0:
+            t_sec = (2.0 * (job.current_n ** 3)) / (gflops * 1e9)
         job.events.put(
             {
                 "type": "record",
@@ -424,7 +450,7 @@ def process_complete_line(job: BenchmarkJob, line: str) -> None:
                     "n": job.current_n,
                     "threads": 1,
                     "key": "seq",
-                    "time": t_sec,
+                    "time": max(1e-6, t_sec),
                     "gflops": gflops,
                     "speedup": 1.0,
                     "verified": True,
@@ -443,6 +469,8 @@ def process_complete_line(job: BenchmarkJob, line: str) -> None:
         t_sec = float(m.group(2))
         gflops = float(m.group(3))
         speedup = float(m.group(4))
+        if t_sec <= 0.0 and gflops > 0.0 and job.current_n > 0:
+            t_sec = (2.0 * (job.current_n ** 3)) / (gflops * 1e9)
         threads = job.gpu_cuda_cores if key in ("cuda_global", "cuda_shared") else job.current_threads
         job.completed_steps += 1
         job.record_seq += 1
@@ -455,7 +483,7 @@ def process_complete_line(job: BenchmarkJob, line: str) -> None:
                     "n": job.current_n,
                     "threads": threads,
                     "key": key,
-                    "time": t_sec,
+                    "time": max(1e-6, t_sec),
                     "gflops": gflops,
                     "speedup": speedup,
                     "verified": True,
@@ -768,6 +796,22 @@ def api_run(req: RunRequest):
     return {"job_id": job_id, "command": " ".join(cmd), "plan": plan}
 
 
+@app.get("/api/job/{job_id}")
+def api_job_poll(job_id: str, cursor: int = 0):
+    """Unbuffered incremental JSON polling — immune to Cloudflare Tunnel SSE buffering."""
+    with JOBS_LOCK:
+        job = JOBS.get(job_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="Không tìm thấy job.")
+    events, next_cursor = job.events.slice_from(cursor)
+    return {
+        "events": events,
+        "next_cursor": next_cursor,
+        "finished": job.finished,
+        "exit_code": job.exit_code,
+    }
+
+
 @app.get("/api/stream/{job_id}")
 def api_stream(job_id: str):
     with JOBS_LOCK:
@@ -776,6 +820,8 @@ def api_stream(job_id: str):
         raise HTTPException(status_code=404, detail="Không tìm thấy job.")
 
     def event_generator():
+        # Initial 2KB comment forces edge proxies/Cloudflare to flush chunked stream immediately
+        yield ":" + (" " * 2048) + "\n\n"
         while True:
             try:
                 item = job.events.get(timeout=8.0)
@@ -792,7 +838,8 @@ def api_stream(job_id: str):
         event_generator(),
         media_type="text/event-stream",
         headers={
-            "Cache-Control": "no-cache",
+            "Cache-Control": "no-cache, no-transform",
+            "Content-Encoding": "identity",
             "X-Accel-Buffering": "no",
         },
     )
