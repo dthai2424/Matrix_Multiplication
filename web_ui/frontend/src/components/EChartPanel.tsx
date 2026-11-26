@@ -57,13 +57,20 @@ function getBest(data: BenchmarkRecord[], n: number, key: AlgoKey): BenchmarkRec
   return list.reduce((a, b) => (b.gflops > a.gflops ? b : a));
 }
 
+function fmtMs(ms: number): string {
+  if (ms >= 1000) return `${Math.round(ms).toLocaleString('en-US')} ms`;
+  if (ms >= 100) return `${ms.toFixed(0)} ms`;
+  if (ms >= 10) return `${ms.toFixed(1)} ms`;
+  return `${ms.toFixed(2)} ms`;
+}
+
 function fmtAxisTick(val: number, kind: ChartKind): string {
   if (val === 0) return '0';
   if (kind === 'time') {
-    if (val >= 10) return `${val.toFixed(0)}s`;
-    if (val >= 1) return `${val.toFixed(1)}s`;
-    if (val >= 0.01) return `${(val * 1000).toFixed(0)}ms`;
-    return `${(val * 1000).toFixed(1)}ms`;
+    if (val >= 1000) return `${Math.round(val).toLocaleString('en-US')}ms`;
+    if (val >= 10) return `${val.toFixed(0)}ms`;
+    if (val >= 1) return `${val.toFixed(1)}ms`;
+    return `${val.toFixed(2)}ms`;
   }
   if (kind === 'speedup') {
     return val >= 10 ? `${val.toFixed(0)}×` : `${val.toFixed(1)}×`;
@@ -324,9 +331,9 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
 
         let val: number | null = null;
         if (kind === 'time' && isActiveNow && liveElapsedSec != null) {
-          val = Math.max(0.001, liveElapsedSec);
+          val = Math.max(1, liveElapsedSec * 1000);
         } else if (rec) {
-          val = kind === 'gflops' ? rec.gflops : kind === 'time' ? rec.time : rec.speedup;
+          val = kind === 'gflops' ? rec.gflops : kind === 'time' ? rec.time * 1000 : rec.speedup;
         }
         return { key: k, name: ALGO_META[k].name, value: val, isActiveNow, rec };
       });
@@ -368,8 +375,8 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
             : 'GFLOPS'
           : kind === 'time'
           ? isRunning
-            ? `Thời gian thực (s · N=${targetN})`
-            : 'Thời gian (s)'
+            ? `Thời gian thực (ms · N=${targetN})`
+            : 'Thời gian (ms)'
           : isRunning
           ? `Speedup (× · N=${targetN})`
           : 'Speedup (×)';
@@ -381,7 +388,7 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
         animationEasing: 'cubicOut',
         grid: {
           top: compact ? 18 : 26,
-          right: compact ? 76 : 112,
+          right: compact ? 84 : 122,
           bottom: enableZoom ? 54 : 34,
           left: 14,
           containLabel: true,
@@ -397,14 +404,14 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
             const row = rows[p.dataIndex];
             if (!row) return '';
             if (row.isActiveNow && kind === 'time') {
-              return `<strong>${row.name}</strong> (N = ${targetN})<br/><span style="color:${ALGO_META[row.key].color}">● Đang thực thi: <strong>${(row.value ?? 0).toFixed(2)}s</strong></span>`;
+              return `<strong>${row.name}</strong> (N = ${targetN})<br/><span style="color:${ALGO_META[row.key].color}">● Đang thực thi: <strong>${fmtMs(row.value ?? 0)}</strong></span>`;
             }
             if (!row.rec) return `<strong>${row.name}</strong><br/><span style="color:${muted}">Đang chờ thực thi...</span>`;
             const tag = ALGO_META[row.key].group === 'gpu' ? 'GPU CUDA' : `${row.rec.threads}T`;
             return `<div style="font-variant-numeric:tabular-nums">
               <strong>${row.name}</strong> · N = ${targetN} (${tag})<br/>
               Hiệu năng: <strong>${row.rec.gflops.toFixed(2)} GFLOPS</strong><br/>
-              Thời gian: <strong>${row.rec.time.toFixed(4)}s</strong><br/>
+              Thời gian: <strong>${fmtMs(row.rec.time * 1000)}</strong><br/>
               Speedup: <strong>${row.rec.speedup.toFixed(2)}×</strong>
             </div>`;
           },
@@ -450,7 +457,7 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
                   label: {
                     show: true,
                     position: 'right',
-                    formatter: `● ${(r.value ?? 0).toFixed(2)}s`,
+                    formatter: `● ${fmtMs(r.value ?? 0)}`,
                     color,
                     fontWeight: 700,
                     fontSize,
@@ -468,7 +475,7 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
                   position: 'right',
                   formatter: () => {
                     if (r.value == null) return '';
-                    if (kind === 'time') return `${r.value >= 1 ? r.value.toFixed(2) + 's' : (r.value * 1000).toFixed(1) + 'ms'}`;
+                    if (kind === 'time') return fmtMs(r.value);
                     if (kind === 'speedup') return `${r.value.toFixed(1)}×`;
                     return `${r.value.toFixed(1)} G`;
                   },
@@ -502,14 +509,14 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
 
     const logAxis = useLogScale;
     const unitLabel =
-      kind === 'gflops' ? 'GFLOPS' : kind === 'time' ? 'Thời gian (s)' : 'Speedup (×)';
+      kind === 'gflops' ? 'GFLOPS' : kind === 'time' ? 'Thời gian (ms)' : 'Speedup (×)';
 
     // Smart end-of-line direct labels: avoid overlaps on Linear scale by labeling top GPU, Hybrid, and top CPU
     const lastN = measuredNs[measuredNs.length - 1];
     const lastVals = presentKeys
       .map((k) => {
         const r = lastN ? getBest(visible, lastN, k) : null;
-        const v = r ? (kind === 'gflops' ? r.gflops : kind === 'time' ? r.time : r.speedup) : null;
+        const v = r ? (kind === 'gflops' ? r.gflops : kind === 'time' ? r.time * 1000 : r.speedup) : null;
         return { k, v };
       })
       .filter((x) => x.v != null) as { k: AlgoKey; v: number }[];
@@ -549,9 +556,7 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
             const v = Number(p.value);
             const valTxt =
               kind === 'time'
-                ? v >= 1
-                  ? `${v.toFixed(2)}s`
-                  : `${(v * 1000).toFixed(1)}ms`
+                ? fmtMs(v)
                 : kind === 'speedup'
                 ? `${v.toFixed(1)}×`
                 : `${v.toFixed(0)}G`;
@@ -565,8 +570,8 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
         data: allNs.map((n) => {
           const rec = getBest(visible, n, k);
           if (!rec) return null;
-          const v = kind === 'gflops' ? rec.gflops : kind === 'time' ? rec.time : rec.speedup;
-          return { value: Number(v.toFixed(kind === 'time' ? 5 : 2)), raw: rec };
+          const v = kind === 'gflops' ? rec.gflops : kind === 'time' ? rec.time * 1000 : rec.speedup;
+          return { value: Number(v.toFixed(2)), raw: rec };
         }),
       };
     });
@@ -579,7 +584,7 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
         ? kind === 'gflops'
           ? prevRec.gflops
           : kind === 'time'
-          ? prevRec.time
+          ? prevRec.time * 1000
           : prevRec.speedup
         : null;
       const xIdx = allNs.indexOf(activeStep.n);
@@ -603,7 +608,7 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
       animationEasing: 'cubicOut',
       grid: {
         top: compact ? 22 : 28,
-        right: compact ? 26 : 148,
+        right: compact ? 26 : 156,
         bottom: enableZoom ? 56 : 36,
         left: 16,
         containLabel: true,
@@ -625,9 +630,7 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
               const v = Number(p.value);
               const txt =
                 kind === 'time'
-                  ? v >= 1
-                    ? `${v.toFixed(3)}s`
-                    : `${(v * 1000).toFixed(2)}ms`
+                  ? fmtMs(v)
                   : kind === 'speedup'
                   ? `${v.toFixed(2)}×`
                   : `${v.toFixed(2)} GFLOPS`;

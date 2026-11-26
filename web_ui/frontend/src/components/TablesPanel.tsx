@@ -168,7 +168,7 @@ export function TablesPanel({ records }: TablesPanelProps) {
                 <th>Thuật toán</th>
                 <th>N</th>
                 <th>Luồng</th>
-                <th>Thời gian (s)</th>
+                <th>Thời gian (ms)</th>
                 <th>GFLOPS</th>
                 <th>Speedup</th>
                 <th>Kiểm định</th>
@@ -184,6 +184,8 @@ export function TablesPanel({ records }: TablesPanelProps) {
               ) : (
                 filtered.map((r) => {
                   const m = ALGO_META[r.key];
+                  const ms = r.time * 1000;
+                  const msTxt = ms >= 1000 ? ms.toLocaleString('en-US', { maximumFractionDigits: 1 }) : ms.toFixed(2);
                   return (
                     <tr key={r.id}>
                       <th>
@@ -194,7 +196,7 @@ export function TablesPanel({ records }: TablesPanelProps) {
                       </th>
                       <td>{r.n}</td>
                       <td>{m.group === 'gpu' ? `${r.threads} CUDA` : `${r.threads}T`}</td>
-                      <td className="font-mono">{r.time.toFixed(5)}</td>
+                      <td className="font-mono">{msTxt} ms</td>
                       <td className="font-mono font-semibold">{r.gflops.toFixed(2)}</td>
                       <td className="font-mono">{r.speedup.toFixed(2)}×</td>
                       <td

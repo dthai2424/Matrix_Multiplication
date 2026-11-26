@@ -1401,7 +1401,10 @@ export function App() {
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <div>
-                          <h2 className="text-sm font-bold">Thời gian thực thi trực tiếp (giây)</h2>
+                          <h2 className="text-sm font-bold">
+                            Thời gian thực thi trực tiếp (ms)
+                            {isRunning && activeStep?.n ? ` · N = ${activeStep.n}` : ''}
+                          </h2>
                           <p className="text-xs text-[var(--muted)]">
                             Thanh của thuật toán đang chạy sẽ tăng dài theo thời gian thực · Thấp hơn tốt hơn
                           </p>
@@ -1465,7 +1468,7 @@ export function App() {
                     {(
                       [
                         ['gflops', '1. Hiệu năng tính toán (GFLOPS)'],
-                        ['time', '2. Thời gian thực thi (s)'],
+                        ['time', '2. Thời gian thực thi (ms)'],
                         ['speedup', '3. Hệ số tăng tốc (Speedup)'],
                         ['threads', `4. Mở rộng luồng CPU (N = ${threadN ?? '—'})`],
                       ] as [ChartKind, string][]
@@ -1527,7 +1530,7 @@ export function App() {
                   {(
                     [
                       ['gflops', 'GFLOPS'],
-                      ['time', 'Thời gian (s)'],
+                      ['time', 'Thời gian (ms)'],
                       ['speedup', 'Speedup'],
                       ['threads', 'Luồng CPU'],
                     ] as [ChartKind, string][]

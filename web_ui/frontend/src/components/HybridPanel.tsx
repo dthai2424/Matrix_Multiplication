@@ -196,7 +196,7 @@ export function HybridPanel({ hybrid }: HybridPanelProps) {
                     Vòng {it.round} (Đo thực tế · M_GPU={it.m_gpu}, M_CPU={it.m_cpu})
                   </span>
                   <span className="font-mono">
-                    Tổng T = <strong>{tMax.toFixed(4)}s</strong> · Imbalance ={' '}
+                    Tổng T = <strong>{(tMax * 1000).toFixed(1)} ms</strong> · Imbalance ={' '}
                     <strong className={it.imbalance <= 1.05 ? 'text-[var(--ok)]' : 'text-[var(--warn)]'}>
                       {it.imbalance.toFixed(3)}
                     </strong>
@@ -215,7 +215,7 @@ export function HybridPanel({ hybrid }: HybridPanelProps) {
                         title="GPU xong sớm, phải chờ CPU"
                       />
                     )}
-                    <span className="ml-2 font-mono text-[var(--ink)]">{it.t_gpu.toFixed(4)}s</span>
+                    <span className="ml-2 font-mono text-[var(--ink)]">{(it.t_gpu * 1000).toFixed(1)} ms</span>
                   </div>
                 </div>
 
@@ -231,7 +231,7 @@ export function HybridPanel({ hybrid }: HybridPanelProps) {
                         title="CPU xong sớm, phải chờ GPU"
                       />
                     )}
-                    <span className="ml-2 font-mono text-[var(--ink)]">{it.t_cpu.toFixed(4)}s</span>
+                    <span className="ml-2 font-mono text-[var(--ink)]">{(it.t_cpu * 1000).toFixed(1)} ms</span>
                   </div>
                 </div>
               </div>
@@ -246,7 +246,7 @@ export function HybridPanel({ hybrid }: HybridPanelProps) {
                   Mô phỏng lý thuyết tại α = {gpuPct.toFixed(1)}% (M_GPU={mGpu}, M_CPU={mCpu})
                 </span>
                 <span className="font-mono">
-                  Ước tính max(t) = <strong>{simMax.toFixed(3)}s</strong> · Imbalance ={' '}
+                  Ước tính max(t) = <strong>{(simMax * 1000).toFixed(1)} ms</strong> · Imbalance ={' '}
                   <strong className={simImb <= 1.08 ? 'text-[var(--ok)]' : 'text-[var(--danger)]'}>
                     {simImb.toFixed(3)}
                   </strong>
@@ -266,7 +266,7 @@ export function HybridPanel({ hybrid }: HybridPanelProps) {
                       style={{ width: `${((simTCpu - simTGpu) / maxTimeScale) * 100}%` }}
                     />
                   )}
-                  <span className="ml-2 font-mono">{simTGpu.toFixed(3)}s</span>
+                  <span className="ml-2 font-mono">{(simTGpu * 1000).toFixed(1)} ms</span>
                 </div>
               </div>
 
@@ -283,7 +283,7 @@ export function HybridPanel({ hybrid }: HybridPanelProps) {
                       style={{ width: `${((simTGpu - simTCpu) / maxTimeScale) * 100}%` }}
                     />
                   )}
-                  <span className="ml-2 font-mono">{simTCpu.toFixed(3)}s</span>
+                  <span className="ml-2 font-mono">{(simTCpu * 1000).toFixed(1)} ms</span>
                 </div>
               </div>
             </div>
