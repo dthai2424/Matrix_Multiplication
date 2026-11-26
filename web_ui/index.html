@@ -509,6 +509,91 @@
       text-overflow: ellipsis;
     }
 
+    /* Live Execution Pipeline Tracker */
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(0.85); }
+    }
+    .live-tracker {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .live-tracker__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .live-tracker__now {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+      font-size: 13.5px;
+      font-weight: 600;
+    }
+    .live-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+    .live-dot--pulse {
+      animation: pulseDot 1.1s ease-in-out infinite;
+    }
+    .live-dot--done {
+      background: var(--ok);
+    }
+    .live-tracker__meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+    .live-steps-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+    .pipe-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 9px;
+      border-radius: var(--r-sm);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .pipe-chip--active {
+      border-color: var(--accent);
+      color: var(--ink);
+      font-weight: 600;
+      background: var(--subtle);
+    }
+    .pipe-chip--done {
+      border-color: var(--ok);
+      color: var(--ink);
+    }
+    .pipe-chip__gflops {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
     .stage-bar {
       padding: 8px 20px 0;
       border-bottom: 1px solid var(--border);
@@ -1046,6 +1131,25 @@
         <!-- RIGHT STAGE -->
         <div class="stage">
           <div id="kpiStrip" class="kpi-strip"></div>
+
+          <!-- Live Execution Pipeline Tracker (shown while running & right after finish) -->
+          <div id="liveTracker" class="live-tracker hidden tabular" role="status" aria-live="polite">
+            <div class="live-tracker__top">
+              <div class="live-tracker__now">
+                <span id="liveDot" class="live-dot live-dot--pulse"></span>
+                <span id="liveActiveLabel">Đang khởi động thực nghiệm...</span>
+                <span id="liveStepTimer" class="mono muted" style="font-size:12.5px; font-weight:500;">0.0s</span>
+              </div>
+              <div class="live-tracker__meta">
+                <span id="liveCounter">0 / 0 bài đo (0%)</span>
+                <span id="liveTotalTimer" class="mono" style="font-weight:600; color:var(--ink);">00:00.0</span>
+                <button type="button" id="btnHideTracker" class="text-btn hidden">Ẩn</button>
+              </div>
+            </div>
+            <div class="progress-track"><div id="liveProgressBar" class="progress-fill"></div></div>
+            <div id="liveSizePipeline" class="live-steps-row" aria-label="Tiến độ từng kích thước ma trận N"></div>
+            <div id="liveAlgoPipeline" class="live-steps-row" aria-label="Tiến độ từng thuật toán của ma trận đang chạy"></div>
+          </div>
 
           <div class="stage-bar">
             <div id="chartTablist" class="tablist tablist--bare" role="tablist" focusgroup="tablist nomemory" aria-label="Chọn biểu đồ">
@@ -1602,23 +1706,146 @@
       if (statusText) document.getElementById("runStatusText").textContent = statusText;
     }
 
+    // Live Execution Pipeline Tracker Controller
+    const tracker = {
+      running: false,
+      plan: null,
+      activeN: null,
+      activeKey: null,
+      activeThreads: null,
+      activeLabel: "",
+      completed: 0,
+      total: 0,
+      doneBySize: {},
+      startTimeMs: 0,
+      stepStartMs: 0,
+      timerHandle: null
+    };
+
+    function fmtStopwatch(ms) {
+      const s = Math.max(0, ms / 1000);
+      const mins = Math.floor(s / 60);
+      const rem = (s - mins * 60).toFixed(1).padStart(4, "0");
+      return `${String(mins).padStart(2, "0")}:${rem}`;
+    }
+
+    function renderLiveTracker() {
+      const el = document.getElementById("liveTracker");
+      el.classList.remove("hidden");
+
+      const pct = tracker.total > 0 ? Math.min(100, Math.round((tracker.completed / tracker.total) * 100)) : 0;
+      document.getElementById("liveProgressBar").style.width = `${pct}%`;
+      document.getElementById("runProgressBar").style.width = `${pct}%`;
+      document.getElementById("liveCounter").textContent = `${tracker.completed} / ${tracker.total} bài đo (${pct}%)`;
+      document.getElementById("runPercentText").textContent = `${pct}%`;
+
+      const dot = document.getElementById("liveDot");
+      dot.classList.toggle("live-dot--pulse", tracker.running);
+      dot.classList.toggle("live-dot--done", !tracker.running);
+      document.getElementById("btnHideTracker").classList.toggle("hidden", tracker.running);
+
+      if (tracker.running) {
+        const tag = tracker.activeN
+          ? `N = ${tracker.activeN}${tracker.activeThreads ? ` · ${tracker.activeKey === "cuda_global" || tracker.activeKey === "cuda_shared" ? "GPU" : tracker.activeThreads + "T"}` : ""}`
+          : "";
+        document.getElementById("liveActiveLabel").textContent = tracker.activeLabel
+          ? `Đang chạy: ${tag ? tag + " · " : ""}${tracker.activeLabel}`
+          : "Đang khởi tạo ma trận trên Colab...";
+        document.getElementById("runStatusText").textContent = document.getElementById("liveActiveLabel").textContent;
+      }
+
+      // Row 1: Matrix Size Pipeline (N chips)
+      const sizeRow = document.getElementById("liveSizePipeline");
+      const sizes = tracker.plan?.sizes || [];
+      sizeRow.innerHTML = sizes.map(n => {
+        const expected = tracker.plan?.per_size?.[String(n)] || 0;
+        const done = tracker.doneBySize[n] || 0;
+        const isDone = expected > 0 && done >= expected;
+        const isActive = tracker.running && tracker.activeN === n && !isDone;
+        const cls = isDone ? "pipe-chip pipe-chip--done" : (isActive ? "pipe-chip pipe-chip--active" : "pipe-chip");
+        const icon = isDone ? "✓" : (isActive ? "●" : "○");
+        return `<span class="${cls}">${icon} N = ${n} <span class="mono muted">(${done}/${expected || "?"})</span></span>`;
+      }).join("");
+
+      // Row 2: Active N Algorithm Checklist (live per-algo status + peak GFLOPS)
+      const algoRow = document.getElementById("liveAlgoPipeline");
+      const focusN = tracker.activeN || sizes[sizes.length - 1];
+      if (!focusN) { algoRow.innerHTML = ""; return; }
+
+      const showKeys = tracker.plan?.gpu_only
+        ? ["hybrid", "cuda_global", "cuda_shared"]
+        : ALGO_ORDER.filter(k => !(k === "seq" && focusN >= 2048));
+
+      algoRow.innerHTML = `<span class="muted" style="font-size:12.5px; margin-right:2px;">N=${focusN}:</span>` +
+        showKeys.map(k => {
+          const m = ALGO_META[k];
+          const recs = benchData.filter(d => d.n === focusN && d.key === k);
+          const isRunningNow = tracker.running && tracker.activeN === focusN && tracker.activeKey === k;
+          const isDone = recs.length > 0 && !isRunningNow;
+          const cls = isRunningNow ? "pipe-chip pipe-chip--active" : (isDone ? "pipe-chip pipe-chip--done" : "pipe-chip");
+          const bestG = recs.length ? Math.max(...recs.map(r => r.gflops)) : null;
+          const stateText = isRunningNow
+            ? `<span class="pipe-chip__gflops">${((performance.now() - tracker.stepStartMs) / 1000).toFixed(1)}s</span>`
+            : (bestG !== null ? `<span class="pipe-chip__gflops">${bestG.toFixed(1)}G</span>` : "");
+          const icon = isRunningNow ? "●" : (isDone ? "✓" : "○");
+          return `<span class="${cls}"><span class="swatch" style="background:${m.color}"></span>${icon} ${m.name} ${stateText}</span>`;
+        }).join("");
+    }
+
+    function startLiveTracker(plan) {
+      tracker.running = true;
+      tracker.plan = plan;
+      tracker.activeN = plan.sizes?.[0] || null;
+      tracker.activeKey = null;
+      tracker.activeThreads = null;
+      tracker.activeLabel = "Khởi tạo ma trận...";
+      tracker.completed = 0;
+      tracker.total = plan.total_steps || 1;
+      tracker.doneBySize = {};
+      tracker.startTimeMs = performance.now();
+      tracker.stepStartMs = performance.now();
+      if (tracker.timerHandle) clearInterval(tracker.timerHandle);
+      tracker.timerHandle = setInterval(() => {
+        if (!tracker.running) return;
+        const now = performance.now();
+        document.getElementById("liveTotalTimer").textContent = fmtStopwatch(now - tracker.startTimeMs);
+        document.getElementById("liveStepTimer").textContent = `${((now - tracker.stepStartMs) / 1000).toFixed(1)}s`;
+        // Also refresh active chip timer smoothly
+        const activeChipTimer = document.querySelector("#liveAlgoPipeline .pipe-chip--active .pipe-chip__gflops");
+        if (activeChipTimer) activeChipTimer.textContent = `${((now - tracker.stepStartMs) / 1000).toFixed(1)}s`;
+      }, 100);
+      renderLiveTracker();
+    }
+
+    function finishLiveTracker(message) {
+      tracker.running = false;
+      tracker.activeKey = null;
+      if (tracker.timerHandle) { clearInterval(tracker.timerHandle); tracker.timerHandle = null; }
+      const elapsed = fmtStopwatch(performance.now() - tracker.startTimeMs);
+      document.getElementById("liveTotalTimer").textContent = elapsed;
+      document.getElementById("liveStepTimer").textContent = "";
+      document.getElementById("liveActiveLabel").textContent = message;
+      renderLiveTracker();
+    }
+
+    document.getElementById("btnHideTracker").addEventListener("click", () => {
+      document.getElementById("liveTracker").classList.add("hidden");
+    });
+
     document.getElementById("btnCancelJob").addEventListener("click", async () => {
       if (activeJobId) {
         try { await fetch(`/api/cancel/${activeJobId}`, { method: "POST" }); } catch {}
       }
       if (activeEventSource) { activeEventSource.close(); activeEventSource = null; }
+      finishLiveTracker("Đã dừng thực nghiệm theo yêu cầu");
       setRunningUI(false, "Đã hủy thực nghiệm");
     });
 
     async function runLiveColab(nList, tList, runs, cudaTile, gpuOnly, resetHybrid) {
       const box = document.getElementById("runProgressBox");
-      const bar = document.getElementById("runProgressBar");
-      const pctTxt = document.getElementById("runPercentText");
       const logEl = document.getElementById("runConsoleLog");
 
       box.classList.remove("hidden");
-      bar.style.width = "12%";
-      pctTxt.textContent = "Live";
       logEl.textContent = "";
       setRunningUI(true, "Đang gửi yêu cầu tới Colab GPU...");
 
@@ -1639,25 +1866,51 @@
           const err = await res.json().catch(() => ({ detail: res.statusText }));
           throw new Error(err.detail || "Lỗi khởi chạy backend");
         }
-        const { job_id, command } = await res.json();
+        const { job_id, command, plan } = await res.json();
         activeJobId = job_id;
         logEl.textContent = `$ ${command}\n`;
 
-        let lineCount = 0;
+        // Clear dataset & start live pipeline tracker so user watches charts build live!
+        benchData = [];
+        nextId = 1;
+        refreshAll();
+        startLiveTracker(plan || { sizes: nList, total_steps: nList.length * 6, gpu_only: gpuOnly, per_size: {} });
+
         const es = new EventSource(`/api/stream/${job_id}`);
         activeEventSource = es;
 
         es.onmessage = ev => {
           const msg = JSON.parse(ev.data);
-          if (msg.type === "log") {
-            lineCount++;
+          if (msg.type === "plan" && msg.plan) {
+            tracker.plan = msg.plan;
+            tracker.total = msg.plan.total_steps || tracker.total;
+            renderLiveTracker();
+          } else if (msg.type === "size_start") {
+            tracker.activeN = msg.n;
+            tracker.activeKey = null;
+            tracker.activeLabel = `Chuẩn bị ma trận N = ${msg.n} × ${msg.n}...`;
+            tracker.stepStartMs = performance.now();
+            renderLiveTracker();
+          } else if (msg.type === "step_start") {
+            tracker.activeN = msg.n || tracker.activeN;
+            tracker.activeThreads = msg.threads;
+            tracker.activeKey = msg.key;
+            tracker.activeLabel = msg.label;
+            tracker.stepStartMs = performance.now();
+            renderLiveTracker();
+          } else if (msg.type === "record" && msg.record) {
+            tracker.completed = msg.completed || (tracker.completed + 1);
+            tracker.total = Math.max(tracker.total, msg.total || tracker.completed);
+            tracker.doneBySize[msg.record.n] = (tracker.doneBySize[msg.record.n] || 0) + 1;
+            tracker.activeN = msg.record.n;
+            tracker.activeKey = null;
+            benchData.push(msg.record);
+            benchData = computeMetrics(benchData);
+            refreshAll();
+            renderLiveTracker();
+          } else if (msg.type === "log") {
             logEl.textContent += msg.line + "\n";
             logEl.scrollTop = logEl.scrollHeight;
-            const estPct = Math.min(92, 12 + lineCount * 2);
-            bar.style.width = `${estPct}%`;
-            if (msg.line.includes("DANG THUC HIEN") || msg.line.includes("Can bang tai")) {
-              document.getElementById("runStatusText").textContent = msg.line.replace(/^[\s>]+/, "");
-            }
           } else if (msg.type === "hybrid" && msg.data) {
             hybridState = { ...hybridState, ...msg.data };
             renderHybridPanel();
@@ -1665,34 +1918,42 @@
             es.close();
             activeEventSource = null;
             activeJobId = null;
-            bar.style.width = "100%";
-            pctTxt.textContent = msg.exit_code === 0 ? "100%" : `Exit ${msg.exit_code}`;
-            setRunningUI(false, msg.exit_code === 0 ? `Hoàn tất (${msg.records.length} điểm đo)` : "Kết thúc với cảnh báo/lỗi");
-            if (msg.records?.length) loadDataset(msg.records);
+            if (msg.records?.length) {
+              tracker.completed = msg.records.length;
+              tracker.total = msg.records.length;
+              tracker.doneBySize = {};
+              msg.records.forEach(r => { tracker.doneBySize[r.n] = (tracker.doneBySize[r.n] || 0) + 1; });
+              loadDataset(msg.records);
+            }
             if (msg.files?.xls) document.getElementById("btnDownloadXls").classList.remove("hidden");
             if (msg.hybrid_runs?.length) {
               const latest = msg.hybrid_runs[msg.hybrid_runs.length - 1];
               hybridState = { ...hybridState, ...latest };
               renderHybridPanel();
             }
+            const doneMsg = msg.exit_code === 0
+              ? `Hoàn tất ${msg.records.length} bài đo trong ${msg.elapsed_sec || 0}s`
+              : `Kết thúc (mã thoát ${msg.exit_code})`;
+            finishLiveTracker(doneMsg);
+            setRunningUI(false, doneMsg);
           }
         };
 
         es.onerror = () => {
           es.close();
           activeEventSource = null;
-          setRunningUI(false, "Mất kết nối stream — kiểm tra log trên Colab");
+          finishLiveTracker("Mất kết nối stream — kiểm tra log Colab");
+          setRunningUI(false, "Mất kết nối stream");
         };
       } catch (err) {
         logEl.textContent += `[ERROR] ${err.message}\n`;
+        finishLiveTracker("Không thể khởi chạy benchmark");
         setRunningUI(false, "Không thể chạy benchmark");
       }
     }
 
     async function runOfflineSimulation(nList, tList, algos, runs, cudaTile) {
       const box = document.getElementById("runProgressBox");
-      const bar = document.getElementById("runProgressBar");
-      const pctTxt = document.getElementById("runPercentText");
       const logEl = document.getElementById("runConsoleLog");
       box.classList.remove("hidden");
       logEl.textContent = `$ ${document.getElementById("cliPreview").textContent}\n[Offline Demo] Chạy mô phỏng hiệu năng...\n`;
@@ -1711,14 +1972,25 @@
       };
 
       const tasks = [];
-      nList.forEach(n => algos.forEach(k => {
-        if (k === "seq") { if (n < 2048) tasks.push({ n, threads: 1, key: k }); }
-        else if (k === "cuda_global" || k === "cuda_shared") tasks.push({ n, threads: 2560, key: k });
-        else {
-          const ts = n >= 2048 ? tList.filter(t => t >= 8) : tList;
-          (ts.length ? ts : [tList[tList.length - 1] || 8]).forEach(t => tasks.push({ n, threads: t, key: k }));
-        }
-      }));
+      const perSize = {};
+      nList.forEach(n => {
+        let cnt = 0;
+        algos.forEach(k => {
+          if (k === "seq") { if (n < 2048) { tasks.push({ n, threads: 1, key: k }); cnt++; } }
+          else if (k === "cuda_global" || k === "cuda_shared") { tasks.push({ n, threads: 2560, key: k }); cnt++; }
+          else {
+            const ts = n >= 2048 ? tList.filter(t => t >= 8) : tList;
+            (ts.length ? ts : [tList[tList.length - 1] || 8]).forEach(t => { tasks.push({ n, threads: t, key: k }); cnt++; });
+          }
+        });
+        perSize[String(n)] = cnt;
+      });
+
+      const gpuOnly = algos.every(k => ["hybrid", "cuda_global", "cuda_shared"].includes(k));
+      benchData = [];
+      nextId = 1;
+      refreshAll();
+      startLiveTracker({ sizes: nList, total_steps: tasks.length, gpu_only: gpuOnly, per_size: perSize });
 
       // Simulate Hybrid calibration
       const pCpu = simG(1024, Math.max(1, (tList[tList.length - 1] || 8) - 1), "omp_basic");
@@ -1745,23 +2017,31 @@
       };
       renderHybridPanel();
 
-      benchData = [];
-      nextId = 1;
       for (let i = 0; i < tasks.length; i++) {
         const tk = tasks[i];
+        tracker.activeN = tk.n;
+        tracker.activeThreads = tk.threads;
+        tracker.activeKey = tk.key;
+        tracker.activeLabel = ALGO_META[tk.key].name;
+        tracker.stepStartMs = performance.now();
+        renderLiveTracker();
+
+        await new Promise(r => setTimeout(r, Math.max(60, Math.min(140, 1400 / tasks.length))));
+
         const g = simG(tk.n, tk.threads, tk.key);
         const time = (2.0 * tk.n ** 3) / (g * 1e9);
         benchData.push({ id: nextId++, n: tk.n, threads: tk.threads, key: tk.key, time, verified: true });
         benchData = computeMetrics(benchData);
-        const pct = Math.round(((i + 1) / tasks.length) * 100);
-        bar.style.width = `${pct}%`;
-        pctTxt.textContent = `${pct}%`;
-        document.getElementById("runStatusText").textContent = `N=${tk.n} · ${ALGO_META[tk.key].name}`;
+        tracker.completed = i + 1;
+        tracker.doneBySize[tk.n] = (tracker.doneBySize[tk.n] || 0) + 1;
+        tracker.activeKey = null;
+
         logEl.textContent += `[${i + 1}/${tasks.length}] N=${tk.n} ${ALGO_META[tk.key].name} (${tk.threads}T): ${time.toFixed(4)}s · ${g.toFixed(1)} GFLOPS\n`;
         logEl.scrollTop = logEl.scrollHeight;
         refreshAll();
-        await new Promise(r => setTimeout(r, Math.max(18, Math.min(55, 650 / tasks.length))));
+        renderLiveTracker();
       }
+      finishLiveTracker(`Hoàn tất mô phỏng ${tasks.length} bài đo`);
       setRunningUI(false, `Hoàn tất mô phỏng ${tasks.length} điểm đo`);
     }
 
