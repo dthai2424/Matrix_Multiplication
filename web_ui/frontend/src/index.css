@@ -1,0 +1,161 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --subtle: #f1f5f9;
+  --border: #cbd5e1;
+  --border-soft: #e2e8f0;
+  --ink: #0f172a;
+  --muted: #475569;
+  --accent: #0f766e;
+  --accent-ink: #ffffff;
+  --ok: #15803d;
+  --warn: #b45309;
+  --danger: #e11d48;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  --ease-enter: cubic-bezier(.22, 1, .36, 1);
+}
+
+html[data-theme="dark"] {
+  --bg: #09090b;
+  --surface: #111114;
+  --subtle: #18181c;
+  --border: #2e2e36;
+  --border-soft: #23232a;
+  --ink: #f8fafc;
+  --muted: #94a3b8;
+  --accent: #14b8a6;
+  --accent-ink: #042f2e;
+  --ok: #4ade80;
+  --warn: #fbbf24;
+  --danger: #fb7185;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.tabular { font-variant-numeric: tabular-nums; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Purposeful subtle animations (motion.md tokens, zero bounce/overshoot) */
+@keyframes pulseSoft {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.86); }
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.975); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes drawerIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.anim-pulse { animation: pulseSoft 1.15s ease-in-out infinite; }
+.anim-modal { animation: modalIn 220ms var(--ease) both; }
+.anim-fade { animation: fadeIn 180ms var(--ease) both; }
+.anim-drawer { animation: drawerIn 190ms var(--ease) both; }
+
+/* Sharp developer-tool button hover/press */
+.btn-interactive {
+  transition: transform 150ms var(--ease), background-color 150ms var(--ease), border-color 150ms var(--ease), opacity 150ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn-interactive:not(:disabled):hover { transform: translateY(-1px); }
+  .btn-interactive:not(:disabled):hover .m-arrow { transform: translateX(3px); }
+}
+.btn-interactive:not(:disabled):active {
+  transform: translateY(1px) scale(0.985);
+  transition-duration: 90ms;
+}
+.m-arrow { transition: transform 150ms var(--ease); }
+
+/* Hatched Idle-Wait & What-If visual pattern */
+.hatch-wait {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(217, 119, 6, 0.22),
+    rgba(217, 119, 6, 0.22) 6px,
+    rgba(217, 119, 6, 0.06) 6px,
+    rgba(217, 119, 6, 0.06) 12px
+  );
+}
+.hatch-sim {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(15, 118, 110, 0.14),
+    rgba(15, 118, 110, 0.14) 5px,
+    transparent 5px,
+    transparent 10px
+  );
+}
+
+/* Responsive data table container query */
+.table-wrap {
+  overflow: auto;
+  max-block-size: min(560px, 68vh);
+  container-type: inline-size;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+}
+.data-tbl {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13.5px;
+}
+.data-tbl thead {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 2;
+}
+.data-tbl thead th {
+  background: var(--subtle);
+  color: var(--muted);
+  font-weight: 600;
+  text-align: left;
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.data-tbl tbody th,
+.data-tbl tbody td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border-soft);
+  white-space: nowrap;
+}
+.data-tbl tbody th {
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: 1;
+  background: var(--surface);
+  text-align: left;
+  font-weight: 600;
+}
+.data-tbl tbody tr:hover th,
+.data-tbl tbody tr:hover td {
+  background: var(--subtle);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-pulse, .anim-modal, .anim-fade, .anim-drawer, .btn-interactive, .m-arrow {
+    animation: none !important;
+    transition: none !important;
+  }
+}

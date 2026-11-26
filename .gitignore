@@ -14,3 +14,5 @@ BAO_CAO_TOAN_DIEN_THUC_NGHIEM.md
 
 __pycache__/
 *.pyc
+
+node_modules/

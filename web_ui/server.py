@@ -33,6 +33,7 @@ except ImportError:  # Windows fallback
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, StreamingResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -41,15 +42,18 @@ if not (REPO_DIR / "matmul_benchmark").exists() and (BASE_DIR.parent / "matmul_b
     REPO_DIR = BASE_DIR.parent
 
 BINARY_NAME = "matmul_benchmark.exe" if os.name == "nt" else "matmul_benchmark"
-INDEX_HTML = BASE_DIR / "index.html"
+DIST_DIR = BASE_DIR / "dist"
+INDEX_HTML = DIST_DIR / "index.html" if (DIST_DIR / "index.html").exists() else BASE_DIR / "index.html"
 
-app = FastAPI(title="MatMul Bench API", version="2.0.0")
+app = FastAPI(title="MatMul Bench API", version="4.0.0")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
+if (DIST_DIR / "assets").exists():
+    app.mount("/assets", StaticFiles(directory=str(DIST_DIR / "assets")), name="assets")
 
 
 class RunRequest(BaseModel):
