@@ -320,11 +320,9 @@ def build_execution_plan(
     has_gpu: bool,
     logical_cores: int,
 ) -> Dict[str, Any]:
-    """Mirror src/main.cpp's run_standard_benchmark_suite step count for accurate progress."""
+    """Mirror src/main.cpp's run_standard_benchmark_suite step count (explicit -t honored for all N)."""
+    del logical_cores  # Explicit -t passed by api_run is honored 1:1 by src/main.cpp
     eff_threads = list(threads)
-    if logical_cores not in eff_threads and eff_threads and eff_threads[-1] < logical_cores:
-        eff_threads.append(logical_cores)
-        eff_threads.sort()
 
     algo_set = set(algos)
     cpu_parallel_cnt = sum(1 for k in ("omp_basic", "omp_l2_l3", "omp_bypass") if k in algo_set)
@@ -335,12 +333,11 @@ def build_execution_plan(
     per_size: Dict[str, int] = {}
     total = 0
     for n in sizes:
-        cur_t = [8, 16] if n >= 2048 else eff_threads
         cnt = 0
         if "seq" in algo_set and n < 2048:
             cnt += 1
         if threaded_cnt > 0:
-            cnt += len(cur_t) * threaded_cnt
+            cnt += len(eff_threads) * threaded_cnt
         cnt += cuda_cnt
         per_size[str(n)] = cnt
         total += cnt

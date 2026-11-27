@@ -34,6 +34,8 @@ export interface EChartPanelHandle {
   resize: () => void;
 }
 
+export type ChartScope = 'auto' | 'all' | number;
+
 interface EChartPanelProps {
   kind: ChartKind;
   records: BenchmarkRecord[];
@@ -47,7 +49,7 @@ interface EChartPanelProps {
   height?: string;
   enableZoom?: boolean;
   compact?: boolean;
-  forceBar?: boolean;
+  chartScope?: ChartScope;
 }
 
 function getBest(data: BenchmarkRecord[], n: number, key: AlgoKey): BenchmarkRecord | null {
@@ -91,7 +93,7 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
     height = '440px',
     enableZoom = false,
     compact = false,
-    forceBar = false,
+    chartScope = 'auto',
   },
   ref
 ) {
@@ -297,25 +299,32 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
     }
 
     // -------------------------------------------------------------------------
-    // MODE B: HORIZONTAL BAR (Live Running View for active N, OR when 1 N, OR forced)
+    // MODE B: HORIZONTAL BAR (Specific selected N, OR active running N in 'auto', OR single N)
     // No live-growing jitter: bars stay empty until a kernel finishes, then rise crisply!
-    // Once finished with >=2 N: smoothly transitions to Multi-N Line+Dot curves.
+    // Multi-N Line+Dot curves appear when chartScope === 'all' (or 'auto' after finishing >=2 N).
     // -------------------------------------------------------------------------
-    const isSingleN = allNs.length <= 1;
-    const showBarView = isRunning || isSingleN || forceBar;
+    const isSpecificN = typeof chartScope === 'number';
+    const canShowMultiLine = measuredNs.length >= 2;
+    const showBarView =
+      isSpecificN ||
+      (chartScope === 'auto' && (isRunning || !canShowMultiLine)) ||
+      (chartScope === 'all' && !canShowMultiLine);
 
     if (showBarView) {
-      const targetN =
-        (isRunning && activeStep?.n) ||
-        measuredNs[measuredNs.length - 1] ||
-        allNs[allNs.length - 1] ||
-        plan?.sizes?.[0] ||
-        512;
+      const targetN = isSpecificN
+        ? chartScope
+        : (isRunning && activeStep?.n) ||
+          measuredNs[measuredNs.length - 1] ||
+          allNs[allNs.length - 1] ||
+          plan?.sizes?.[0] ||
+          512;
+
+      const isTargetRunning = isRunning && activeStep?.n === targetN;
 
       const algoKeys = ALGO_ORDER.filter((k) => {
         if (hiddenAlgos.has(k)) return false;
         if (k === 'seq' && targetN >= 2048) return false;
-        if (isRunning) {
+        if (isTargetRunning) {
           if (plan?.algos?.length) return plan.algos.includes(k);
           if (plan?.gpu_only && ALGO_META[k].group === 'cpu') return false;
           return true;
@@ -342,26 +351,26 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
         return { key: k, name: ALGO_META[k].name, value: val, rec };
       });
 
-      // Keep stable top-to-bottom order while running so completed bars rise in place without jumping rows
-      if (!isRunning) {
+      // Completed N: sort cleanly by performance. Currently running N: keep GPU at top (index n-1 in ECharts Y-axis) -> CPU below so bars appear top-down!
+      if (!isTargetRunning) {
         rows.sort((a, b) => {
           const av = a.value ?? -1;
           const bv = b.value ?? -1;
           return kind === 'time' ? bv - av : av - bv;
         });
-      } else {
-        rows.reverse();
       }
 
       const hasAnyValue = rows.some((r) => r.value != null && r.value > 0);
       if (!hasAnyValue) {
         return {
-          structKey: `bar|empty|${kind}|${targetN}|${theme}|${isRunning}`,
+          structKey: `bar|empty|${kind}|${targetN}|${theme}|${isTargetRunning}`,
           option: {
             title: {
-              text: isRunning
+              text: isTargetRunning
                 ? `Đang đo N = ${targetN}... cột sẽ hiện lên ngay khi từng thuật toán xong`
-                : 'Chưa có dữ liệu — bấm Chạy thực nghiệm để bắt đầu',
+                : isRunning
+                ? `N = ${targetN} chưa đến lượt đo`
+                : `Chưa có dữ liệu cho N = ${targetN}`,
               left: 'center',
               top: 'middle',
               textStyle: { color: muted, fontSize: 14, fontWeight: 500 },
@@ -376,19 +385,13 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
       const logAxis = useLogScale;
       const unitLabel =
         kind === 'gflops'
-          ? isRunning
-            ? `GFLOPS (N=${targetN})`
-            : 'GFLOPS'
+          ? `GFLOPS (N=${targetN})`
           : kind === 'time'
-          ? isRunning
-            ? `Thời gian (ms · N=${targetN})`
-            : 'Thời gian (ms)'
-          : isRunning
-          ? `Speedup (× · N=${targetN})`
-          : 'Speedup (×)';
+          ? `Thời gian (ms · N=${targetN})`
+          : `Speedup (× · N=${targetN})`;
 
       return {
-        structKey: `bar|data|${kind}|${targetN}|${theme}|${logAxis}|${enableZoom}|${compact}|${isRunning}|${rows.map((r) => r.key).join(',')}`,
+        structKey: `bar|data|${kind}|${targetN}|${theme}|${logAxis}|${enableZoom}|${compact}|${isTargetRunning}|${rows.map((r) => r.key).join(',')}`,
         option: {
           animation: !reducedMotion,
           animationDuration: 300,
@@ -647,7 +650,7 @@ export const EChartPanel = forwardRef<EChartPanelHandle, EChartPanelProps>(funct
     prevStructKeyRef.current = structKey;
     chartRef.current.setOption(option, { notMerge: shouldReplace });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [kind, records, hiddenAlgos, useLogScale, threadN, theme, plan, activeStep, isRunning, enableZoom, compact, forceBar]);
+  }, [kind, records, hiddenAlgos, useLogScale, threadN, theme, plan, activeStep, isRunning, enableZoom, compact, chartScope]);
 
   return <div ref={containerRef} style={{ width: '100%', height }} />;
 });

@@ -33,7 +33,7 @@ import type {
   PresetId,
 } from './types';
 import { AnimatedNumber } from './components/AnimatedNumber';
-import { EChartPanel, type ChartKind, type EChartPanelHandle } from './components/EChartPanel';
+import { EChartPanel, type ChartKind, type ChartScope, type EChartPanelHandle } from './components/EChartPanel';
 import { HybridPanel } from './components/HybridPanel';
 import { TablesPanel } from './components/TablesPanel';
 
@@ -131,7 +131,7 @@ export function App() {
     time: true,    // Default Log10 for 1000x time dynamic range
     speedup: false,
   });
-  const [forceBar, setForceBar] = useState(false);
+  const [chartScope, setChartScope] = useState<ChartScope>('auto');
   const [hiddenAlgos, setHiddenAlgos] = useState<Set<AlgoKey>>(new Set());
   const [threadN, setThreadN] = useState<number | null>(null);
 
@@ -234,17 +234,31 @@ export function App() {
     return () => window.removeEventListener('keydown', onKey);
   }, [mainTab, metric]);
 
-  // Effective sorted N list (chips + custom N)
-  const effectiveSizes = useMemo(() => {
-    const s = new Set(sizes);
+  // Custom N parsed from text input (so user can untick all preset chips when custom N is entered!)
+  const customSizes = useMemo(() => {
+    const out = new Set<number>();
     if (customNText.trim()) {
       customNText.split(',').forEach((tok) => {
         const v = parseInt(tok.trim(), 10);
-        if (v >= 64 && v <= 16384) s.add(v);
+        if (v >= 64 && v <= 16384) out.add(v);
       });
     }
-    return [...s].sort((a, b) => a - b);
-  }, [sizes, customNText]);
+    return [...out].sort((a, b) => a - b);
+  }, [customNText]);
+
+  // Effective sorted N list (preset chips + custom N)
+  const effectiveSizes = useMemo(() => {
+    return [...new Set([...sizes, ...customSizes])].sort((a, b) => a - b);
+  }, [sizes, customSizes]);
+
+  // Thread chips dynamically include detected hardware logical_cores (e.g. 12T on Colab L4)
+  const threadChipOptions = useMemo(() => {
+    const base = new Set<number>([1, 2, 4, 8, 16]);
+    if (hardware?.logical_cores && hardware.logical_cores > 1 && hardware.logical_cores <= 128) {
+      base.add(hardware.logical_cores);
+    }
+    return [...base].sort((a, b) => a - b);
+  }, [hardware]);
 
   const cliCommand = useMemo(() => {
     const parts = ['./matmul_benchmark'];
@@ -261,6 +275,19 @@ export function App() {
     () => [...new Set(records.map((r) => r.n))].sort((a, b) => a - b),
     [records]
   );
+
+  const availableChartNs = useMemo(() => {
+    if (isRunning && plan?.sizes?.length) {
+      return [...new Set([...plan.sizes, ...uniqueMeasuredN])].sort((a, b) => a - b);
+    }
+    return uniqueMeasuredN;
+  }, [isRunning, plan, uniqueMeasuredN]);
+
+  useEffect(() => {
+    if (typeof chartScope === 'number' && availableChartNs.length && !availableChartNs.includes(chartScope)) {
+      setChartScope('auto');
+    }
+  }, [chartScope, availableChartNs]);
 
   useEffect(() => {
     if (uniqueMeasuredN.length && (threadN === null || !uniqueMeasuredN.includes(threadN))) {
@@ -334,7 +361,10 @@ export function App() {
   const toggleSizeChip = (n: number) => {
     setPreset('custom');
     setSizes((prev) => {
-      if (prev.includes(n)) return prev.length > 1 ? prev.filter((x) => x !== n) : prev;
+      if (prev.includes(n)) {
+        // Cho phép bỏ chọn hết chip mặc định nếu người dùng đã nhập số N tùy chọn hợp lệ
+        return prev.length + customSizes.length > 1 ? prev.filter((x) => x !== n) : prev;
+      }
       return [...prev, n].sort((a, b) => a - b);
     });
   };
@@ -392,6 +422,7 @@ export function App() {
     setConfigOpen(false);
     setAlgoPickerOpen(false);
     setMainTab('charts');
+    setChartScope('auto');
     if (metric === 'threads') setMetric('live_split');
     setShowTracker(true);
     setFinishBanner('');
@@ -541,8 +572,17 @@ export function App() {
       return;
     }
 
-    // Offline Interactive Demo Mode (demonstrates incremental bar rise per completed algorithm)
-    const simAlgos: AlgoKey[] = selectedAlgos;
+    // Offline Interactive Demo Mode (fastest-first order matching src/main.cpp)
+    const fastFirstOrder: AlgoKey[] = [
+      'seq',
+      'cuda_shared',
+      'cuda_global',
+      'hybrid',
+      'omp_l2_l3',
+      'omp_bypass',
+      'omp_basic',
+    ];
+    const simAlgos: AlgoKey[] = fastFirstOrder.filter((k) => selectedAlgos.includes(k));
     const tasks: { n: number; threads: number; key: AlgoKey }[] = [];
     const perSize: Record<string, number> = {};
     effectiveSizes.forEach((n) => {
@@ -557,8 +597,7 @@ export function App() {
           tasks.push({ n, threads: 2560, key: k });
           c++;
         } else {
-          const ts = n >= 2048 ? threads.filter((t) => t >= 8) : threads;
-          (ts.length ? ts : [threads[threads.length - 1] || 8]).forEach((t) => {
+          threads.forEach((t) => {
             tasks.push({ n, threads: t, key: k });
             c++;
           });
@@ -956,8 +995,9 @@ export function App() {
             ) : (
               <button
                 type="button"
+                disabled={!effectiveSizes.length || !threads.length || !selectedAlgos.length}
                 onClick={startRun}
-                className="btn-interactive h-10 px-5 rounded-md bg-[var(--accent)] text-[var(--accent-ink)] border border-[var(--accent)] text-sm font-semibold inline-flex items-center gap-2 cursor-pointer"
+                className="btn-interactive h-10 px-5 rounded-md bg-[var(--accent)] text-[var(--accent-ink)] border border-[var(--accent)] text-sm font-semibold inline-flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span>Chạy thực nghiệm</span>
                 <ArrowRight className="w-4 h-4 m-arrow" />
@@ -972,7 +1012,21 @@ export function App() {
             <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 xl:px-8 py-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
               {/* Sizes N */}
               <div className="space-y-2">
-                <div className="text-xs font-semibold text-[var(--ink)]">Kích thước ma trận (N × N)</div>
+                <div className="flex items-center justify-between text-xs font-semibold text-[var(--ink)]">
+                  <span>Kích thước ma trận (N × N)</span>
+                  {customSizes.length > 0 && sizes.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPreset('custom');
+                        setSizes([]);
+                      }}
+                      className="text-[11px] font-semibold text-[var(--accent)] hover:underline cursor-pointer bg-transparent border-0 p-0"
+                    >
+                      Chỉ dùng N nhập tay
+                    </button>
+                  )}
+                </div>
                 <div className="flex flex-wrap gap-1.5">
                   {[256, 512, 1024, 2048, 4096].map((n) => {
                     const on = sizes.includes(n);
@@ -999,19 +1053,24 @@ export function App() {
                     setPreset('custom');
                     setCustomNText(e.target.value);
                   }}
-                  placeholder="Thêm N tùy chọn (VD: 768, 1536)"
+                  placeholder="Nhập N tùy chọn (VD: 6000, 7000, 8000)"
                   className="w-full h-9 px-2.5 rounded-md border border-[var(--border)] bg-[var(--surface)] text-xs tabular"
                 />
+                {!effectiveSizes.length && (
+                  <p className="text-[11px] text-[var(--danger)]">
+                    Hãy chọn ít nhất 1 ô N hoặc nhập giá trị hợp lệ (64–16384).
+                  </p>
+                )}
               </div>
 
               {/* CPU Threads */}
               <div className="space-y-2">
                 <div className="text-xs font-semibold text-[var(--ink)]">
                   Số luồng CPU OpenMP
-                  <span className="font-normal text-[var(--muted)] ml-1.5">(N ≥ 2048 dùng 8T &amp; 16T)</span>
+                  <span className="font-normal text-[var(--muted)] ml-1.5">(Áp dụng cho mọi N)</span>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
-                  {[1, 2, 4, 8, 16].map((t) => {
+                  {threadChipOptions.map((t) => {
                     const on = threads.includes(t);
                     return (
                       <button
@@ -1179,28 +1238,41 @@ export function App() {
                   </span>
                 )}
 
-                {/* Inline N Stepper (no heavy pill borders) */}
+                {/* Clickable Inline N Stepper (click any N to inspect its bar chart immediately!) */}
                 {plan?.sizes?.length ? (
-                  <div className="hidden md:flex items-center gap-2 text-xs pl-3 border-l border-[var(--border)]">
+                  <div className="hidden md:flex items-center gap-1.5 text-xs pl-3 border-l border-[var(--border)]">
                     {plan.sizes.map((n, idx) => {
                       const expected = plan.per_size[String(n)] || 0;
                       const done = doneBySize[n] || 0;
                       const isDone = expected > 0 && done >= expected;
                       const isActive = isRunning && activeStep?.n === n && !isDone;
+                      const isViewing =
+                        chartScope === n || (chartScope === 'auto' && isActive);
                       return (
                         <span key={n} className="inline-flex items-center gap-1">
                           {idx > 0 && <span className="text-[var(--border)]">→</span>}
-                          <span
-                            className={
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setMainTab('charts');
+                              if (isActive) setChartScope('auto');
+                              else setChartScope(n);
+                            }}
+                            title={`Xem biểu đồ cột riêng cho N = ${n}`}
+                            className={`px-1.5 py-0.5 rounded cursor-pointer border transition-colors ${
+                              isViewing
+                                ? 'bg-[var(--subtle)] border-[var(--accent)]/50'
+                                : 'bg-transparent border-transparent hover:bg-[var(--subtle)]'
+                            } ${
                               isDone
                                 ? 'text-[var(--ok)] font-semibold'
                                 : isActive
                                 ? 'text-[var(--accent)] font-bold'
                                 : 'text-[var(--muted)]'
-                            }
+                            }`}
                           >
                             {isDone ? '✓' : isActive ? '●' : '○'} {n}
-                          </span>
+                          </button>
                         </span>
                       );
                     })}
@@ -1329,17 +1401,6 @@ export function App() {
                   </button>
                 )}
 
-                {/* Bar / Line Toggle when >= 2 N */}
-                {activeScaleKind && uniqueMeasuredN.length >= 2 && (
-                  <button
-                    type="button"
-                    onClick={() => setForceBar((b) => !b)}
-                    className="h-8 px-2.5 rounded-md border border-[var(--border)] text-xs font-semibold text-[var(--muted)] hover:text-[var(--ink)] bg-transparent cursor-pointer"
-                  >
-                    {forceBar ? 'Dạng Đường' : 'Dạng Thanh'}
-                  </button>
-                )}
-
                 {/* Thread N selector */}
                 {(metric === 'threads' || metric === 'grid') && uniqueMeasuredN.length > 0 && (
                   <select
@@ -1463,7 +1524,90 @@ export function App() {
           {/* Stage Content */}
           <div className="p-4 sm:p-6">
             {mainTab === 'charts' && (
-              <>
+              <div className="space-y-4">
+                {/* Per-N Tab Switcher: switch freely between Multi-N Line Curves and any individual N's Bar Chart! */}
+                {metric !== 'threads' && availableChartNs.length > 0 && (
+                  <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[var(--border-soft)]">
+                    <div className="flex flex-wrap items-center gap-1.5" role="tablist" aria-label="Chọn phạm vi kích thước N">
+                      {uniqueMeasuredN.length >= 2 && (
+                        <button
+                          type="button"
+                          role="tab"
+                          aria-selected={chartScope === 'all' || (chartScope === 'auto' && !isRunning)}
+                          onClick={() => setChartScope('all')}
+                          className={`h-8 px-3 rounded-md border text-xs font-semibold cursor-pointer transition-colors ${
+                            chartScope === 'all' || (chartScope === 'auto' && !isRunning)
+                              ? 'bg-[var(--ink)] text-[var(--bg)] border-[var(--ink)]'
+                              : 'bg-[var(--surface)] text-[var(--muted)] border-[var(--border)] hover:border-[var(--ink)] hover:text-[var(--ink)]'
+                          }`}
+                        >
+                          Tất cả N (Biểu đồ đường)
+                        </button>
+                      )}
+
+                      {availableChartNs.map((n) => {
+                        const expected = plan?.per_size?.[String(n)] || 0;
+                        const done = doneBySize[n] || 0;
+                        const isDone = isRunning
+                          ? expected > 0 && done >= expected
+                          : uniqueMeasuredN.includes(n);
+                        const isActiveLive = isRunning && activeStep?.n === n && !isDone;
+                        const isSelected =
+                          chartScope === n ||
+                          (chartScope === 'auto' &&
+                            (isActiveLive ||
+                              (!isRunning && uniqueMeasuredN.length === 1 && uniqueMeasuredN[0] === n)));
+                        const hasData = uniqueMeasuredN.includes(n);
+
+                        return (
+                          <button
+                            key={n}
+                            type="button"
+                            role="tab"
+                            aria-selected={isSelected}
+                            onClick={() => {
+                              if (isActiveLive) setChartScope('auto');
+                              else setChartScope(n);
+                            }}
+                            className={`h-8 px-3 rounded-md border text-xs font-semibold cursor-pointer transition-colors inline-flex items-center gap-1.5 tabular ${
+                              isSelected
+                                ? 'bg-[var(--accent)] text-[var(--accent-ink)] border-[var(--accent)]'
+                                : hasData || isActiveLive
+                                ? 'bg-[var(--surface)] text-[var(--ink)] border-[var(--border)] hover:border-[var(--accent)]'
+                                : 'bg-[var(--subtle)] text-[var(--muted)] border-[var(--border-soft)] hover:border-[var(--border)]'
+                            }`}
+                          >
+                            {isActiveLive ? (
+                              <span className="w-1.5 h-1.5 rounded-full bg-current anim-pulse" />
+                            ) : isDone && isRunning ? (
+                              <span className={isSelected ? 'text-current' : 'text-[var(--ok)]'}>✓</span>
+                            ) : null}
+                            <span>N = {n}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    <div className="flex items-center gap-2 text-xs text-[var(--muted)]">
+                      {isRunning && typeof chartScope === 'number' && activeStep?.n && chartScope !== activeStep.n ? (
+                        <button
+                          type="button"
+                          onClick={() => setChartScope('auto')}
+                          className="text-xs font-semibold text-[var(--accent)] hover:underline cursor-pointer bg-transparent border-0 p-0"
+                        >
+                          ← Quay lại theo dõi N = {activeStep.n} đang chạy
+                        </button>
+                      ) : (
+                        <span className="hidden sm:inline">
+                          {chartScope === 'all' || (chartScope === 'auto' && !isRunning && uniqueMeasuredN.length >= 2)
+                            ? 'Đang xem xu hướng đa kích thước (Biểu đồ đường)'
+                            : 'Đang xem so sánh từng thuật toán (Biểu đồ cột)'}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 {/* LIVE SPLIT: Side-by-side GFLOPS + Time Bars (crisp rise on completion) */}
                 {metric === 'live_split' && (
                   <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
@@ -1472,7 +1616,11 @@ export function App() {
                         <div>
                           <h2 className="text-sm font-bold">
                             Hiệu năng tính toán (GFLOPS)
-                            {isRunning && activeStep?.n ? ` · N = ${activeStep.n}` : ''}
+                            {typeof chartScope === 'number'
+                              ? ` · N = ${chartScope}`
+                              : isRunning && chartScope === 'auto' && activeStep?.n
+                              ? ` · N = ${activeStep.n}`
+                              : ''}
                           </h2>
                           <p className="text-xs text-[var(--muted)]">
                             Cột hiện lên nhanh ngay khi từng thuật toán xong · Cao hơn tốt hơn
@@ -1507,6 +1655,7 @@ export function App() {
                         plan={plan}
                         activeStep={activeStep}
                         isRunning={isRunning}
+                        chartScope={chartScope}
                         height="clamp(420px, 56vh, 620px)"
                       />
                     </div>
@@ -1516,7 +1665,11 @@ export function App() {
                         <div>
                           <h2 className="text-sm font-bold">
                             Thời gian thực thi (ms)
-                            {isRunning && activeStep?.n ? ` · N = ${activeStep.n}` : ''}
+                            {typeof chartScope === 'number'
+                              ? ` · N = ${chartScope}`
+                              : isRunning && chartScope === 'auto' && activeStep?.n
+                              ? ` · N = ${activeStep.n}`
+                              : ''}
                           </h2>
                           <p className="text-xs text-[var(--muted)]">
                             Cột hiện lên nhanh ngay khi từng thuật toán xong · Thấp hơn tốt hơn
@@ -1551,6 +1704,7 @@ export function App() {
                         plan={plan}
                         activeStep={activeStep}
                         isRunning={isRunning}
+                        chartScope={chartScope}
                         height="clamp(420px, 56vh, 620px)"
                       />
                     </div>
@@ -1570,8 +1724,8 @@ export function App() {
                     plan={plan}
                     activeStep={activeStep}
                     isRunning={isRunning}
+                    chartScope={chartScope}
                     height="clamp(460px, 60vh, 680px)"
-                    forceBar={forceBar}
                   />
                 )}
 
@@ -1608,6 +1762,7 @@ export function App() {
                           plan={plan}
                           activeStep={activeStep}
                           isRunning={isRunning}
+                          chartScope={chartScope}
                           height="310px"
                           compact
                         />
@@ -1615,7 +1770,7 @@ export function App() {
                     ))}
                   </div>
                 )}
-              </>
+              </div>
             )}
 
             {mainTab === 'hybrid' && <HybridPanel hybrid={hybrid} />}
@@ -1681,14 +1836,44 @@ export function App() {
                     >
                       {logScaleByKind[fullscreenKind] ? 'Thang Log10' : 'Thang Linear'}
                     </button>
-                    {uniqueMeasuredN.length >= 2 && (
-                      <button
-                        type="button"
-                        onClick={() => setForceBar((b) => !b)}
-                        className="h-8 px-2.5 rounded-md border border-[var(--border)] text-xs font-semibold text-[var(--muted)] hover:text-[var(--ink)] bg-transparent cursor-pointer"
-                      >
-                        {forceBar ? 'Dạng Đường' : 'Dạng Thanh'}
-                      </button>
+
+                    {availableChartNs.length > 0 && (
+                      <div className="inline-flex flex-wrap items-center gap-1 pl-2 border-l border-[var(--border)]">
+                        {uniqueMeasuredN.length >= 2 && (
+                          <button
+                            type="button"
+                            onClick={() => setChartScope('all')}
+                            className={`h-8 px-2.5 rounded-md border text-xs font-semibold cursor-pointer ${
+                              chartScope === 'all' || (chartScope === 'auto' && !isRunning)
+                                ? 'bg-[var(--ink)] text-[var(--bg)] border-[var(--ink)]'
+                                : 'bg-transparent text-[var(--muted)] border-[var(--border)] hover:text-[var(--ink)]'
+                            }`}
+                          >
+                            Tất cả N
+                          </button>
+                        )}
+                        {availableChartNs.map((n) => {
+                          const isSelected =
+                            chartScope === n ||
+                            (chartScope === 'auto' &&
+                              ((isRunning && activeStep?.n === n) ||
+                                (!isRunning && uniqueMeasuredN.length === 1 && uniqueMeasuredN[0] === n)));
+                          return (
+                            <button
+                              key={n}
+                              type="button"
+                              onClick={() => setChartScope(n)}
+                              className={`h-8 px-2.5 rounded-md border text-xs font-semibold cursor-pointer tabular ${
+                                isSelected
+                                  ? 'bg-[var(--accent)] text-[var(--accent-ink)] border-[var(--accent)]'
+                                  : 'bg-transparent text-[var(--ink)] border-[var(--border)] hover:border-[var(--accent)]'
+                              }`}
+                            >
+                              N={n}
+                            </button>
+                          );
+                        })}
+                      </div>
                     )}
                   </>
                 )}
@@ -1734,9 +1919,9 @@ export function App() {
                 plan={plan}
                 activeStep={activeStep}
                 isRunning={isRunning}
+                chartScope={chartScope}
                 height="100%"
                 enableZoom
-                forceBar={forceBar}
               />
             </div>
           </div>
